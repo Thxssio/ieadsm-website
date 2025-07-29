@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, Phone, Users, Menu, X, Instagram, Facebook, Map, Feather, BookOpen, Music, Globe2, Megaphone, Smile, Hand, Star, CalendarDays, BookMarked, Heart, UserCheck, Handshake, Stethoscope, Speaker, Radio, ChevronDown, Building, MessageSquare, Book, Briefcase, HardHat, LogIn, Mail } from 'lucide-react';
 import dynamic from "next/dynamic";
@@ -10,7 +10,7 @@ const PdfFlipbook = dynamic(() => import("../components/PdfFlipbook"), {
 
 // Componente auxiliar para Ícones com novo estilo
 const IconWrapper = ({ children }) => (
-  <div className="flex-shrink-0 w-16 h-16 bg-sky-100/50 text-sky-600 rounded-full inline-flex items-center justify-center border-4 border-white shadow-sm">
+  <div className="flex-shrink-0 w-16 h-16 bg-[#2a3d57]/10 text-[#2a3d57] rounded-full inline-flex items-center justify-center border-4 border-white shadow-sm">
     {children}
   </div>
 );
@@ -50,11 +50,11 @@ const Header = ({ churchName, logoUrl, ministries, setActiveMinistryTab, setPage
   return (
     <header className="bg-stone-50/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-24">
           <div className="flex-shrink-0">
             <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('home'); }} className="flex items-center space-x-3 group">
               <img
-                className="h-12 w-auto transition-transform duration-300 group-hover:scale-110"
+                className="h-16 w-auto transition-transform duration-300 group-hover:scale-105"
                 src={logoUrl}
                 alt={`Logo ${churchName}`}
                 onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/100x40/0ea5e9/ffffff?text=Logo'; }}
@@ -63,13 +63,13 @@ const Header = ({ churchName, logoUrl, ministries, setActiveMinistryTab, setPage
           </div>
           <nav className="hidden md:flex md:items-center md:space-x-6">
             {navLinks.map((link) => (
-              <a key={link.name} href={`#${link.scrollTo || ''}`} onClick={(e) => { e.preventDefault(); handleNavClick(link.page, link.scrollTo); }} className="text-stone-600 hover:text-sky-600 font-medium transition-colors duration-300 px-2 py-1">
+              <a key={link.name} href={`#${link.scrollTo || ''}`} onClick={(e) => { e.preventDefault(); handleNavClick(link.page, link.scrollTo); }} className="text-stone-600 hover:text-[#2a3d57] font-medium transition-colors duration-300 px-2 py-1">
                 {link.name}
               </a>
             ))}
             {/* Dropdown Ministérios */}
             <div className="relative" onMouseEnter={handleMinistriesEnter} onMouseLeave={handleMinistriesLeave}>
-              <a href="#ministries" onClick={(e) => { e.preventDefault(); handleNavClick('home', 'ministries'); }} className="text-stone-600 hover:text-sky-600 font-medium transition-colors duration-300 flex items-center gap-1 px-2 py-1">
+              <a href="#ministries" onClick={(e) => { e.preventDefault(); handleNavClick('home', 'ministries'); }} className="text-stone-600 hover:text-[#2a3d57] font-medium transition-colors duration-300 flex items-center gap-1 px-2 py-1">
                 Ministérios <ChevronDown size={16} />
               </a>
               {isMinistriesOpen && (
@@ -84,7 +84,7 @@ const Header = ({ churchName, logoUrl, ministries, setActiveMinistryTab, setPage
                             setActiveMinistryTab(ministry.id);
                             setIsMinistriesOpen(false);
                           }}
-                          className="w-full flex items-center gap-3 p-3 rounded-md text-left font-medium text-sm text-stone-700 hover:bg-sky-50 hover:text-sky-700 transition-colors duration-200"
+                          className="w-full flex items-center gap-3 p-3 rounded-md text-left font-medium text-sm text-stone-700 hover:bg-[#2a3d57]/10 hover:text-[#2a3d57] transition-colors duration-200"
                         >
                           {ministry.icon}
                           <span>{ministry.name}</span>
@@ -95,13 +95,13 @@ const Header = ({ churchName, logoUrl, ministries, setActiveMinistryTab, setPage
                 </div>
               )}
             </div>
-             <button onClick={() => setPage('login')} className="ml-4 flex items-center gap-2 bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-sky-600 transition-colors duration-300">
+             <button onClick={() => setPage('login')} className="ml-4 flex items-center gap-2 bg-[#2a3d57] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#202e42] transition-colors duration-300">
                 <LogIn size={16} />
                 Área do Ministro
             </button>
           </nav>
           <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-stone-700 hover:text-sky-600 focus:outline-none">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-stone-700 hover:text-[#2a3d57] focus:outline-none">
               {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
@@ -112,14 +112,14 @@ const Header = ({ churchName, logoUrl, ministries, setActiveMinistryTab, setPage
         <div className="md:hidden bg-stone-50 border-t border-stone-200">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
-              <a key={link.name} href={`#${link.scrollTo || ''}`} onClick={(e) => { e.preventDefault(); handleNavClick(link.page, link.scrollTo); }} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700 hover:text-sky-600 hover:bg-stone-100">
+              <a key={link.name} href={`#${link.scrollTo || ''}`} onClick={(e) => { e.preventDefault(); handleNavClick(link.page, link.scrollTo); }} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700 hover:text-[#2a3d57] hover:bg-stone-100">
                 {link.name}
               </a>
             ))}
-             <a href="#ministries" onClick={(e) => { e.preventDefault(); handleNavClick('home', 'ministries'); }} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700 hover:text-sky-600 hover:bg-stone-100">
+             <a href="#ministries" onClick={(e) => { e.preventDefault(); handleNavClick('home', 'ministries'); }} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700 hover:text-[#2a3d57] hover:bg-stone-100">
                 Ministérios
               </a>
-              <button onClick={() => {setPage('login'); setIsMenuOpen(false);}} className="w-full mt-2 flex items-center justify-center gap-2 bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-sky-600 transition-colors duration-300">
+              <button onClick={() => {setPage('login'); setIsMenuOpen(false);}} className="w-full mt-2 flex items-center justify-center gap-2 bg-[#2a3d57] text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-[#202e42] transition-colors duration-300">
                 <LogIn size={16} />
                 Área do Ministro
             </button>
@@ -149,7 +149,7 @@ const HeroSection = () => (
         Um lugar de fé, esperança e amor. Junte-se à nossa Igreja.
       </p>
       <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#location" className="w-full sm:w-auto inline-block bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300">
+        <a href="#location" className="w-full sm:w-auto inline-block bg-[#2a3d57] hover:bg-[#202e42] text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300">
           Planeje sua Visita
         </a>
         <a href="#" className="w-full sm:w-auto inline-block bg-transparent border-2 border-stone-300 hover:bg-stone-50 hover:text-slate-900 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300">
@@ -180,40 +180,46 @@ const WelcomeMessage = () => {
 };
 
 
-// Componente de Horários (ESTILO CALENDÁRIO)
+// Componente de Horários (ESTILO TIMELINE)
 const ScheduleSection = () => {
     const weeklySchedule = {
-        "Domingo": [ { name: "Escola Bíblica Dominical", time: "09h00" }, { name: "Culto Público", time: "19h00" } ],
-        "Segunda": [],
-        "Terça": [ { name: "Oração", time: "19h30" } ],
-        "Quarta": [ { name: "União Feminina", time: "15h00" } ],
-        "Quinta": [ { name: "Ensino", time: "19h45", note: "Oração às 19h15" } ],
-        "Sexta": [ { name: "Vitória", time: "15h00" } ],
-        "Sábado": [ { name: "Jovens", time: "19h30" } ]
+        "Terça-feira": [ { name: "Culto de Oração", time: "19h30", icon: <Hand size={20} /> } ],
+        "Quarta-feira": [ { name: "Círculo de Oração", time: "15h00", icon: <Users size={20} /> } ],
+        "Quinta-feira": [ { name: "Culto de Ensino", time: "19h45", note: "Oração às 19h15", icon: <BookOpen size={20} /> } ],
+        "Sexta-feira": [ { name: "Culto da Vitória", time: "15h00", icon: <Star size={20} /> } ],
+        "Sábado": [ { name: "DEPAD (Adolescentes)", time: "15h00", icon: <Users size={20} /> }, { name: "Culto de Jovens", time: "19h30", icon: <Users size={20} /> } ],
+        "Domingo": [ { name: "Escola Bíblica Dominical", time: "09h00", icon: <BookMarked size={20} /> }, { name: "Programa 'A Voz da Assembleia de Deus'", time: "11h00", icon: <Radio size={20} /> }, { name: "Culto Público", time: "19h00", icon: <CalendarDays size={20} /> } ]
     };
-    const weekDays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
     return (
         <section id="schedule" className="py-20 sm:py-28 bg-stone-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="text-base font-semibold text-sky-600 tracking-wider uppercase">Nossa Programação</h2>
+                    <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">Nossa Programação</h2>
                     <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Participe Conosco</p>
                 </div>
-                <div className="mt-16 bg-white rounded-2xl shadow-lg overflow-hidden">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7">
-                        {weekDays.map(day => (
-                            <div key={day} className="border-b sm:border-b-0 sm:border-r border-stone-100 last:border-r-0 p-4">
-                                <h3 className="text-center font-bold text-stone-800 mb-4">{day}</h3>
-                                <div className="space-y-3 min-h-[100px]">
-                                    {weeklySchedule[day].length > 0 ? (
-                                        weeklySchedule[day].map(event => (
-                                            <div key={event.name} className="bg-sky-50 text-sky-800 rounded-lg p-3 text-center transition-transform hover:scale-105">
-                                                <p className="font-bold text-sm">{event.name}</p>
-                                                <p className="text-lg font-medium">{event.time}</p>
-                                                {event.note && <p className="text-xs opacity-75 mt-1">{event.note}</p>}
+                <div className="mt-16 max-w-4xl mx-auto">
+                    <div className="space-y-8">
+                        {Object.entries(weeklySchedule).map(([day, events]) => (
+                            <div key={day} className="flex flex-col md:flex-row gap-6 md:gap-8">
+                                <div className="md:w-32 text-left md:text-center">
+                                    <h3 className="text-xl font-bold text-stone-800">{day}</h3>
+                                </div>
+                                <div className="flex-1 space-y-4 border-l-2 border-stone-200 pl-6 md:pl-8">
+                                    {events.map(event => (
+                                        <div key={event.name} className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="bg-[#2a3d57]/10 text-[#2a3d57] p-2 rounded-full">{event.icon}</div>
+                                                    <div>
+                                                        <p className="font-bold text-stone-700">{event.name}</p>
+                                                        {event.note && <p className="text-xs text-stone-500">{event.note}</p>}
+                                                    </div>
+                                                </div>
+                                                <p className="text-lg font-bold text-[#2a3d57]">{event.time}</p>
                                             </div>
-                                        ))
-                                    ) : ( <div className="flex items-center justify-center h-full"><p className="text-sm text-stone-400">-</p></div> )}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         ))}
@@ -223,6 +229,7 @@ const ScheduleSection = () => {
         </section>
     );
 };
+
 
 // Componente de Localização
 const LocationSection = ({ address, phone, apiKey }) => {
@@ -234,16 +241,16 @@ const LocationSection = ({ address, phone, apiKey }) => {
                     <div>
                         <h2 className="text-3xl font-bold text-stone-900 sm:text-4xl">Visite-nos</h2>
                         <p className="mt-4 text-xl text-stone-600">Adoraríamos que você se juntasse a nós em um de nossos cultos.</p>
-                        <div className="mt-8 space-y-6 border-l-4 border-sky-400 pl-6">
+                        <div className="mt-8 space-y-6 border-l-4 border-[#2a3d57] pl-6">
                             <div className="flex items-start">
-                                <MapPin className="h-6 w-6 text-sky-500 mt-1 flex-shrink-0" />
+                                <MapPin className="h-6 w-6 text-[#2a3d57] mt-1 flex-shrink-0" />
                                 <div className="ml-4">
                                     <h3 className="text-lg font-medium text-stone-900">Endereço</h3>
                                     <p className="mt-1 text-base text-stone-600">{address}</p>
                                 </div>
                             </div>
                             <div className="flex items-start">
-                                <Phone className="h-6 w-6 text-sky-500 mt-1 flex-shrink-0" />
+                                <Phone className="h-6 w-6 text-[#2a3d57] mt-1 flex-shrink-0" />
                                 <div className="ml-4">
                                     <h3 className="text-lg font-medium text-stone-900">Telefone</h3>
                                     <p className="mt-1 text-base text-stone-600">{phone}</p>
@@ -267,7 +274,7 @@ const MinistriesSection = ({ ministries, activeTab, setActiveTab }) => {
         <section id="ministries" className="py-20 sm:py-28 bg-stone-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="text-base font-semibold text-sky-600 tracking-wider uppercase">Envolva-se</h2>
+                    <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">Envolva-se</h2>
                     <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Nossos Ministérios</p>
                     <p className="mt-4 text-lg text-stone-600">Encontre o seu lugar em nossa Igreja. Temos diversos departamentos atuando para o crescimento do Reino de Deus.</p>
                 </div>
@@ -276,7 +283,7 @@ const MinistriesSection = ({ ministries, activeTab, setActiveTab }) => {
                         <ul className="space-y-2">
                             {ministries.map((ministry) => (
                                 <li key={ministry.id}>
-                                    <a href={`#${ministry.id}`} onClick={(e) => { e.preventDefault(); setActiveTab(ministry.id); }} className={`w-full flex items-center gap-3 p-4 rounded-lg text-left font-semibold transition-all duration-200 ${activeTab === ministry.id ? 'bg-sky-500 text-white shadow-lg' : 'bg-white hover:bg-sky-50 hover:text-sky-700 text-stone-700'}`}>
+                                    <a href={`#${ministry.id}`} onClick={(e) => { e.preventDefault(); setActiveTab(ministry.id); }} className={`w-full flex items-center gap-3 p-4 rounded-lg text-left font-semibold transition-all duration-200 ${activeTab === ministry.id ? 'bg-[#2a3d57] text-white shadow-lg' : 'bg-white hover:bg-[#2a3d57]/10 hover:text-[#2a3d57] text-stone-700'}`}>
                                         {ministry.icon}
                                         <span>{ministry.name}</span>
                                     </a>
@@ -290,7 +297,7 @@ const MinistriesSection = ({ ministries, activeTab, setActiveTab }) => {
                                 <h3 className="text-3xl font-bold text-stone-900">{activeMinistry.name}</h3>
                                 <p className="mt-4 text-lg text-stone-600">Aqui teremos a descrição sobre o ministério {activeMinistry.name}. Fale sobre os objetivos, atividades, como participar e quem são os líderes.</p>
                                 <p className="mt-4 text-lg text-stone-600">Podemos adicionar fotos, vídeos e informações de contato específicas para este departamento.</p>
-                                <a href="#" className="mt-6 inline-block bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all duration-300">Saber Mais</a>
+                                <a href="#" className="mt-6 inline-block bg-[#2a3d57] hover:bg-[#202e42] text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all duration-300">Saber Mais</a>
                             </div>
                         )}
                     </div>
@@ -307,7 +314,7 @@ const CongregationsSection = () => (
             <h2 className="text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Nossas Congregações</h2>
             <p className="mt-4 max-w-2xl mx-auto text-xl text-stone-600">Explore o mapa de nossas congregações e encontre uma igreja perto de você.</p>
             <div className="mt-12 rounded-2xl shadow-xl overflow-hidden">
-                <iframe src="https://www.google.com/maps/d/embed?mid=1flrE81F-sZrBQPlVQa1FiWtzpOVutAY&ehbc=2E312F" className="w-full h-96 md:h-[600px]" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1rURiewtiWetlNdZPz8IziCAUJVFF35Q&ehbc=2E312F" className="w-full h-96 md:h-[600px]" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </section>
@@ -315,7 +322,7 @@ const CongregationsSection = () => (
 
 // Componente do Rodapé (DESIGN MELHORADO)
 const Footer = ({ logoUrl, address, phone, socialLinks, setPage, setScrollToId }) => (
-  <footer className="bg-slate-900 text-stone-300 border-t-4 border-sky-500">
+  <footer className="bg-slate-900 text-stone-300 border-t-4 border-[#2a3d57]">
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-1 flex flex-col items-center md:items-start">
@@ -326,10 +333,10 @@ const Footer = ({ logoUrl, address, phone, socialLinks, setPage, setScrollToId }
         <div>
           <h3 className="text-lg font-semibold text-white">Navegação</h3>
           <ul className="mt-4 space-y-2">
-            <li><a href="#" onClick={(e) => {e.preventDefault(); setPage('home'); setScrollToId(null);}} className="text-stone-400 hover:text-sky-400 transition-colors">Início</a></li>
-            <li><a href="#" onClick={(e) => {e.preventDefault(); setPage('institutional');}} className="text-stone-400 hover:text-sky-400 transition-colors">Institucional</a></li>
-            <li><a href="#ministries" onClick={(e) => {e.preventDefault(); setPage('home'); setScrollToId('ministries');}} className="text-stone-400 hover:text-sky-400 transition-colors">Ministérios</a></li>
-            <li><a href="#" onClick={(e) => {e.preventDefault(); setPage('events');}} className="text-stone-400 hover:text-sky-400 transition-colors">Eventos</a></li>
+            <li><a href="#" onClick={(e) => {e.preventDefault(); setPage('home'); setScrollToId(null);}} className="text-stone-400 hover:text-white transition-colors">Início</a></li>
+            <li><a href="#" onClick={(e) => {e.preventDefault(); setPage('institutional');}} className="text-stone-400 hover:text-white transition-colors">Institucional</a></li>
+            <li><a href="#ministries" onClick={(e) => {e.preventDefault(); setPage('home'); setScrollToId('ministries');}} className="text-stone-400 hover:text-white transition-colors">Ministérios</a></li>
+            <li><a href="#" onClick={(e) => {e.preventDefault(); setPage('events');}} className="text-stone-400 hover:text-white transition-colors">Eventos</a></li>
           </ul>
         </div>
 
@@ -350,8 +357,8 @@ const Footer = ({ logoUrl, address, phone, socialLinks, setPage, setScrollToId }
         <div>
           <h3 className="text-lg font-semibold text-white">Redes Sociais</h3>
           <div className="flex items-center gap-4 mt-4">
-            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-full text-stone-400 hover:text-white hover:bg-sky-600 transition-all"><span className="sr-only">Instagram</span><Instagram size={24} /></a>
-            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-full text-stone-400 hover:text-white hover:bg-sky-600 transition-all"><span className="sr-only">Facebook</span><Facebook size={24} /></a>
+            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-full text-stone-400 hover:text-white hover:bg-[#2a3d57] transition-all"><span className="sr-only">Instagram</span><Instagram size={24} /></a>
+            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-full text-stone-400 hover:text-white hover:bg-[#2a3d57] transition-all"><span className="sr-only">Facebook</span><Facebook size={24} /></a>
           </div>
         </div>
       </div>
@@ -403,10 +410,10 @@ const InstitutionalPage = ({ logoUrl }) => {
     const renderContent = () => {
         const president = diretoria.find(m => m.role === 'Presidente');
         switch (activeTab) {
-            case 'diretoria': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-8">Diretoria</h3> <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> {diretoria.map(membro => ( <div key={membro.name} className="bg-stone-50 p-6 rounded-2xl text-center shadow-lg hover:shadow-xl transition-shadow duration-300"> <img src={membro.imageUrl} alt={`Foto de ${membro.name}`} className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-white shadow-md" onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/256x256/cccccc/969696?text=Foto'; }} /> <p className="font-bold text-sky-700">{membro.role}</p> <p className="text-lg font-semibold text-stone-800 mt-1">{membro.name}</p> </div> ))} </div> </div> );
-            case 'palavra': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-6">Palavra do Presidente</h3> <div className="prose prose-lg max-w-none text-stone-700"> <blockquote className="border-l-4 border-sky-500 pl-4 italic"> “Mas nós perseveraremos na oração e no ministério da palavra.” At 6.4 </blockquote> <p>Dirijo-me aos queridos irmãos com muita alegria saudando a todos com nossa costumeira e calorosa saudação assembleiana: A Paz do Senhor Jesus, nosso Senhor e Salvador.</p> <p>Enfrentamos um 2024 de muitos desafios, experimentamos situações novas que jamais imaginaríamos passar, mas em tudo fomos vencedores na pessoa bendita de Cristo. Agora, as aflições de antes e de ontem não podem mais nos alcançar, por isso disse o Apóstolo Paulo “deixando as coisas que para trás ficam, avanço para o alvo”. Diante disso, o que temos é a cada dia a oportunidade nova e abençoada que Deus nos dá de viver e vivendo, servir a Ele e a sua Obra.</p> <p>Em 2024 nosso lema foi focado na Palavra de Deus – a Santa Bíblia. Em 2025 continuaremos perseverando na Palavra sem descuidar das outras funções principais da Igreja de Cristo na terra, como a adoração verdadeira, o culto, a fidelidade, as virtudes bíblicas, a evangelização, a missão, os trabalhos sociais e as visitas aos necessitados através da Capelania e obreiros da Igreja em todo o campo da IEADSM.</p> <p>Prossigamos, sabendo que nosso descanso e coroação não é aqui, mas está reservado um dia para que a Igreja de Cristo receba das mãos do seu Senhor o seu galardão.</p> <p>Deixo minha palavra de orientação e aconselhamento a todos os obreiros, esposas e membros da IEADSM: vamos nos fortalecer naquilo que realmente edifica que é a Palavra de Deus e servir a Deus cada dia mais com inteireza de coração, pois estamos muito perto do grande dia da Igreja.</p> <p>Fortalecei-vos uns aos outros! Vamos chorar com os que choram, nos alegrar com os que se alegram e continuar nos quatro cantos de Santa Maria dizendo que Jesus Cristo é o Senhor, que Ele salva, cura, batiza com o Espírito Santo e brevemente vai voltar para buscar a sua Igreja.</p> <p>Por fim desejo a todos os queridos irmãos um 2025 abençoado em todos os sentidos da vossa vida e que nossa igreja possa crescer para a glória de Deus, sabendo que todos são importantes para o reino de Deus.</p> <div className="mt-12 flex justify-end items-center gap-4 not-prose"> <div className="text-right"> <p className="font-bold">Pr. Moisés Lamberty</p> <p className="text-sm">Presidente da Igreja Evangélica Assembleia de Deus de Santa Maria - RS</p> </div> <img src={president.imageUrl} alt={`Foto de ${president.name}`} className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" /> </div> </div> </div> );
+            case 'diretoria': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-8">Diretoria</h3> <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> {diretoria.map(membro => ( <div key={membro.name} className="bg-stone-50 p-6 rounded-2xl text-center shadow-lg hover:shadow-xl transition-shadow duration-300"> <img src={membro.imageUrl} alt={`Foto de ${membro.name}`} className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-white shadow-md" onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/256x256/cccccc/969696?text=Foto'; }} /> <p className="font-bold text-[#2a3d57]">{membro.role}</p> <p className="text-lg font-semibold text-stone-800 mt-1">{membro.name}</p> </div> ))} </div> </div> );
+            case 'palavra': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-6">Palavra do Presidente</h3> <div className="prose prose-lg max-w-none text-stone-700"> <blockquote className="border-l-4 border-[#2a3d57] pl-4 italic"> “Mas nós perseveraremos na oração e no ministério da palavra.” At 6.4 </blockquote> <p>Dirijo-me aos queridos irmãos com muita alegria saudando a todos com nossa costumeira e calorosa saudação assembleiana: A Paz do Senhor Jesus, nosso Senhor e Salvador.</p> <p>Enfrentamos um 2024 de muitos desafios, experimentamos situações novas que jamais imaginaríamos passar, mas em tudo fomos vencedores na pessoa bendita de Cristo. Agora, as aflições de antes e de ontem não podem mais nos alcançar, por isso disse o Apóstolo Paulo “deixando as coisas que para trás ficam, avanço para o alvo”. Diante disso, o que temos é a cada dia a oportunidade nova e abençoada que Deus nos dá de viver e vivendo, servir a Ele e a sua Obra.</p> <p>Em 2024 nosso lema foi focado na Palavra de Deus – a Santa Bíblia. Em 2025 continuaremos perseverando na Palavra sem descuidar das outras funções principais da Igreja de Cristo na terra, como a adoração verdadeira, o culto, a fidelidade, as virtudes bíblicas, a evangelização, a missão, os trabalhos sociais e as visitas aos necessitados através da Capelania e obreiros da Igreja em todo o campo da IEADSM.</p> <p>Prossigamos, sabendo que nosso descanso e coroação não é aqui, mas está reservado um dia para que a Igreja de Cristo receba das mãos do seu Senhor o seu galardão.</p> <p>Deixo minha palavra de orientação e aconselhamento a todos os obreiros, esposas e membros da IEADSM: vamos nos fortalecer naquilo que realmente edifica que é a Palavra de Deus e servir a Deus cada dia mais com inteireza de coração, pois estamos muito perto do grande dia da Igreja.</p> <p>Fortalecei-vos uns aos outros! Vamos chorar com os que choram, nos alegrar com os que se alegram e continuar nos quatro cantos de Santa Maria dizendo que Jesus Cristo é o Senhor, que Ele salva, cura, batiza com o Espírito Santo e brevemente vai voltar para buscar a sua Igreja.</p> <p>Por fim desejo a todos os queridos irmãos um 2025 abençoado em todos os sentidos da vossa vida e que nossa igreja possa crescer para a glória de Deus, sabendo que todos são importantes para o reino de Deus.</p> <div className="mt-12 flex justify-end items-center gap-4 not-prose"> <div className="text-right"> <p className="font-bold">Pr. Moisés Lamberty</p> <p className="text-sm">Presidente da Igreja Evangélica Assembleia de Deus de Santa Maria - RS</p> </div> <img src={president.imageUrl} alt={`Foto de ${president.name}`} className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" /> </div> </div> </div> );
             case 'historia': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-6">Nossa História</h3> <p className="text-lg text-stone-600"> A história da nossa igreja é uma jornada de fé, perseverança e da manifestação do poder de Deus. Desde a sua fundação, temos visto vidas transformadas e a comunidade abençoada. </p> <p className="mt-4 text-lg text-stone-600"> (Esta secção será preenchida com a história detalhada da Igreja Evangélica Assembleia de Deus de Santa Maria/RS.) </p> </div> );
-            case 'assessorias': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-8">Assessorias da Presidência</h3> <div className="space-y-8"> {Object.entries(assessorias).map(([title, members]) => ( <div key={title}> <h4 className="text-xl font-bold text-sky-800 border-b-2 border-sky-200 pb-2 mb-4">{title}</h4> <ul className="space-y-2"> {members.map(member => ( <li key={member.name} className="flex items-baseline"> {member.role && <span className="font-semibold w-40 flex-shrink-0 text-stone-600">{member.role}:</span>} <span className="text-stone-800">{member.name}</span> </li> ))} </ul> </div> ))} </div> </div> );
+            case 'assessorias': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-8">Assessorias da Presidência</h3> <div className="space-y-8"> {Object.entries(assessorias).map(([title, members]) => ( <div key={title}> <h4 className="text-xl font-bold text-[#202e42] border-b-2 border-[#2a3d57]/20 pb-2 mb-4">{title}</h4> <ul className="space-y-2"> {members.map(member => ( <li key={member.name} className="flex items-baseline"> {member.role && <span className="font-semibold w-40 flex-shrink-0 text-stone-600">{member.role}:</span>} <span className="text-stone-800">{member.name}</span> </li> ))} </ul> </div> ))} </div> </div> );
             default: return null;
         }
     };
@@ -414,13 +421,13 @@ const InstitutionalPage = ({ logoUrl }) => {
         <div className="bg-white py-20 sm:py-28">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-3xl mx-auto">
-                    <img src={logoUrl} alt="Logo" className="h-24 w-auto mx-auto mb-6" />
+                    <img src={logoUrl} alt="Logo" className="h-20 w-auto mx-auto mb-6" />
                     <p className="text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Institucional</p>
                 </div>
                 <div className="mt-16 flex flex-col lg:flex-row gap-8 lg:gap-12 max-w-7xl mx-auto">
                     <div className="lg:w-1/4 flex-shrink-0">
                         <ul className="space-y-2">
-                            {tabs.map((tab) => ( <li key={tab.id}> <button onClick={() => setActiveTab(tab.id)} className={`w-full flex items-center gap-3 p-4 rounded-lg text-left font-semibold transition-all duration-200 ${activeTab === tab.id ? 'bg-sky-500 text-white shadow-lg' : 'bg-white hover:bg-sky-50 hover:text-sky-700 text-stone-700'}`}> {tab.icon} <span>{tab.name}</span> </button> </li> ))}
+                            {tabs.map((tab) => ( <li key={tab.id}> <button onClick={() => setActiveTab(tab.id)} className={`w-full flex items-center gap-3 p-4 rounded-lg text-left font-semibold transition-all duration-200 ${activeTab === tab.id ? 'bg-[#2a3d57] text-white shadow-lg' : 'bg-white hover:bg-[#2a3d57]/10 hover:text-[#2a3d57] text-stone-700'}`}> {tab.icon} <span>{tab.name}</span> </button> </li> ))}
                         </ul>
                     </div>
                     <div className="lg:w-3/4 bg-stone-50 p-8 md:p-12 rounded-2xl shadow-inner"> {renderContent()} </div>
@@ -430,7 +437,7 @@ const InstitutionalPage = ({ logoUrl }) => {
     );
 };
 
-
+// PÁGINA DE EVENTOS
 const EventsPage = () => {
   const pdfUrl = "/agendaieadsm.pdf"; 
 
@@ -438,7 +445,7 @@ const EventsPage = () => {
     <div className="bg-stone-50 py-20 sm:py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-base font-semibold text-sky-600 tracking-wider uppercase">
+          <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">
             Agenda da Igreja
           </h2>
           <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">
@@ -462,6 +469,7 @@ const EventsPage = () => {
 };
 
 
+
 // PÁGINA DE LOGIN
 const LoginPage = () => (
     <div className="bg-white py-20 sm:py-28">
@@ -478,7 +486,7 @@ const ContactPage = ({ address, phone }) => (
     <div className="bg-stone-50 py-20 sm:py-28">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
-                <h2 className="text-base font-semibold text-sky-600 tracking-wider uppercase">Fale Conosco</h2>
+                <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">Fale Conosco</h2>
                 <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Entre em Contato</p>
                 <p className="mt-4 text-lg text-stone-600">Estamos aqui para ajudar. Envie-nos uma mensagem ou visite-nos.</p>
             </div>
@@ -488,15 +496,15 @@ const ContactPage = ({ address, phone }) => (
                         <h3 className="text-xl font-bold text-stone-900">Informações de Contato</h3>
                         <ul className="mt-4 space-y-4 text-stone-600">
                              <li className="flex items-start gap-3">
-                                <MapPin size={20} className="flex-shrink-0 mt-1 text-sky-600"/>
+                                <MapPin size={20} className="flex-shrink-0 mt-1 text-[#2a3d57]"/>
                                 <span>{address}</span>
                             </li>
                             <li className="flex items-start gap-3">
-                                <Phone size={20} className="flex-shrink-0 mt-1 text-sky-600"/>
+                                <Phone size={20} className="flex-shrink-0 mt-1 text-[#2a3d57]"/>
                                 <span>{phone}</span>
                             </li>
                              <li className="flex items-start gap-3">
-                                <Mail size={20} className="flex-shrink-0 mt-1 text-sky-600"/>
+                                <Mail size={20} className="flex-shrink-0 mt-1 text-[#2a3d57]"/>
                                 <span>adsantamariars@gmail.com</span>
                             </li>
                         </ul>
@@ -507,21 +515,21 @@ const ContactPage = ({ address, phone }) => (
                     <form className="mt-6 space-y-4">
                         <div>
                             <label htmlFor="name" className="sr-only">Nome</label>
-                            <input type="text" name="name" id="name" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Seu Nome" />
+                            <input type="text" name="name" id="name" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-[#2a3d57] focus:border-[#2a3d57] placeholder-stone-500" placeholder="Seu Nome" />
                         </div>
                          <div>
                             <label htmlFor="email" className="sr-only">Email</label>
-                            <input type="email" name="email" id="email" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Seu Email" />
+                            <input type="email" name="email" id="email" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-[#2a3d57] focus:border-[#2a3d57] placeholder-stone-500" placeholder="Seu Email" />
                         </div>
                          <div>
                             <label htmlFor="subject" className="sr-only">Assunto</label>
-                            <input type="text" name="subject" id="subject" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Assunto" />
+                            <input type="text" name="subject" id="subject" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-[#2a3d57] focus:border-[#2a3d57] placeholder-stone-500" placeholder="Assunto" />
                         </div>
                         <div>
                             <label htmlFor="message" className="sr-only">Mensagem</label>
-                            <textarea name="message" id="message" rows="4" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Sua Mensagem"></textarea>
+                            <textarea name="message" id="message" rows="4" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-[#2a3d57] focus:border-[#2a3d57] placeholder-stone-500" placeholder="Sua Mensagem"></textarea>
                         </div>
-                        <button type="submit" className="w-full flex items-center justify-center gap-2 bg-sky-500 text-white font-semibold px-4 py-3 rounded-lg shadow-sm hover:bg-sky-600 transition-colors duration-300">
+                        <button type="submit" className="w-full flex items-center justify-center gap-2 bg-[#2a3d57] text-white font-semibold px-4 py-3 rounded-lg shadow-sm hover:bg-[#202e42] transition-colors duration-300">
                             Enviar Mensagem
                         </button>
                     </form>
