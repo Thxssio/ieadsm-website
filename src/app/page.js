@@ -1,6 +1,12 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, Phone, Users, Menu, X, Instagram, Facebook, Map, Feather, BookOpen, Music, Globe2, Megaphone, Smile, Hand, Star, CalendarDays, BookMarked, Heart, UserCheck, Handshake, Stethoscope, Speaker, Radio, ChevronDown, Building, MessageSquare, Book, Briefcase, HardHat, LogIn, Mail } from 'lucide-react';
+import dynamic from "next/dynamic";
+
+const PdfFlipbook = dynamic(() => import("../components/PdfFlipbook"), {
+  ssr: false,
+});
+
 
 // Componente auxiliar para Ícones com novo estilo
 const IconWrapper = ({ children }) => (
@@ -157,16 +163,18 @@ const HeroSection = () => (
 // Componente da Mensagem de Boas-Vindas (NOVO DESIGN)
 const WelcomeMessage = () => {
   return (
-    <section className="mx-auto max-w-3xl px-6 py-20 text-center bg-white">
-      <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-stone-900">
-        Um Lugar para Pertencer
-      </h1>
-      <blockquote className="mt-6">
-        <p className="text-lg md:text-xl leading-relaxed text-stone-600">
-          “Portanto, vocês já não são estrangeiros nem forasteiros, mas concidadãos dos santos e <strong>membros da família de Deus</strong>.”
-        </p>
-        <footer className="mt-4 text-sm text-stone-500">— Efésios 2:19 (NVI)</footer>
-      </blockquote>
+    <section className="bg-white py-20">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-stone-900">
+                Um Lugar para Pertencer
+            </h1>
+            <blockquote className="mt-6">
+                <p className="text-lg md:text-xl leading-relaxed text-stone-600">
+                “Portanto, vocês já não são estrangeiros nem forasteiros, mas concidadãos dos santos e <strong>membros da família de Deus</strong>.”
+                </p>
+                <footer className="mt-4 text-sm text-stone-500">— Efésios 2:19 (NVI)</footer>
+            </blockquote>
+        </div>
     </section>
   );
 };
@@ -374,8 +382,13 @@ const InstitutionalPage = ({ logoUrl }) => {
         { id: 'historia', name: "Nossa História", icon: <Book size={20} /> }, { id: 'assessorias', name: "Assessorias da Presidência", icon: <Briefcase size={20} /> },
     ];
     const diretoria = [
-        { role: "Presidente", name: "PR. MOISÉS LAMBERTY" }, { role: "1º Vice-Presidente", name: "PR. JOEL JARDIM" }, { role: "2º Vice-Presidente", name: "PR. JOSÉ DE ÁVILA" },
-        { role: "1º Secretário", name: "EV. PAULO MUCENECKI" }, { role: "2º Secretário", name: "EV. ADONIR MARQUES" }, { role: "1º Tesoureiro", name: "EV. EMERSON ROLIM" }, { role: "2º Tesoureiro", name: "EV. MAURICIO HILLESHHEIM" },
+        { role: "Presidente", name: "PR. MOISÉS LAMBERTY", imageUrl: "/directors/Moises.png" },
+        { role: "1º Vice-Presidente", name: "PR. JOEL JARDIM", imageUrl: "/directors/Joel.png" },
+        { role: "2º Vice-Presidente", name: "PR. JOSÉ DE ÁVILA", imageUrl: "/directors/José.png" },
+        { role: "1º Secretário", name: "EV. PAULO MUCENECKI", imageUrl: "/directors/Paulo.png" },
+        { role: "2º Secretário", name: "EV. ADONIR MARQUES", imageUrl: "/directors/Adonir.png" },
+        { role: "1º Tesoureiro", name: "EV. EMERSON ROLIM", imageUrl: "/directors/Emerson.png" },
+        { role: "2º Tesoureiro", name: "EV. MAURICIO HILLESHHEIM", imageUrl: "/directors/Mauricio.png" },
     ];
     const assessorias = {
         "Comissão de Exame de Contas": [ { role: "Coordenadora", name: "Eloise Andrade" }, { role: "Relator", name: "Heverton Hautrive" }, { role: "Secretário", name: "Nilton Rosa Lopes" }, { role: "Membro", name: "Zípora de Oliveira Campos Nunes" }, { role: "Membro", name: "Rosaura Elisabeth Severo" }, { role: "Membro", name: "Marta Martins" }, ],
@@ -388,11 +401,12 @@ const InstitutionalPage = ({ logoUrl }) => {
         "Conselho Ministerial": [ { role: "", name: "Pr. Renato Charão" }, { role: "", name: "Pr. José de Ávila" }, { role: "", name: "Pr. Alcindo Costa" }, ]
     };
     const renderContent = () => {
+        const president = diretoria.find(m => m.role === 'Presidente');
         switch (activeTab) {
-            case 'diretoria': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-6">Diretoria</h3> <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {diretoria.map(membro => ( <div key={membro.name} className="bg-stone-50 p-4 rounded-lg"> <p className="font-bold text-sky-700">{membro.role}</p> <p className="text-stone-800">{membro.name}</p> </div> ))} </div> </div> );
-            case 'palavra': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-6">Palavra do Presidente</h3> <div className="prose prose-lg max-w-none text-stone-700"> <blockquote className="border-l-4 border-sky-500 pl-4 italic"> “Mas nós perseveraremos na oração e no ministério da palavra.” At 6.4 </blockquote> <p>Dirijo-me aos queridos irmãos com muita alegria saudando a todos com nossa costumeira e calorosa saudação assembleiana: A Paz do Senhor Jesus, nosso Senhor e Salvador.</p> <p>Enfrentamos um 2024 de muitos desafios, experimentamos situações novas que jamais imaginaríamos passar, mas em tudo fomos vencedores na pessoa bendita de Cristo. Agora, as aflições de antes e de ontem não podem mais nos alcançar, por isso disse o Apóstolo Paulo “deixando as coisas que para trás ficam, avanço para o alvo”. Diante disso, o que temos é a cada dia a oportunidade nova e abençoada que Deus nos dá de viver e vivendo, servir a Ele e a sua Obra.</p> <p>Em 2024 nosso lema foi focado na Palavra de Deus – a Santa Bíblia. Em 2025 continuaremos perseverando na Palavra sem descuidar das outras funções principais da Igreja de Cristo na terra, como a adoração verdadeira, o culto, a fidelidade, as virtudes bíblicas, a evangelização, a missão, os trabalhos sociais e as visitas aos necessitados através da Capelania e obreiros da Igreja em todo o campo da IEADSM.</p> <p>Prossigamos, sabendo que nosso descanso e coroação não é aqui, mas está reservado um dia para que a Igreja de Cristo receba das mãos do seu Senhor o seu galardão.</p> <p>Deixo minha palavra de orientação e aconselhamento a todos os obreiros, esposas e membros da IEADSM: vamos nos fortalecer naquilo que realmente edifica que é a Palavra de Deus e servir a Deus cada dia mais com inteireza de coração, pois estamos muito perto do grande dia da Igreja.</p> <p>Fortalecei-vos uns aos outros! Vamos chorar com os que choram, nos alegrar com os que se alegram e continuar nos quatro cantos de Santa Maria dizendo que Jesus Cristo é o Senhor, que Ele salva, cura, batiza com o Espírito Santo e brevemente vai voltar para buscar a sua Igreja.</p> <p>Por fim desejo a todos os queridos irmãos um 2025 abençoado em todos os sentidos da vossa vida e que nossa igreja possa crescer para a glória de Deus, sabendo que todos são importantes para o reino de Deus.</p> <div className="mt-8 text-right not-prose"> <p className="font-bold">Pr. Moisés Lamberty</p> <p className="text-sm">Presidente da Igreja Evangélica Assembleia de Deus de Santa Maria - RS</p> </div> </div> </div> );
+            case 'diretoria': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-8">Diretoria</h3> <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> {diretoria.map(membro => ( <div key={membro.name} className="bg-stone-50 p-6 rounded-2xl text-center shadow-lg hover:shadow-xl transition-shadow duration-300"> <img src={membro.imageUrl} alt={`Foto de ${membro.name}`} className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-white shadow-md" onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/256x256/cccccc/969696?text=Foto'; }} /> <p className="font-bold text-sky-700">{membro.role}</p> <p className="text-lg font-semibold text-stone-800 mt-1">{membro.name}</p> </div> ))} </div> </div> );
+            case 'palavra': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-6">Palavra do Presidente</h3> <div className="prose prose-lg max-w-none text-stone-700"> <blockquote className="border-l-4 border-sky-500 pl-4 italic"> “Mas nós perseveraremos na oração e no ministério da palavra.” At 6.4 </blockquote> <p>Dirijo-me aos queridos irmãos com muita alegria saudando a todos com nossa costumeira e calorosa saudação assembleiana: A Paz do Senhor Jesus, nosso Senhor e Salvador.</p> <p>Enfrentamos um 2024 de muitos desafios, experimentamos situações novas que jamais imaginaríamos passar, mas em tudo fomos vencedores na pessoa bendita de Cristo. Agora, as aflições de antes e de ontem não podem mais nos alcançar, por isso disse o Apóstolo Paulo “deixando as coisas que para trás ficam, avanço para o alvo”. Diante disso, o que temos é a cada dia a oportunidade nova e abençoada que Deus nos dá de viver e vivendo, servir a Ele e a sua Obra.</p> <p>Em 2024 nosso lema foi focado na Palavra de Deus – a Santa Bíblia. Em 2025 continuaremos perseverando na Palavra sem descuidar das outras funções principais da Igreja de Cristo na terra, como a adoração verdadeira, o culto, a fidelidade, as virtudes bíblicas, a evangelização, a missão, os trabalhos sociais e as visitas aos necessitados através da Capelania e obreiros da Igreja em todo o campo da IEADSM.</p> <p>Prossigamos, sabendo que nosso descanso e coroação não é aqui, mas está reservado um dia para que a Igreja de Cristo receba das mãos do seu Senhor o seu galardão.</p> <p>Deixo minha palavra de orientação e aconselhamento a todos os obreiros, esposas e membros da IEADSM: vamos nos fortalecer naquilo que realmente edifica que é a Palavra de Deus e servir a Deus cada dia mais com inteireza de coração, pois estamos muito perto do grande dia da Igreja.</p> <p>Fortalecei-vos uns aos outros! Vamos chorar com os que choram, nos alegrar com os que se alegram e continuar nos quatro cantos de Santa Maria dizendo que Jesus Cristo é o Senhor, que Ele salva, cura, batiza com o Espírito Santo e brevemente vai voltar para buscar a sua Igreja.</p> <p>Por fim desejo a todos os queridos irmãos um 2025 abençoado em todos os sentidos da vossa vida e que nossa igreja possa crescer para a glória de Deus, sabendo que todos são importantes para o reino de Deus.</p> <div className="mt-12 flex justify-end items-center gap-4 not-prose"> <div className="text-right"> <p className="font-bold">Pr. Moisés Lamberty</p> <p className="text-sm">Presidente da Igreja Evangélica Assembleia de Deus de Santa Maria - RS</p> </div> <img src={president.imageUrl} alt={`Foto de ${president.name}`} className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" /> </div> </div> </div> );
             case 'historia': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-6">Nossa História</h3> <p className="text-lg text-stone-600"> A história da nossa igreja é uma jornada de fé, perseverança e da manifestação do poder de Deus. Desde a sua fundação, temos visto vidas transformadas e a comunidade abençoada. </p> <p className="mt-4 text-lg text-stone-600"> (Esta secção será preenchida com a história detalhada da Igreja Evangélica Assembleia de Deus de Santa Maria/RS.) </p> </div> );
-            case 'assessorias': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-8">Assessorias da Presidência</h3> <div className="space-y-8"> {Object.entries(assessorias).map(([title, members]) => ( <div key={title}> <h4 className="text-xl font-bold text-sky-800 border-b-2 border-sky-200 pb-2 mb-4">{title}</h4> <ul className="space-y-2"> {members.map(member => ( <li key={member.name} className="flex items-baseline"> {member.role && <span className="font-semibold w-40 flex-shrink-0">{member.role}:</span>} <span className="text-stone-700">{member.name}</span> </li> ))} </ul> </div> ))} </div> </div> );
+            case 'assessorias': return ( <div> <h3 className="text-3xl font-bold text-stone-900 mb-8">Assessorias da Presidência</h3> <div className="space-y-8"> {Object.entries(assessorias).map(([title, members]) => ( <div key={title}> <h4 className="text-xl font-bold text-sky-800 border-b-2 border-sky-200 pb-2 mb-4">{title}</h4> <ul className="space-y-2"> {members.map(member => ( <li key={member.name} className="flex items-baseline"> {member.role && <span className="font-semibold w-40 flex-shrink-0 text-stone-600">{member.role}:</span>} <span className="text-stone-800">{member.name}</span> </li> ))} </ul> </div> ))} </div> </div> );
             default: return null;
         }
     };
@@ -400,8 +414,8 @@ const InstitutionalPage = ({ logoUrl }) => {
         <div className="bg-white py-20 sm:py-28">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-3xl mx-auto">
-                    <img src={logoUrl} alt="Logo" className="h-16 w-auto mx-auto mb-4" />
-                    <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Institucional</p>
+                    <img src={logoUrl} alt="Logo" className="h-24 w-auto mx-auto mb-6" />
+                    <p className="text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Institucional</p>
                 </div>
                 <div className="mt-16 flex flex-col lg:flex-row gap-8 lg:gap-12 max-w-7xl mx-auto">
                     <div className="lg:w-1/4 flex-shrink-0">
@@ -416,16 +430,37 @@ const InstitutionalPage = ({ logoUrl }) => {
     );
 };
 
-// PÁGINA DE EVENTOS
-const EventsPage = () => (
-    <div className="bg-white py-20 sm:py-28">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <IconWrapper><HardHat size={32} /></IconWrapper>
-            <h2 className="mt-6 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Página de Eventos</h2>
-            <p className="mt-4 text-xl text-stone-600">Esta secção está em desenvolvimento. Volte em breve para novidades!</p>
+
+const EventsPage = () => {
+  const pdfUrl = "/agendaieadsm.pdf"; 
+
+  return (
+    <div className="bg-stone-50 py-20 sm:py-28">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto">
+          <h2 className="text-base font-semibold text-sky-600 tracking-wider uppercase">
+            Agenda da Igreja
+          </h2>
+          <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">
+            Calendário Geral
+          </p>
+          <p className="mt-4 text-lg text-stone-600">
+            Consulte a nossa agenda completa de eventos e atividades.
+          </p>
         </div>
+
+        <div className="mt-16 max-w-5xl mx-auto">
+          <PdfFlipbook
+            fileUrl={pdfUrl}
+            singlePageBreakpoint={768}   // 1 página no mobile, 2 no desktop
+            // bottomGapPx={32}           // ajuste se tiver barra fixa no rodapé
+          />
+        </div>
+      </div>
     </div>
-);
+  );
+};
+
 
 // PÁGINA DE LOGIN
 const LoginPage = () => (
@@ -472,19 +507,19 @@ const ContactPage = ({ address, phone }) => (
                     <form className="mt-6 space-y-4">
                         <div>
                             <label htmlFor="name" className="sr-only">Nome</label>
-                            <input type="text" name="name" id="name" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500" placeholder="Seu Nome" />
+                            <input type="text" name="name" id="name" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Seu Nome" />
                         </div>
                          <div>
                             <label htmlFor="email" className="sr-only">Email</label>
-                            <input type="email" name="email" id="email" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500" placeholder="Seu Email" />
+                            <input type="email" name="email" id="email" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Seu Email" />
                         </div>
                          <div>
                             <label htmlFor="subject" className="sr-only">Assunto</label>
-                            <input type="text" name="subject" id="subject" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500" placeholder="Assunto" />
+                            <input type="text" name="subject" id="subject" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Assunto" />
                         </div>
                         <div>
                             <label htmlFor="message" className="sr-only">Mensagem</label>
-                            <textarea name="message" id="message" rows="4" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500" placeholder="Sua Mensagem"></textarea>
+                            <textarea name="message" id="message" rows="4" className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 placeholder-stone-500" placeholder="Sua Mensagem"></textarea>
                         </div>
                         <button type="submit" className="w-full flex items-center justify-center gap-2 bg-sky-500 text-white font-semibold px-4 py-3 rounded-lg shadow-sm hover:bg-sky-600 transition-colors duration-300">
                             Enviar Mensagem
