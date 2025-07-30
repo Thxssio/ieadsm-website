@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+
 import { ministries } from "./lib/ministries";
 import { churchInfo } from "./lib/churchInfo";
 
@@ -8,7 +13,19 @@ import LocationSection from "./components/sections/home/LocationSection";
 import MinistriesSection from "./components/sections/home/MinistriesSection";
 import CongregationsSection from "./components/sections/home/CongregationsSection";
 
-export default function HomePage() {
+export default function HomeClient() {
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState(ministries[0]?.id);
+
+  // Ao montar/alterar URL, aplica o ?tab= e faz scroll para #ministries
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setActiveTab(tab);
+      document.getElementById("ministries")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [searchParams]);
+
   return (
     <>
       <HeroSection
@@ -27,7 +44,13 @@ export default function HomePage() {
         phone={churchInfo.phone}
       />
 
-      <MinistriesSection ministries={ministries} />
+      {/* Controlado: passa aba ativa para o componente */}
+      <MinistriesSection
+        ministries={ministries}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+
       <CongregationsSection />
     </>
   );
