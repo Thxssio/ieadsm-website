@@ -390,8 +390,11 @@ export default function PdfFlipbook({
 
       {/* Controles */}
       {showUI && (
-        <div className="mt-4 mx-auto w-full max-w-4xl sticky bottom-4 z-20">
+        // Classes de posicionamento removidas. A barra agora é estática.
+        <div className="mt-4 mx-auto w-full max-w-4xl">
           <div className="flex flex-wrap items-center justify-center gap-3 p-2 md:p-3 rounded-2xl bg-white/95 backdrop-blur ring-1 ring-stone-200 shadow-lg">
+            
+            {/* O conteúdo dos controles permanece o mesmo */}
             <button type="button" onClick={prev} className={btn}>
               ◀︎ Anterior
             </button>
@@ -421,10 +424,8 @@ export default function PdfFlipbook({
               ⬇︎ Baixar PDF
             </a>
 
-            {/* quebra de linha no mobile */}
             <div className="w-full h-0 basis-full md:hidden" />
 
-            {/* Busca */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -462,10 +463,10 @@ export default function PdfFlipbook({
                 ›
               </button>
             </form>
+
           </div>
         </div>
       )}
-
       {/* FABs */}
       {showUI && (
         <div className="fixed bottom-20 right-4 md:right-6 z-40 flex flex-col items-center gap-3 transition-opacity duration-200">
