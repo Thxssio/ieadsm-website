@@ -1,5 +1,5 @@
 export default function CongregationsSection({
-  mapUrl = "https://www.google.com/maps/d/u/0/embed?mid=1rURiewtiWetlNdZPz8IziCAUJVFF35Q&ehbc=2E312F",
+  mapUrl = "https://www.google.com/maps/d/u/0/embed?mid=1flrE81F-sZrBQPlVQa1FiWtzpOVutAY&ehbc=2E312F",
   heightClass = "h-96 md:h-[600px]",
 }) {
   return (
