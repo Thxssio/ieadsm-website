@@ -143,12 +143,86 @@ export default function InstitucionalPage() {
         return (
           <div>
             <h3 className="text-3xl font-bold text-stone-900 mb-6">Nossa História</h3>
-            <p className="text-lg text-stone-600">
-              A história da nossa igreja é uma jornada de fé, perseverança e da manifestação do poder de Deus. Desde a sua fundação, temos visto vidas transformadas e a comunidade abençoada.
-            </p>
-            <p className="mt-4 text-lg text-stone-600">
-              (Esta secção será preenchida com a história detalhada da Igreja Evangélica Assembleia de Deus de Santa Maria/RS.)
-            </p>
+            <ul className="relative border-l-2 border-[#2a3d57] ml-4 mt-8 space-y-8">
+              {/* Origem */}
+              <li className="ml-6">
+                <span className="absolute -left-3 top-1 w-6 h-6 bg-[#2a3d57] rounded-full"></span>
+                <time className="block text-sm font-semibold text-[#2a3d57]">1919</time>
+                <h4 className="mt-1 font-semibold text-stone-800">Origem</h4>
+                <p className="text-stone-700">
+                  O Grande Movimento Pentecostal surgiu em várias partes do mundo através de reuniões de oração. Na Suécia,
+                  o Pastor Gustav Nordlund iniciou seu ministério em Lidköping, com 16 irmãos em 18 de janeiro de 1919.
+                </p>
+                <p className="text-stone-700">
+                  Em 1922, Gustav e Hedwig Nordlund foram enviados ao Brasil e, em 12 de abril de 1924, realizaram o primeiro culto
+                  em Porto Alegre, fundando oficialmente a Assembleia de Deus.
+                </p>
+              </li>
+
+              {/* Início – Santa Maria */}
+              <li className="ml-6">
+                <span className="absolute -left-3 top-1 w-6 h-6 bg-[#2a3d57] rounded-full"></span>
+                <time className="block text-sm font-semibold text-[#2a3d57]">1927</time>
+                <h4 className="mt-1 font-semibold text-stone-800">Início – Santa Maria</h4>
+                <p className="text-stone-700">
+                  Em 1927, Gustav, Hedwig e Herbert Nordlund viajaram de trem e a pé até Arroio do Só (Santa Maria), realizando
+                  o primeiro culto na casa de Guiomar Barcellos, que cedeu sua parreira para os cultos.
+                </p>
+              </li>
+
+              {/* Primeiro Batismo */}
+              <li className="ml-6">
+                <span className="absolute -left-3 top-1 w-6 h-6 bg-[#2a3d57] rounded-full"></span>
+                <time className="block text-sm font-semibold text-[#2a3d57]">11/11/1928</time>
+                <h4 className="mt-1 font-semibold text-stone-800">Primeiro Batismo – Santa Maria</h4>
+                <p className="text-stone-700">
+                  O primeiro batismo ocorreu em uma sanga nos fundos da propriedade de Guiomar Barcellos, com pioneiros como
+                  Osmilda Pires e Rosa Pires.
+                </p>
+              </li>
+
+              {/* Leonardo Gonçalves */}
+              <li className="ml-6">
+                <span className="absolute -left-3 top-1 w-6 h-6 bg-[#2a3d57] rounded-full"></span>
+                <time className="block text-sm font-semibold text-[#2a3d57]">1928</time>
+                <h4 className="mt-1 font-semibold text-stone-800">Leonardo Gonçalves</h4>
+                <p className="text-stone-700">
+                  Converter-se em 1928, foi nomeado primeiro obreiro e ajudou a erguer a capela de 1929 em terreno doado por Guiomar.
+                </p>
+              </li>
+
+              {/* Paulo Cruz */}
+              <li className="ml-6">
+                <span className="absolute -left-3 top-1 w-6 h-6 bg-[#2a3d57] rounded-full"></span>
+                <time className="block text-sm font-semibold text-[#2a3d57]">1932</time>
+                <h4 className="mt-1 font-semibold text-stone-800">Paulo Cruz</h4>
+                <p className="text-stone-700">
+                  Em 21 de fevereiro de 1932, Paulo Cruz organizou oficialmente a congregação de Santa Maria como parte de Porto Alegre.
+                </p>
+              </li>
+
+              {/* Missionários e Pastores */}
+              <li className="ml-6">
+                <span className="absolute -left-3 top-1 w-6 h-6 bg-[#2a3d57] rounded-full"></span>
+                <time className="block text-sm font-semibold text-[#2a3d57]">1940–2021</time>
+                <h4 className="mt-1 font-semibold text-stone-800">Missionários e Pastores</h4>
+                <p className="text-stone-700">
+                  De 1940 a 1942, Leonard Pettersen atuou; 1943, Luiz Neves; 1943 a 1980, Orvalino Lemos (autonomia em 1955);
+                  1980–1989, Avelino Maicá; 1989–2008, Elói Rocha; 2008–2014, Domingos Floreni; e, em 2021, Moisés Adriano Lamberty.
+                </p>
+              </li>
+
+              {/* Ebenezer */}
+              <li className="ml-6">
+                <span className="absolute -left-3 top-1 w-6 h-6 bg-[#2a3d57] rounded-full"></span>
+                <time className="block text-sm font-semibold text-[#2a3d57]">Ebenezer</time>
+                <h4 className="mt-1 font-semibold text-stone-800">Ebenezer</h4>
+                <p className="text-stone-700">
+                  Décadas após o primeiro culto, a Assembleia de Deus de Santa Maria estendeu suas raízes por toda a região,
+                  mantendo a missão de levar a Palavra de Deus até o último da terra.
+                </p>
+              </li>
+            </ul>
           </div>
         );
 
@@ -187,7 +261,6 @@ export default function InstitucionalPage() {
     <div className="bg-white py-20 sm:py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
-          <img src={logoUrl} alt="Logo" className="h-20 w-auto mx-auto mb-6" />
           <p className="text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Institucional</p>
         </div>
 

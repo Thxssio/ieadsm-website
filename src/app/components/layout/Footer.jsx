@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { MapPin, Phone, Instagram, Facebook } from "lucide-react";
 
@@ -11,8 +12,11 @@ export default function Footer({ logoUrl, address, phone, socialLinks }) {
             <img
               src={logoUrl}
               alt="Logo"
-              className="h-16 w-auto mb-4"
-              onError={(e) => { e.currentTarget.src = "https://placehold.co/100x40/ffffff/1e293b?text=Logo"; }}
+              className="block h-20 md:h-24 lg:h-28 w-auto mb-4 object-contain"
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://placehold.co/160x80/ffffff/1e293b?text=Logo";
+              }}
             />
             <p className="text-sm text-center md:text-left text-stone-400">
               Um lugar de fé, esperança e amor para toda a família.
@@ -22,13 +26,46 @@ export default function Footer({ logoUrl, address, phone, socialLinks }) {
           <div>
             <h3 className="text-lg font-semibold text-white">Navegação</h3>
             <ul className="mt-4 space-y-2">
-              <li><Link href="/" className="text-stone-400 hover:text-white transition-colors">Início</Link></li>
-              <li><Link href="/institutional" className="text-stone-400 hover:text-white transition-colors">Institucional</Link></li>
-              <li><Link href="/#ministries" className="text-stone-400 hover:text-white transition-colors">Ministérios</Link></li>
-              {/* Troque para /events se a pasta estiver em inglês */}
-              <li><Link href="/eventos" className="text-stone-400 hover:text-white transition-colors">Eventos</Link></li>
-              {/* Troque para /contact se a pasta estiver em inglês */}
-              <li><Link href="/contato" className="text-stone-400 hover:text-white transition-colors">Contato</Link></li>
+              <li>
+                <Link
+                  href="/"
+                  className="text-stone-400 hover:text-white transition-colors"
+                >
+                  Início
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/institutional"
+                  className="text-stone-400 hover:text-white transition-colors"
+                >
+                  Institucional
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#ministries"
+                  className="text-stone-400 hover:text-white transition-colors"
+                >
+                  Ministérios
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/eventos"
+                  className="text-stone-400 hover:text-white transition-colors"
+                >
+                  Eventos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contato"
+                  className="text-stone-400 hover:text-white transition-colors"
+                >
+                  Contato
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -72,7 +109,10 @@ export default function Footer({ logoUrl, address, phone, socialLinks }) {
         </div>
 
         <div className="mt-12 border-t border-slate-800 pt-8 text-center text-sm text-stone-400">
-          <p>© {new Date().getFullYear()} DECOM - TECNOLOGIA DA INFORMAÇÃO. Todos os Direitos Reservados.</p>
+          <p>
+            © {new Date().getFullYear()} DECOM - TECNOLOGIA DA INFORMAÇÃO. Todos
+            os Direitos Reservados.
+          </p>
         </div>
       </div>
     </footer>
