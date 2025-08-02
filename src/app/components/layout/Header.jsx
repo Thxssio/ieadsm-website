@@ -66,7 +66,7 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
                     {ministries.map((m) => (
                       <li key={m.id}>
                         <Link
-                          href={`/?tab=${m.id}#ministries`}
+                          href={`/#ministry-${m.id}`}
                           onClick={() => setIsMinistriesOpen(false)}
                           className="w-full flex items-center gap-3 p-3 rounded-md text-left font-medium text-sm text-stone-700 hover:bg-[#2a3d57]/10 hover:text-[#2a3d57] transition-colors"
                         >
