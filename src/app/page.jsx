@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import HomeClient from "./HomeClient";
 
 export const metadata = {
-  title: "IEADSM — Início",
+  title: "Início | IEADSM",
   description: "Igreja Evangélica Assembleia de Deus de Santa Maria/RS",
 };
 

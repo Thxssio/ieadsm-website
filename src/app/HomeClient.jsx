@@ -18,7 +18,6 @@ export default function HomeClient() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(ministries[0]?.id);
 
-  // Ao montar/alterar URL, aplica o ?tab= e faz scroll para #ministries
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab) {

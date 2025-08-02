@@ -4,7 +4,7 @@ import EmailPasswordForm from "./EmailPasswordForm";
 import SocialButtons from "./SocialButtons";
 
 export const metadata = {
-  title: "Área do Ministro — IEADSM",
+  title: "Área do Ministro | IEADSM",
   description: "Login de ministros.",
 };
 

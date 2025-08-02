@@ -1,7 +1,7 @@
 import EventsViewer from "../components/eventos/EventsViewer";
 
 export const metadata = {
-  title: "Eventos — IEADSM",
+  title: "Eventos | IEADSM",
   description: "Calendário geral de eventos e atividades da igreja.",
 };
 
