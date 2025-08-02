@@ -29,7 +29,7 @@ export default function MinistriesSection({ ministries = [] }) {
   const handleSelect = (id) => {
     const params = new URLSearchParams(search.toString());
     params.set("tab", id);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false }); 
   };
 
   return (
