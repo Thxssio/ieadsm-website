@@ -73,8 +73,7 @@ export const ministries = [
     image: "/default-img.png",
     team: {
       "Supervisor": ["Irmão Samuel Calebe Bandeira"],
-      "Auxiliares": ["Ismaias Mota da Silva e Ivana Bianchin", "Lucas Mucenecki"],
-      "Diácono": ["Andrei Viana"],
+      "Equipe": ["Aux. Ismaias Mota da Silva e Ivana Bianchin", "Aux. Lucas Mucenecki", "Dc. Andrei Viana"],
       "Assessora": ["Irmã Ana Caroline Vieira Obem"],
       "Conselheiros": ["Ev. Paulo Mucenecki e Cláudia Mucenecki"]
     }
