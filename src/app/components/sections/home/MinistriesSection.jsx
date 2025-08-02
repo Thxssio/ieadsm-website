@@ -29,7 +29,9 @@ export default function MinistriesSection({ ministries = [] }) {
   const handleSelect = (id) => {
     const params = new URLSearchParams(search.toString());
     params.set("tab", id);
-    router.replace(`${pathname}?${params.toString()}#ministries`, { scroll: false });
+    
+    // ANOTAÇÃO: Linha corrigida. Removemos a âncora '#ministries' para evitar o salto na página.
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -75,7 +77,6 @@ export default function MinistriesSection({ ministries = [] }) {
                 <h3 className="text-3xl font-bold text-stone-900">{activeMinistry.name}</h3>
                 <p className="mt-4 text-base md:text-lg text-stone-600">{activeMinistry.description}</p>
                 
-                {/* ANOTAÇÃO: Esta é a nova seção que exibe a equipe completa. */}
                 <div className="mt-6 border-t border-stone-200 pt-6 space-y-4">
                   <h4 className="text-xl font-bold text-stone-800">Nossa Equipe</h4>
                   {activeMinistry.team && Object.entries(activeMinistry.team).map(([role, names]) => (
