@@ -29,8 +29,6 @@ export default function MinistriesSection({ ministries = [] }) {
   const handleSelect = (id) => {
     const params = new URLSearchParams(search.toString());
     params.set("tab", id);
-    
-    // ANOTAÇÃO: Linha corrigida. Removemos a âncora '#ministries' para evitar o salto na página.
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -38,7 +36,8 @@ export default function MinistriesSection({ ministries = [] }) {
     <section id="ministries" className="py-20 sm:py-28 bg-stone-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-base font-semibold text-blue-600 tracking-wider uppercase">Envolva-se</h2>
+          {/* COR ATUALIZADA */}
+          <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">Envolva-se</h2>
           <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Nossos Ministérios</p>
           <p className="mt-4 text-lg text-stone-600">
             Encontre o seu lugar em nossa Igreja. Temos diversos departamentos atuando para o crescimento do Reino de Deus.
@@ -55,8 +54,9 @@ export default function MinistriesSection({ ministries = [] }) {
                     <button
                       type="button"
                       onClick={() => handleSelect(ministry.id)}
+                      // COR ATUALIZADA
                       className={`w-full flex items-center gap-3 p-4 rounded-lg text-left font-semibold transition-all duration-300
-                        ${isActive ? "bg-blue-600 text-white shadow-lg scale-105" : "bg-white hover:bg-blue-50 text-stone-700"}`}
+                        ${isActive ? "bg-[#2a3d57] text-white shadow-lg scale-105" : "bg-white hover:bg-[#2a3d57]/10 text-stone-700"}`}
                       aria-pressed={isActive}
                     >
                       {ministry.icon || <LayoutGrid size={20} />}
@@ -97,7 +97,8 @@ export default function MinistriesSection({ ministries = [] }) {
                     <p className="text-stone-600">{activeMinistry.schedule}</p>
                   </div>
                 )}
-                <a href={`/contato?assunto=${encodeURIComponent(activeMinistry.name)}`} className="mt-8 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all duration-300">
+                {/* COR ATUALIZADA */}
+                <a href={`/contato?assunto=${encodeURIComponent(activeMinistry.name)}`} className="mt-8 inline-block bg-[#2a3d57] hover:bg-[#202e42] text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition-all duration-300">
                   Quero Participar
                 </a>
               </div>
