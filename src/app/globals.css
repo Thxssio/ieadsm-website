@@ -53,4 +53,6 @@ body {
   background-color: #2a3d57; /* Cor do ponto ativo */
 }
 
-
+html {
+  scroll-behavior: smooth;
+}

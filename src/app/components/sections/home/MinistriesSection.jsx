@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { LayoutGrid, X, ChevronLeft, ChevronRight } from "lucide-react";
-
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-// Modal
 function MinistryModal({ ministry, onClose }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -35,7 +33,6 @@ function MinistryModal({ ministry, onClose }) {
         >
           <X size={28} />
         </button>
-
         <div className="relative w-full h-56 sm:h-72">
           <Image
             src={ministry.image || "/images/ministries/placeholder.jpg"}
@@ -46,7 +43,6 @@ function MinistryModal({ ministry, onClose }) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
-
         <div className="p-6 sm:p-8 md:p-10">
           <h3 className="text-3xl sm:text-4xl font-bold text-[#2a3d57]">{ministry.name}</h3>
           <p className="mt-4 text-base md:text-lg text-stone-600">{ministry.description}</p>
@@ -83,7 +79,6 @@ function MinistryModal({ ministry, onClose }) {
   );
 }
 
-// Setas com espaçamento maior das bordas
 function NextArrow({ onClick }) {
   return (
     <button
@@ -110,18 +105,114 @@ function PrevArrow({ onClick }) {
 
 export default function MinistriesSection({ ministries = [] }) {
   const [selectedMinistry, setSelectedMinistry] = useState(null);
+  const [sliderInitialized, setSliderInitialized] = useState(false);
+  const sliderRef = useRef();
+  const hashToProcess = useRef(null);
+
+  const navigateToSlide = (index) => {
+    console.log('Tentando navegar para slide:', index);
+    
+    if (!sliderRef.current) {
+      console.log('Slider ref não disponível');
+      return false;
+    }
+
+    if (typeof sliderRef.current.slickGoTo !== 'function') {
+      console.log('slickGoTo não é uma função');
+      return false;
+    }
+
+    try {
+      console.log('Executando slickGoTo para índice:', index);
+      sliderRef.current.slickGoTo(index);
+      
+      setTimeout(() => {
+        const section = document.getElementById("ministries");
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          window.scrollTo({
+            top: window.pageYOffset + rect.top - 100,
+            behavior: 'smooth'
+          });
+        }
+      }, 300);
+      
+      return true;
+    } catch (error) {
+      console.error('Erro ao navegar:', error);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    if (sliderInitialized && hashToProcess.current) {
+      const hash = hashToProcess.current;
+      hashToProcess.current = null;
+      
+      console.log('Slider pronto! Processando hash armazenado:', hash);
+      
+      if (hash.startsWith("#ministry-")) {
+        const id = hash.replace("#ministry-", "");
+        const index = ministries.findIndex(m => m.id.toLowerCase() === id.toLowerCase());
+        
+        if (index !== -1) {
+          console.log('Navegando para ministério:', id, 'índice:', index);
+          setTimeout(() => navigateToSlide(index), 100);
+        }
+      }
+    }
+  }, [sliderInitialized, ministries]);
+
+  useEffect(() => {
+    const processHash = (hash) => {
+      console.log('Processando hash:', hash);
+      
+      if (!hash.startsWith("#ministry-") || !ministries.length) {
+        return;
+      }
+
+      if (sliderInitialized) {
+        const id = hash.replace("#ministry-", "");
+        const index = ministries.findIndex(m => m.id.toLowerCase() === id.toLowerCase());
+        
+        if (index !== -1) {
+          console.log('Navegando imediatamente para:', id, 'índice:', index);
+          navigateToSlide(index);
+        }
+      } else {
+        console.log('Slider não pronto, armazenando hash:', hash);
+        hashToProcess.current = hash;
+      }
+    };
+
+    const handleHashChange = () => {
+      console.log('Hash mudou para:', window.location.hash);
+      processHash(window.location.hash);
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+
+    if (window.location.hash) {
+      console.log('Hash inicial detectado:', window.location.hash);
+      processHash(window.location.hash);
+    }
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, [sliderInitialized, ministries, navigateToSlide]);
 
   if (!ministries.length) return null;
 
   const sliderSettings = {
     dots: true,
     dotsClass: "slick-dots-custom",
-    appendDots: dots => (
+    appendDots: (dots) => (
       <div style={{ paddingTop: "40px" }}>
-        <ul className="flex items-center justify-center space-x-3"> {dots} </ul>
+        <ul className="flex items-center justify-center space-x-3">{dots}</ul>
       </div>
     ),
-    customPaging: i => (
+    customPaging: () => (
       <div className="w-3 h-3 bg-stone-300 rounded-full cursor-pointer"></div>
     ),
     infinite: true,
@@ -132,19 +223,18 @@ export default function MinistriesSection({ ministries = [] }) {
     arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+
+    onInit: () => {
+      console.log('Slider inicializado via onInit');
+      setTimeout(() => {
+        setSliderInitialized(true);
+        console.log('Slider marcado como pronto');
+      }, 500);
+    },
     responsive: [
-      {
-        breakpoint: 1280,
-        settings: { slidesToShow: 3 },
-      },
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 1, centerPadding: "100px" },
-      },
-      {
-        breakpoint: 768,
-        settings: { slidesToShow: 1, centerPadding: "0px", arrows: false },
-      },
+      { breakpoint: 1280, settings: { slidesToShow: 3 } },
+      { breakpoint: 1024, settings: { slidesToShow: 1, centerPadding: "100px" } },
+      { breakpoint: 768, settings: { slidesToShow: 1, centerPadding: "0px", arrows: false } },
     ],
   };
 
@@ -162,7 +252,7 @@ export default function MinistriesSection({ ministries = [] }) {
 
           <div className="mt-16 relative">
             <div className="mx-auto px-10 sm:px-14 mb-16">
-              <Slider {...sliderSettings}>
+              <Slider {...sliderSettings} ref={sliderRef}>
                 {ministries.map((ministry) => (
                   <div key={ministry.id} className="px-4 h-full">
                     <div className="h-full pb-6">
