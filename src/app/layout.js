@@ -5,26 +5,24 @@ import Header from "./components/layout/Header";
 import DevelopmentSeal from "./components/layout/DevelopmentSeal";
 
 import { churchInfo } from "./lib/churchInfo";
-import { ministries } from "./lib/ministries";
+import { ministries } from "./lib/ministries-data";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-// 1. Metadados globais do site
 export const metadata = {
-  title: churchInfo.name,                     // ex: "Igreja XYZ – Bem-vindo"
-  description: churchInfo.description,         // pegue da sua lib, ou coloque uma string fixa
-  themeColor: "#2a3d57",                       // cor principal da barra no mobile
+  title: churchInfo.name,                    
+  description: churchInfo.description,        
   icons: {
-    icon: churchInfo.faviconUrl,               // caminho do favicon
-    apple: churchInfo.appleTouchIconUrl,       // se tiver
+    icon: churchInfo.faviconUrl,              
+    apple: churchInfo.appleTouchIconUrl,       
   },
   openGraph: {
     title: churchInfo.name,
     description: churchInfo.description,
-    url: "https://seudominio.com",              // domínio do site
-    images: [churchInfo.ogImageUrl],            // imagem para link no WhatsApp/Facebook
+    url: "https://adsantamariars.com.br",             
+    images: [churchInfo.ogImageUrl],            
   },
   twitter: {
     card: "summary_large_image",

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { ministries } from "./lib/ministries";
+import { ministries } from "./lib/ministries-data";
 import { churchInfo } from "./lib/churchInfo";
 
 import HeroSection from "./components/sections/home/HeroSection";
@@ -12,7 +12,7 @@ import ScheduleSection from "./components/sections/home/ScheduleSection";
 import LocationSection from "./components/sections/home/LocationSection";
 import MinistriesSection from "./components/sections/home/MinistriesSection";
 import CongregationsSection from "./components/sections/home/CongregationsSection";
-import FacebookFeed from "./components/sections/home/FacebookFeed";
+import SocialFeed from "./components/sections/home/FacebookFeed";
 
 export default function HomeClient() {
   const searchParams = useSearchParams();
@@ -39,7 +39,7 @@ export default function HomeClient() {
 
       <WelcomeMessage />
       <ScheduleSection />
-      <FacebookFeed />
+      <SocialFeed />
 
       <LocationSection
         address={churchInfo.address}
