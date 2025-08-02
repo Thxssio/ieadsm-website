@@ -12,6 +12,7 @@ import ScheduleSection from "./components/sections/home/ScheduleSection";
 import LocationSection from "./components/sections/home/LocationSection";
 import MinistriesSection from "./components/sections/home/MinistriesSection";
 import CongregationsSection from "./components/sections/home/CongregationsSection";
+import FacebookFeed from "./components/sections/home/FacebookFeed";
 
 export default function HomeClient() {
   const searchParams = useSearchParams();
@@ -38,6 +39,7 @@ export default function HomeClient() {
 
       <WelcomeMessage />
       <ScheduleSection />
+      <FacebookFeed />
 
       <LocationSection
         address={churchInfo.address}
@@ -50,6 +52,7 @@ export default function HomeClient() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
+      
 
       <CongregationsSection />
     </>
