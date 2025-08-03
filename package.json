@@ -16,13 +16,18 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-pageflip": "^2.0.3",
-    "react-pdf": "^10.0.1"
+    "react-pdf": "^10.0.1",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "24.1.0",
     "@types/react": "19.1.9",
-    "tailwindcss": "^4",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwind-scrollbar": "^4.0.2",
+    "tailwindcss": "^4.1.11",
     "typescript": "5.8.3"
   }
 }

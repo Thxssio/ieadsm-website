@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // 1. Importa a função do Firestore
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,6 +14,8 @@ const firebaseConfig = {
 export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const auth = typeof window !== "undefined" ? getAuth(app) : null;
+
+export const db = getFirestore(app);
 
 if (auth) {
   setPersistence(auth, browserLocalPersistence).catch(() => {});

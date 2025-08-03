@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail } from "lucide-react";
 import { churchInfo } from "../lib/churchInfo";
 
 export const metadata = {
-  title: "Contato — IEADSM",
+  title: "Contato | IEADSM",
   description: "Fale conosco. Endereço, telefone e formulário de contato.",
 };
 

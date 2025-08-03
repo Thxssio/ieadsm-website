@@ -1,7 +1,7 @@
 import ResetPasswordForm from "./ResetPasswordForm";
 
 export const metadata = {
-  title: "Recuperar senha — IEADSM",
+  title: "Recuperar senha | IEADSM",
   description: "Envie um e-mail de redefinição de senha.",
 };
 

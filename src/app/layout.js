@@ -1,17 +1,36 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import Footer from "./components/layout/Footer";
-import Header from "./components/layout/Header";
-import DevelopmentSeal from "./components/layout/DevelopmentSeal";
-
+import HideLayoutWrapper from "./components/HideLayoutWrapper";
 import { churchInfo } from "./lib/churchInfo";
-import { ministries } from "./lib/ministries";
+import { AuthProvider } from './lib/firebase/AuthContext';
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+export const metadata = {
+  title: churchInfo.name,
+  description: churchInfo.description,
+  icons: {
+    icon: churchInfo.faviconUrl,
+    apple: churchInfo.appleTouchIconUrl,
+  },
+  openGraph: {
+    title: churchInfo.name,
+    description: churchInfo.description,
+    url: "https://adsantamariars.com.br",
+    images: [churchInfo.ogImageUrl],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: churchInfo.name,
+    description: churchInfo.description,
+    images: [churchInfo.ogImageUrl],
+  },
+};
+
 export const viewport = {
-  themeColor: "#0ea5e9",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
@@ -20,31 +39,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-white text-stone-900`}
       >
-        <Header
-          churchName={churchInfo.name}
-          logoUrl={churchInfo.logoUrlLight}
-          ministries={ministries}
-        />
-
-        {/* main cresce para ocupar o espaço disponível */}
-        <main className="flex-1">
+      <AuthProvider>
+        <HideLayoutWrapper>
           {children}
-        </main>
-
-        <Footer
-          logoUrl={churchInfo.logoUrlDark}
-          address={churchInfo.address}
-          phone={churchInfo.phone}
-          socialLinks={churchInfo.socialLinks}
-        />
-
-        {/* Se o selo é fixo, reserve espaço para não cobrir o footer */}
-        {process.env.NODE_ENV !== "production" && (
-          <>
-            <DevelopmentSeal />
-            <div className="h-10" aria-hidden /> {/* espaçador opcional */}
-          </>
-        )}
+        </HideLayoutWrapper>
+      </AuthProvider>
       </body>
     </html>
   );

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { ministries } from "./lib/ministries";
+import { ministries } from "./lib/ministries-data";
 import { churchInfo } from "./lib/churchInfo";
 
 import HeroSection from "./components/sections/home/HeroSection";
@@ -12,12 +12,12 @@ import ScheduleSection from "./components/sections/home/ScheduleSection";
 import LocationSection from "./components/sections/home/LocationSection";
 import MinistriesSection from "./components/sections/home/MinistriesSection";
 import CongregationsSection from "./components/sections/home/CongregationsSection";
+import SocialFeed from "./components/sections/home/FacebookFeed";
 
 export default function HomeClient() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(ministries[0]?.id);
 
-  // Ao montar/alterar URL, aplica o ?tab= e faz scroll para #ministries
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab) {
@@ -38,6 +38,7 @@ export default function HomeClient() {
 
       <WelcomeMessage />
       <ScheduleSection />
+      <SocialFeed />
 
       <LocationSection
         address={churchInfo.address}
@@ -50,6 +51,7 @@ export default function HomeClient() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
+      
 
       <CongregationsSection />
     </>
