@@ -9,6 +9,7 @@ import {
   sendEmailVerification,
   fetchSignInMethodsForEmail,
   onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 import {
   doc,
@@ -62,7 +63,7 @@ export default function RegisterForm() {
     let userCreated = null;
 
     try {
-      // 1) Criar usuário no Firebase Auth primeiro
+      // 1) Criar usuário no Firebase Auth
       const cred = await createUserWithEmailAndPassword(
         auth,
         email.trim().toLowerCase(),
@@ -89,24 +90,17 @@ export default function RegisterForm() {
       // 3) Forçar refresh do token
       await cred.user.getIdToken(true);
 
-      // 4) Verificar duplicidade de CPF (agora com usuário autenticado)
-      try {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("cpf", "==", cpf.replace(/\D/g, "")));
-        const snapshot = await getDocs(q);
-        
-        if (!snapshot.empty) {
-          // CPF duplicado - deletar usuário recém-criado
-          await cred.user.delete();
-          return setErr("Este CPF já está cadastrado em nosso sistema.");
-        }
-      } catch (cpfError) {
-        // Erro na verificação - deletar usuário e abortar
+      // 4) Verificar duplicidade de CPF
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("cpf", "==", cpf.replace(/\D/g, "")));
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
         await cred.user.delete();
-        throw new Error("Erro na verificação de CPF. Tente novamente.");
+        throw new Error("Este CPF já está cadastrado em nosso sistema.");
       }
 
-      // 5) Atualizar displayName se fornecido
+      // 5) Atualizar displayName
       if (name) {
         await updateProfile(cred.user, { displayName: name });
       }
@@ -118,19 +112,25 @@ export default function RegisterForm() {
         cpf: cpf.replace(/\D/g, ""),
         role: null,
         createdAt: new Date(),
+        emailVerified: cred.user.emailVerified, // Salva o status inicial (false)
         profileComplete: true,
       });
 
-      // 7) Enviar verificação de email (não bloqueia o fluxo)
-      sendEmailVerification(cred.user).catch(() => {});
+      // 7) Enviar verificação de email
+      await sendEmailVerification(cred.user);
 
-      setOk("Conta criada com sucesso. Verifique seu e-mail para confirmar.");
-      setTimeout(() => router.push("/portal"), 1500);
+      // 8) Deslogar para forçar o login após verificação
+      await signOut(auth);
+
+      // 9) Definir mensagem de sucesso e redirecionar para a página de LOGIN
+      setOk("Conta criada! Verifique sua caixa de entrada para confirmar seu e-mail.");
+      setTimeout(() => {
+        router.push("/login"); // Redireciona para /login
+      }, 3000);
 
     } catch (error) {
       console.error("Erro no cadastro de usuário:", error);
 
-      // Cleanup: remover usuário se foi criado mas deu erro depois
       if (userCreated) {
         try {
           await userCreated.delete();
@@ -143,18 +143,14 @@ export default function RegisterForm() {
         const methods = await fetchSignInMethodsForEmail(auth, email);
         if (methods.length > 0) {
           const providerName = getProviderName(methods[0]);
-          setErr(
-            `Este e-mail já foi cadastrado via ${providerName}. Por favor, faça login.`
-          );
+          setErr(`Este e-mail já foi cadastrado via ${providerName}. Por favor, faça login.`);
         } else {
           setErr("Este e-mail já está cadastrado.");
         }
       } else if (error.code === "auth/weak-password") {
         setErr("Senha fraca (mínimo 6 caracteres).");
-      } else if (error.message === "Timeout na autenticação") {
-        setErr("Timeout na autenticação. Tente novamente.");
       } else {
-        setErr(error.message || `Erro: ${error.code}`);
+        setErr(error.message || "Ocorreu um erro inesperado. Tente novamente.");
       }
     } finally {
       setLoading(false);

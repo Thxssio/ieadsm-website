@@ -161,6 +161,30 @@ function UserManagementPage({ currentUser }) {
   );
 }
 
+function DashboardContent({ user }) {
+  // Função para obter a saudação baseada na hora do dia
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) {
+      return "Bom dia";
+    }
+    if (hour >= 12 && hour < 18) {
+      return "Boa tarde";
+    }
+    return "Boa noite";
+  };
+
+  return (
+    <PageContent title="Dashboard">
+      <p className="text-lg text-slate-700">
+        {getGreeting()}, <span className="font-semibold">{user.displayName}</span>.
+      </p>
+      <p className="mt-2 text-slate-500">
+        Este é o seu painel de controle. Use o menu para navegar entre as diferentes seções do portal.
+      </p>
+    </PageContent>
+  );
+}
 
 // --- Componente do Portal ---
 function AdminPortalView({ user, onLogout }) {
@@ -180,7 +204,7 @@ function AdminPortalView({ user, onLogout }) {
 
   const PageRenderer = () => {
     switch (activePage) {
-      case 'dashboard': return <PageContent title="Dashboard"><p>Bem-vindo, {user.displayName}.</p></PageContent>;
+      case 'dashboard': return <DashboardContent user={user} />;
       case 'users': return <UserManagementPage currentUser={user} />;
       case 'ministries': return <PageContent title="Ministérios"><p>Página para gerenciar os ministérios (em construção).</p></PageContent>;
       case 'congregations': return <PageContent title="Congregações"><p>Página para gerenciar as congregações (em construção).</p></PageContent>;
