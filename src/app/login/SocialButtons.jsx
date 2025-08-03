@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "../lib/firebase/client";
+import { auth, db } from "../lib/firebase/client"; // 1. Importa o 'db'
 import { signInWithPopup, GoogleAuthProvider, OAuthProvider } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore"; // 2. Importa funções do Firestore
 import { Apple } from "lucide-react";
 
+// Ícone do Google (sem alterações)
 function GoogleIcon() {
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" className="h-5 w-5">
@@ -19,88 +21,80 @@ function GoogleIcon() {
 
 export default function SocialButtons() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);   // <- chave para evitar mismatch
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => setMounted(true), []);
 
-  const signGoogle = async () => {
-    if (!auth) return; // guarda extra
+  const handleSocialLogin = async (provider) => {
+    if (!auth) return;
     try {
-      setError(""); setLoading("google");
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: "select_account" });
-      await signInWithPopup(auth, provider);
-      router.push("/");
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+          name: user.displayName,
+          email: user.email,
+          role: null, 
+          createdAt: new Date(),
+        });
+      }
+
+      router.push("/portal");
+
     } catch (e) {
       console.error(e);
-      setError("Falha ao entrar com Google. Tente novamente.");
-    } finally {
-      setLoading(null);
+      if (e.code !== 'auth/popup-closed-by-user') {
+        setError("Falha ao entrar. Tente novamente.");
+      }
     }
+  };
+
+  const signGoogle = async () => {
+    setLoading("google");
+    setError("");
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    await handleSocialLogin(provider);
+    setLoading(null);
   };
 
   const signApple = async () => {
-    if (!auth) return;
-    try {
-      setError(""); setLoading("apple");
-      const provider = new OAuthProvider("apple.com");
-      provider.addScope("email");
-      provider.addScope("name");
-      await signInWithPopup(auth, provider);
-      router.push("/");
-    } catch (e) {
-      console.error(e);
-      setError("Falha ao entrar com Apple. Tente novamente.");
-    } finally {
-      setLoading(null);
-    }
+    setLoading("apple");
+    setError("");
+    const provider = new OAuthProvider("apple.com");
+    provider.addScope("email");
+    provider.addScope("name");
+    await handleSocialLogin(provider);
+    setLoading(null);
   };
 
-  // Enquanto não montou no cliente, renderizamos botões desabilitados (markup estável)
   if (!mounted) {
     return (
       <div className="space-y-3">
-        <button
-          disabled
-          className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm font-semibold text-stone-800 opacity-60"
-        >
-          <GoogleIcon /> Entrar com Google
-        </button>
-        <button
-          disabled
-          className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-800 bg-stone-900 px-4 py-3 text-sm font-semibold text-white opacity-60"
-        >
-          <Apple className="h-5 w-5" /> Entrar com Apple
-        </button>
+        <button disabled className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm font-semibold text-stone-800 opacity-60"><GoogleIcon /> Entrar com Google</button>
+        <button disabled className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-800 bg-stone-900 px-4 py-3 text-sm font-semibold text-white opacity-60"><Apple className="h-5 w-5" /> Entrar com Apple</button>
       </div>
     );
   }
 
-  // Após montar, usamos o estado real (sem causar hydration mismatch)
   return (
     <>
       <div className="space-y-3">
-        <button
-          onClick={signGoogle}
-          disabled={loading === "google"}
-          className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm font-semibold text-stone-800 hover:bg-stone-50 disabled:opacity-60"
-        >
+        <button onClick={signGoogle} disabled={loading === "google"} className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm font-semibold text-stone-800 hover:bg-stone-50 disabled:opacity-60">
           <GoogleIcon />
           {loading === "google" ? "Entrando com Google..." : "Entrar com Google"}
         </button>
-
-        <button
-          onClick={signApple}
-          disabled={loading === "apple"}
-          className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-800 bg-stone-900 px-4 py-3 text-sm font-semibold text-white hover:bg-black disabled:opacity-60"
-        >
+        <button onClick={signApple} disabled={loading === "apple"} className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-stone-800 bg-stone-900 px-4 py-3 text-sm font-semibold text-white hover:bg-black disabled:opacity-60">
           <Apple className="h-5 w-5" />
           {loading === "apple" ? "Entrando com Apple..." : "Entrar com Apple"}
         </button>
       </div>
-
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </>
   );

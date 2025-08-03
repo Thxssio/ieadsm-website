@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import HideLayoutWrapper from "./components/HideLayoutWrapper";
 import { churchInfo } from "./lib/churchInfo";
+import { AuthProvider } from './lib/firebase/AuthContext';
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -38,9 +39,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-white text-stone-900`}
       >
+      <AuthProvider>
         <HideLayoutWrapper>
           {children}
         </HideLayoutWrapper>
+      </AuthProvider>
       </body>
     </html>
   );

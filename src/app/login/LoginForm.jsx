@@ -32,7 +32,7 @@ export default function LoginForm() {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      router.push("/"); // redireciona após login
+      router.push("/portal"); 
     } catch (e) {
       setErr(mapError(e.code));
     } finally {
