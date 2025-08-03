@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth } from "../lib/firebase/client";
-import { signInWithEmailAndPassword } from "firebase/auth";
+// 1. Importe o 'signOut' do Firebase auth
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const mapError = (code) => {
   switch (code) {
@@ -31,8 +32,19 @@ export default function LoginForm() {
     setErr("");
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
-      router.push("/portal"); 
+      // 2. Obtenha o credential do usuário ao fazer login
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const user = userCredential.user;
+
+      // 3. Verifique se o e-mail do usuário foi confirmado
+      if (user.emailVerified) {
+        // Se sim, redirecione para o portal
+        router.push("/portal");
+      } else {
+        // Se não, desconecte o usuário e mostre uma mensagem de erro
+        await signOut(auth);
+        setErr("Por favor, confirme seu e-mail para fazer login. Verifique sua caixa de entrada ou spam.");
+      }
     } catch (e) {
       setErr(mapError(e.code));
     } finally {

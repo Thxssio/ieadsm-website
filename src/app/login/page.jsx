@@ -1,7 +1,6 @@
 import { LogIn } from "lucide-react";
 import IconWrapper from "../components/common/IconWrapper";
-import EmailPasswordForm from "./EmailPasswordForm";
-import SocialButtons from "./SocialButtons";
+import LoginForm from "./LoginForm"; // Renomeado de EmailPasswordForm para consistência
 
 export const metadata = {
   title: "Área do Ministro | IEADSM",
@@ -18,18 +17,16 @@ export default function LoginPage() {
           Área do Ministro
         </h1>
         <p className="mt-4 text-lg text-stone-600">
-          Entre com seu e‑mail e senha ou use uma conta social.
+          Entre com seu e‑mail e senha para continuar.
+        {/* Texto sobre conta social removido */}
         </p>
 
         <div className="mt-10 mx-auto max-w-md space-y-6">
-          {/* Social: Google e Apple */}
-          <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
-            <SocialButtons />
-          </div>
+          {/* Bloco dos botões sociais foi completamente removido */}
 
           {/* Email / senha */}
           <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm text-left">
-            <EmailPasswordForm />
+            <LoginForm />
             <p className="mt-4 text-xs text-stone-500 text-center">
               Ao continuar, você concorda com nossos termos de uso e política de privacidade.
             </p>

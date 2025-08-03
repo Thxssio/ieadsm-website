@@ -1,4 +1,3 @@
-import SocialButtons from "../login/SocialButtons"; // opcional: também permitir Google/Apple aqui
 import RegisterForm from "./RegisterForm";
 
 export const metadata = {
@@ -12,13 +11,10 @@ export default function RegisterPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-md">
         <h1 className="text-3xl font-bold text-stone-900">Criar conta</h1>
         <p className="mt-2 text-stone-600">
-          Use seu e‑mail e defina uma senha. Você também pode usar Google ou Apple.
+          Use seu e‑mail e defina uma senha para se cadastrar.
         </p>
 
-        {/* Social opcional */}
-        <div className="mt-6 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
-          <SocialButtons />
-        </div>
+        {/* Bloco dos botões sociais foi completamente removido */}
 
         <div className="mt-6 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
           <RegisterForm />
