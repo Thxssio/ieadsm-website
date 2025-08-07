@@ -6,6 +6,8 @@ export const metadata = {
   description: "Igreja Evangélica Assembleia de Deus de Santa Maria/RS",
 };
 
+export const revalidate = 0;
+
 export default function Page() {
   return (
     <Suspense fallback={null}>

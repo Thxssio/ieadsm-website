@@ -1,10 +1,8 @@
-// AuthContext.js
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-// 1. Importar o 'updateDoc'
-import { doc, onSnapshot, getDoc, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { auth, db } from "./client";
 
 const AuthContext = createContext({
@@ -22,44 +20,38 @@ export function AuthProvider({ children }) {
   const [profileComplete, setProfileComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Removi a função 'refreshAuthData' pois a lógica foi integrada no useEffect principal
-
   useEffect(() => {
-    let unsubscribeSnap = () => {};
+    // AJUSTE 1: A função de 'unsubscribe' do snapshot é definida no escopo externo
+    // para que seu valor persista entre as chamadas do onAuthStateChanged.
+    let unsubscribeSnapshot = () => {};
+
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
-      unsubscribeSnap(); // Cancela o listener anterior
+      // AJUSTE 2: Limpa o listener do snapshot do usuário anterior ANTES de criar um novo.
+      // Isso resolve o erro de permissão no logout.
+      unsubscribeSnapshot();
 
       if (firebaseUser) {
         setIsLoading(true);
         const userDocRef = doc(db, "users", firebaseUser.uid);
 
-        unsubscribeSnap = onSnapshot(
+        unsubscribeSnapshot = onSnapshot(
           userDocRef,
-          async (snap) => { // 2. Tornamos o callback assíncrono para usar await
+          async (snap) => {
             if (snap.exists()) {
               const data = snap.data();
-
-              // 3. LÓGICA DE SINCRONIZAÇÃO ADICIONADA AQUI
-              // Se na Auth o e-mail está verificado, mas no Firestore não, atualizamos o Firestore.
               if (firebaseUser.emailVerified && !data.emailVerified) {
                 await updateDoc(userDocRef, { emailVerified: true });
-                // A atualização vai acionar o onSnapshot novamente com os dados corretos,
-                // então podemos simplesmente sair desta execução.
                 return;
               }
-
-              // 4. Criamos um objeto de usuário mais completo
               setUser({
                 uid: firebaseUser.uid,
                 email: firebaseUser.email,
-                displayName: data.name || firebaseUser.email, // Usa o nome do DB ou o e-mail como fallback
-                emailVerified: data.emailVerified === true, // Garante que o valor seja booleano
+                displayName: data.name || firebaseUser.email,
+                emailVerified: !!data.emailVerified,
               });
-
               setRole(data.role || null);
-              setProfileComplete(data.profileComplete === true || !!data.cpf);
+              setProfileComplete(!!(data.name && data.cpf));
             } else {
-              // Usuário autenticado mas sem registro no Firestore (ex: durante o cadastro)
               setUser({
                 uid: firebaseUser.uid,
                 email: firebaseUser.email,
@@ -72,13 +64,12 @@ export function AuthProvider({ children }) {
             setIsLoading(false);
           },
           (error) => {
-            console.error("Erro no onSnapshot:", error);
-            // Em caso de erro, você pode adicionar um fallback se necessário
+            console.error("Erro no listener do documento do usuário:", error);
             setIsLoading(false);
           }
         );
       } else {
-        // Usuário deslogou
+        // Usuário deslogado
         setUser(null);
         setRole(null);
         setProfileComplete(false);
@@ -86,16 +77,17 @@ export function AuthProvider({ children }) {
       }
     });
 
+    // Função de limpeza final do useEffect
     return () => {
       unsubscribeAuth();
-      unsubscribeSnap();
+      unsubscribeSnapshot();
     };
   }, []);
 
+  const value = { user, role, profileComplete, isLoading };
+
   return (
-    <AuthContext.Provider
-      value={{ user, role, profileComplete, isLoading }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

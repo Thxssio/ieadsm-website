@@ -1,22 +1,72 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { db } from '../../../lib/firebase/client'; // Verifique se este caminho está correto
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+
 import { Hand, Users, BookOpen, Star, BookMarked, Radio, CalendarDays } from "lucide-react";
 
-const DEFAULT_SCHEDULE = {
-  "Terça-feira": [{ name: "Culto de Oração", time: "19h30", icon: <Hand size={20} /> }],
-  "Quarta-feira": [{ name: "Círculo de Oração", time: "15h00", icon: <Users size={20} /> }],
-  "Quinta-feira": [{ name: "Culto de Ensino", time: "19h45", note: "Oração às 19h15", icon: <BookOpen size={20} /> }],
-  "Sexta-feira": [{ name: "Culto da Vitória", time: "15h00", icon: <Star size={20} /> }],
-  "Sábado": [
-    { name: "DEPAD (Adolescentes)", time: "15h00", icon: <Users size={20} /> },
-    { name: "Culto de Jovens", time: "19h30", icon: <Users size={20} /> },
-  ],
-  "Domingo": [
-    { name: "Escola Bíblica Dominical", time: "09h00", icon: <BookMarked size={20} /> },
-    { name: "Programa 'A Voz da Assembleia de Deus'", time: "11h00", icon: <Radio size={20} /> },
-    { name: "Culto Público", time: "19h00", icon: <CalendarDays size={20} /> },
-  ],
+const iconMap = {
+  prayer: <Hand size={20} />,
+  youth: <Users size={20} />,
+  study: <BookOpen size={20} />,
+  victory: <Star size={20} />,
+  ebd: <BookMarked size={20} />,
+  broadcast: <Radio size={20} />,
+  worship: <CalendarDays size={20} />,
 };
 
-export default function ScheduleSection({ schedule = DEFAULT_SCHEDULE }) {
+// --- CORREÇÃO AQUI ---
+// Agora a lista inclui todos os dias da semana que você usa.
+const orderedDaysOfWeek = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
+
+export default function ScheduleSection() {
+  const [schedule, setSchedule] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAndProcessSchedule = async () => {
+      try {
+        const scheduleCollection = collection(db, 'schedule');
+        const q = query(scheduleCollection, orderBy('dayOfWeek'), orderBy('time'));
+        const scheduleSnapshot = await getDocs(q);
+        const scheduleList = scheduleSnapshot.docs.map(doc => doc.data());
+
+        const dayLabels = { '1': 'Domingo', '2': 'Segunda-feira', '3': 'Terça-feira', '4': 'Quarta-feira', '5': 'Quinta-feira', '6': 'Sexta-feira', '7': 'Sábado' };
+
+        const grouped = scheduleList.reduce((acc, item) => {
+          const day = dayLabels[item.dayOfWeek];
+          if (!acc[day]) {
+            acc[day] = [];
+          }
+          acc[day].push({
+            name: item.title,
+            time: item.time,
+            note: item.description,
+            icon: item.icon
+          });
+          return acc;
+        }, {});
+        
+        setSchedule(grouped);
+      } catch (error) {
+        console.error("Erro ao buscar programação:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAndProcessSchedule();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="schedule" className="py-20 sm:py-28 bg-stone-50">
+        <div className="container text-center">Carregando programação...</div>
+      </section>
+    );
+  }
+
   return (
     <section id="schedule" className="py-20 sm:py-28 bg-stone-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,37 +76,42 @@ export default function ScheduleSection({ schedule = DEFAULT_SCHEDULE }) {
         </div>
 
         <div className="mt-16 max-w-4xl mx-auto">
-          <div className="space-y-8">
-            {Object.entries(schedule).map(([day, events]) => (
-              <div key={day} className="flex flex-col md:flex-row gap-6 md:gap-8">
-                <div className="md:w-32 text-left md:text-center">
-                  <h3 className="text-xl font-bold text-stone-800">{day}</h3>
-                </div>
+          {Object.keys(schedule).length === 0 ? (
+            <p className="text-center text-stone-500">Nenhum horário cadastrado no momento.</p>
+          ) : (
+            <div className="space-y-8">
+              {orderedDaysOfWeek.map(day => {
+                const events = schedule[day];
+                if (!events || events.length === 0) return null;
 
-                <div className="flex-1 space-y-4 border-l-2 border-stone-200 pl-6 md:pl-8">
-                  {events.map((event) => (
-                    <div
-                      key={`${day}-${event.name}-${event.time}`}
-                      className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="bg-[#2a3d57]/10 text-[#2a3d57] p-2 rounded-full">
-                            {event.icon}
-                          </div>
-                          <div>
-                            <p className="font-bold text-stone-700">{event.name}</p>
-                            {event.note && <p className="text-xs text-stone-500">{event.note}</p>}
+                return (
+                  <div key={day} className="flex flex-col md:flex-row gap-6 md:gap-8">
+                    <div className="md:w-32 text-left md:text-center shrink-0">
+                      <h3 className="text-xl font-bold text-stone-800">{day}</h3>
+                    </div>
+                    <div className="flex-1 space-y-4 border-l-2 border-stone-200 pl-6 md:pl-8">
+                      {events.map((event, index) => (
+                        <div key={`${day}-${event.name}-${index}`} className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="bg-[#2a3d57]/10 text-[#2a3d57] p-2 rounded-full">
+                                {iconMap[event.icon] || iconMap['worship']}
+                              </div>
+                              <div>
+                                <p className="font-bold text-stone-700">{event.name}</p>
+                                {event.note && <p className="text-xs text-stone-500">{event.note}</p>}
+                              </div>
+                            </div>
+                            <p className="text-lg font-bold text-[#2a3d57]">{event.time}</p>
                           </div>
                         </div>
-                        <p className="text-lg font-bold text-[#2a3d57]">{event.time}</p>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </section>

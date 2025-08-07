@@ -1,0 +1,28 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function canWriteMinistry() {
+      return request.auth != null &&
+        request.auth.token.role in [
+          'admin',
+          'pastor',
+          'supervisor_departamento',
+          'supervisor_setor',
+          'ministro'
+        ];
+    }
+
+    // imagens dos ministérios
+    match /ministries/{allPaths=**} {
+      allow read: if true;
+      allow write: if canWriteMinistry();
+    }
+
+    // demais caminhos: só leitura pública, escrita bloqueada
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

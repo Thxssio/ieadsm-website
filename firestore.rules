@@ -1,0 +1,47 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.role in [
+          'admin','pastor','supervisor_departamento','supervisor_setor'
+        ];
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // users
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // schedule (público lê; só admin escreve)
+    match /schedule/{scheduleId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ministries (público lê; só perfis autorizados escrevem)
+    match /ministries/{ministryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /cpf_index/{cpf} {
+      allow create: if request.auth != null
+        && !exists(/databases/$(database)/documents/cpf_index/$(cpf));
+
+      allow read: if isAdmin();
+
+      allow update, delete: if isAdmin();
+    }
+  }
+}
