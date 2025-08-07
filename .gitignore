@@ -42,5 +42,6 @@ functions/.env*
 next-env.d.ts
 
 .firebase
+.firebase/
 
 
