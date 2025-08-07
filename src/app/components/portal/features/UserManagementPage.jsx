@@ -76,7 +76,7 @@ export default function UserManagementPage({ currentUser }) {
       }
 
       // Chama a Cloud Function que define as claims e espelha no Firestore
-      await setUserRoleCallable(target.email, newRole);
+      await setUserRoleCallable({ email: target.email, role: newRole });
 
       // Atualiza a lista local para refletir imediatamente
       setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
