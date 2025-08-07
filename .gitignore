@@ -41,4 +41,6 @@ functions/.env*
 *.tsbuildinfo
 next-env.d.ts
 
+.firebase
+
 
