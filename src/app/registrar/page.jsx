@@ -1,11 +1,38 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import RegisterForm from "./RegisterForm";
 
-export const metadata = {
-  title: "Criar conta — IEADSM",
-  description: "Cadastro de ministros.",
-};
-
 export default function RegisterPage() {
+  const router = useRouter();
+  const [isVerifying, setIsVerifying] = useState(true);
+
+  useEffect(() => {
+    const verifySession = async () => {
+      try {
+        const response = await fetch('/api/auth/session');
+        if (response.ok) {
+          router.push('/portal'); 
+        } else {
+          setIsVerifying(false);
+        }
+      } catch (error) {
+        console.error("Falha ao verificar sessão:", error);
+        setIsVerifying(false);
+      }
+    };
+    verifySession();
+  }, [router]);
+
+  if (isVerifying) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <p className="text-lg text-stone-600">Verificando sessão...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white py-20 sm:py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-md">

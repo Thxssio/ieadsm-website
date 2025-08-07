@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/links/page.jsx"  ],
+, "src/app/links/page.jsx", "src/app/login/auth/account-exists-with-different-credential.jsx"  ],
   "exclude": [
     "node_modules"
   ]

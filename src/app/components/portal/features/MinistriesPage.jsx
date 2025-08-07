@@ -112,18 +112,34 @@ const MinistryFormModal = ({
   currentItem,
   isSaving,
   uploadProgress,
-  canManage, // novo: controla permissão na UI
+  canManage,
 }) => {
   const initialFormState = {
     id: undefined,
     name: "",
     description: "",
     imageURL: "",
-    imagePath: "", // caminho no Storage para remoção
-    icon: "default",
+    imagePath: "",
+    icon: "Users",
     schedule: "",
-    team: [{ role: "", name: "" }],
+    team: [{ role: "", names: [""] }],
   };
+
+  const iconOptions = [
+    { value: "Users", label: "Pessoas / Grupo (Users)" },
+    { value: "Smile", label: "Sorriso (Smile)" },
+    { value: "Handshake", label: "Aperto de Mão / Social (Handshake)" },
+    { value: "Stethoscope", label: "Cuidado / Capelania (Stethoscope)" },
+    { value: "Megaphone", label: "Comunicação (Megaphone)" },
+    { value: "UserCheck", label: "Discipulado (UserCheck)" },
+    { value: "BookMarked", label: "Ensino / EBD (BookMarked)" },
+    { value: "Speaker", label: "Evangelismo (Speaker)" },
+    { value: "Heart", label: "Família (Heart)" },
+    { value: "Globe2", label: "Missões (Globe2)" },
+    { value: "Music", label: "Música (Music)" },
+    { value: "Radio", label: "Rádio (Radio)" },
+    { value: "Circle", label: "Padrão (Círculo)" },
+  ];
 
   const [formData, setFormData] = useState(initialFormState);
   const [imageFile, setImageFile] = useState(null);
@@ -134,11 +150,13 @@ const MinistryFormModal = ({
 
   useEffect(() => {
     if (currentItem) {
-      const teamArray = currentItem.team
-        ? Object.entries(currentItem.team).flatMap(([role, names]) =>
-            (names || []).map((name) => ({ role, name }))
-          )
-        : [{ role: "", name: "" }];
+      const teamArray =
+        currentItem.team && Object.keys(currentItem.team).length > 0
+          ? Object.entries(currentItem.team).map(([role, names]) => ({
+              role,
+              names: names && names.length > 0 ? names : [""],
+            }))
+          : [{ role: "", names: [""] }];
 
       setFormData({
         id: currentItem.id,
@@ -146,9 +164,9 @@ const MinistryFormModal = ({
         description: currentItem.description || "",
         imageURL: currentItem.imageURL || "",
         imagePath: currentItem.imagePath || "",
-        icon: currentItem.icon || "default",
+        icon: currentItem.icon || "Users",
         schedule: currentItem.schedule || "",
-        team: teamArray.length ? teamArray : [{ role: "", name: "" }],
+        team: teamArray.length ? teamArray : [{ role: "", names: [""] }],
       });
       setImageFile(null);
       setPreview(currentItem.imageURL || null);
@@ -162,23 +180,45 @@ const MinistryFormModal = ({
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleTeamChange = (index, e) => {
+  const handleRoleChange = (groupIndex, e) => {
     const newTeam = [...formData.team];
-    newTeam[index][e.target.name] = e.target.value;
+    newTeam[groupIndex].role = e.target.value;
     setFormData((prev) => ({ ...prev, team: newTeam }));
   };
 
-  const addTeamMember = () =>
-    setFormData((prev) => ({
-      ...prev,
-      team: [...prev.team, { role: "", name: "" }],
-    }));
+  const handleNameChange = (groupIndex, nameIndex, e) => {
+    const newTeam = [...formData.team];
+    newTeam[groupIndex].names[nameIndex] = e.target.value;
+    setFormData((prev) => ({ ...prev, team: newTeam }));
+  };
 
-  const removeTeamMember = (index) =>
+  const addNameInput = (groupIndex) => {
+    const newTeam = [...formData.team];
+    newTeam[groupIndex].names.push("");
+    setFormData((prev) => ({ ...prev, team: newTeam }));
+  };
+
+  const removeNameInput = (groupIndex, nameIndex) => {
+    const newTeam = [...formData.team];
+    if (newTeam[groupIndex].names.length > 1) {
+      newTeam[groupIndex].names.splice(nameIndex, 1);
+      setFormData((prev) => ({ ...prev, team: newTeam }));
+    }
+  };
+
+  const addRoleGroup = () => {
     setFormData((prev) => ({
       ...prev,
-      team: prev.team.filter((_, i) => i !== index),
+      team: [...prev.team, { role: "", names: [""] }],
     }));
+  };
+
+  const removeRoleGroup = (groupIndex) => {
+    if (formData.team.length > 1) {
+      const newTeam = formData.team.filter((_, i) => i !== groupIndex);
+      setFormData((prev) => ({ ...prev, team: newTeam }));
+    }
+  };
 
   const handleFileSelect = (e) => {
     const f = e.target.files?.[0] || null;
@@ -211,10 +251,11 @@ const MinistryFormModal = ({
       alert("Sem permissão para salvar.");
       return;
     }
-    const teamMap = formData.team.reduce((acc, member) => {
-      if (member.role && member.name) {
-        if (!acc[member.role]) acc[member.role] = [];
-        acc[member.role].push(member.name);
+    const teamMap = formData.team.reduce((acc, group) => {
+      const role = group.role.trim();
+      const validNames = group.names.map((name) => name.trim()).filter(Boolean);
+      if (role && validNames.length > 0) {
+        acc[role] = validNames;
       }
       return acc;
     }, {});
@@ -230,7 +271,6 @@ const MinistryFormModal = ({
           {formData.id ? "Editar Ministério" : "Novo Ministério"}
         </h3>
 
-        {/* Barra de progresso */}
         {isSaving && (
           <div className="absolute left-0 right-0 top-0">
             <div className="h-1 bg-slate-200">
@@ -271,42 +311,21 @@ const MinistryFormModal = ({
               disabled={!canManage}
             />
           </div>
-
-          {/* URL + Schedule */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                URL da Imagem de Capa (opcional)
-              </label>
-              <input
-                name="imageURL"
-                value={formData.imageURL}
-                onChange={handleChange}
-                placeholder="https://..."
-                className={`${inputStyle} w-full`}
-                disabled={!canManage}
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Você pode colar uma URL ou enviar um arquivo abaixo.
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Dias e Horários
-              </label>
-              <input
-                name="schedule"
-                value={formData.schedule}
-                onChange={handleChange}
-                placeholder="Ex: Sábados, às 19h"
-                className={`${inputStyle} w-full`}
-                disabled={!canManage}
-              />
-            </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Dias e Horários
+            </label>
+            <input
+              name="schedule"
+              value={formData.schedule}
+              onChange={handleChange}
+              placeholder="Ex: Sábados, às 19h"
+              className={`${inputStyle} w-full`}
+              disabled={!canManage}
+            />
           </div>
 
-          {/* Ícone + Upload */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -320,15 +339,17 @@ const MinistryFormModal = ({
                 required
                 disabled={!canManage}
               >
-                <option value="default">Ícone Padrão (Grupo)</option>
-                <option value="missions">Missões (Mãos)</option>
-                <option value="teaching">Ensino (Livro)</option>
+                {iconOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Upload de imagem (opcional)
+                Upload de imagem de capa (opcional)
               </label>
               <input
                 type="file"
@@ -354,42 +375,68 @@ const MinistryFormModal = ({
             </div>
           </div>
 
-          {/* Equipe */}
           <div className="pt-2">
-            <h4 className="text-lg font-semibold text-slate-800">Equipe</h4>
-            <div className="flex gap-2 text-xs font-medium text-slate-500 mt-3 mb-1 px-1">
-              <div className="w-2/5">Função</div>
-              <div className="flex-1">Nome do Membro</div>
-              <div className="w-8 shrink-0"></div>
-            </div>
+            <h4 className="text-lg font-semibold text-slate-800 mb-2">Equipe</h4>
+            <div className="space-y-4">
+              {formData.team.map((group, groupIndex) => (
+                <div key={groupIndex} className="bg-slate-50 p-3 rounded-md border relative">
+                  <div className="flex items-start justify-between gap-2">
+                     <div className="flex-grow">
+                        <label className="text-xs font-medium text-slate-500 ml-1">Função</label>
+                        <input
+                            name="role"
+                            value={group.role}
+                            onChange={(e) => handleRoleChange(groupIndex, e)}
+                            placeholder="Ex: Coordenadores"
+                            className={`${inputStyle} w-full font-medium`}
+                            disabled={!canManage}
+                        />
+                     </div>
+                      {formData.team.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeRoleGroup(groupIndex)}
+                          className="text-slate-400 hover:text-red-600 transition-colors mt-1"
+                          title="Remover função"
+                          disabled={!canManage}
+                        >
+                          <XCircle size={20} />
+                        </button>
+                      )}
+                  </div>
 
-            <div className="space-y-2">
-              {formData.team.map((member, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <input
-                    name="role"
-                    value={member.role}
-                    onChange={(e) => handleTeamChange(index, e)}
-                    placeholder="Ex: Líder"
-                    className={`${inputStyle} w-2/5`}
-                    disabled={!canManage}
-                  />
-                  <input
-                    name="name"
-                    value={member.name}
-                    onChange={(e) => handleTeamChange(index, e)}
-                    placeholder="Nome completo"
-                    className={`${inputStyle} flex-1`}
-                    disabled={!canManage}
-                  />
+                  <div className="mt-3 space-y-2">
+                    <label className="text-xs font-medium text-slate-500 ml-1">Membros</label>
+                    {group.names.map((name, nameIndex) => (
+                      <div key={nameIndex} className="flex items-center gap-2">
+                        <input
+                          name="name"
+                          value={name}
+                          onChange={(e) => handleNameChange(groupIndex, nameIndex, e)}
+                          placeholder="Nome completo do membro"
+                          className={`${inputStyle} flex-1`}
+                          disabled={!canManage}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeNameInput(groupIndex, nameIndex)}
+                          className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                          title="Remover membro"
+                          disabled={!canManage || group.names.length <= 1}
+                        >
+                          <XCircle size={18} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
                   <button
                     type="button"
-                    onClick={() => removeTeamMember(index)}
-                    className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-600 transition-colors shrink-0"
-                    title="Remover"
+                    onClick={() => addNameInput(groupIndex)}
+                    className="mt-3 text-xs text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1"
                     disabled={!canManage}
                   >
-                    <XCircle size={20} />
+                    <PlusCircle size={14} /> Adicionar membro nesta função
                   </button>
                 </div>
               ))}
@@ -397,11 +444,11 @@ const MinistryFormModal = ({
 
             <button
               type="button"
-              onClick={addTeamMember}
-              className="mt-3 text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1"
+              onClick={addRoleGroup}
+              className="mt-4 text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1"
               disabled={!canManage}
             >
-              <PlusCircle size={16} /> Adicionar membro
+              <PlusCircle size={16} /> Adicionar nova função
             </button>
           </div>
 
@@ -440,13 +487,16 @@ export default function MinistriesPage() {
 
   const [itemToDelete, setItemToDelete] = useState(null);
 
-  // Upload state
   const [isSaving, setIsSaving] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(null);
 
-  // Permissão por papel (custom claims)
-  const { allowed: canManage, loading: roleLoading } =
-    useHasRole(["admin", "pastor", "supervisor_departamento", "supervisor_setor", "ministro"]);
+  const { allowed: canManage, loading: roleLoading } = useHasRole([
+    "admin",
+    "pastor",
+    "supervisor_departamento",
+    "supervisor_setor",
+    "ministro",
+  ]);
 
   const fetchMinistries = useCallback(async () => {
     setLoading(true);
@@ -470,7 +520,6 @@ export default function MinistriesPage() {
     setIsModalOpen(false);
   };
 
-  // Upload + retorna { url, path }
   async function uploadCover(file, docId) {
     setIsSaving(true);
     setUploadProgress(0);
@@ -514,7 +563,7 @@ export default function MinistriesPage() {
       const r = ref(storage, imagePath);
       await deleteObject(r);
     } catch {
-      // ignora erros de remoção (arquivo pode já não existir)
+      // ignora erros de remoção
     }
   }
 
@@ -527,7 +576,6 @@ export default function MinistriesPage() {
       const { id, imageFile, imageURL, imagePath, ...rest } = data;
 
       if (id) {
-        // UPDATE base (mantém URL/path se não trocar)
         await updateDoc(doc(db, "ministries", id), {
           ...rest,
           imageURL,
@@ -535,7 +583,6 @@ export default function MinistriesPage() {
         });
 
         if (imageFile) {
-          // Sobe nova, atualiza doc, depois remove antiga
           const { url, path } = await uploadCover(imageFile, id);
           await updateDoc(doc(db, "ministries", id), {
             imageURL: url,
@@ -544,10 +591,9 @@ export default function MinistriesPage() {
           await deleteByPath(imagePath);
         }
       } else {
-        // CREATE base
         const docRef = await addDoc(collection(db, "ministries"), {
           ...rest,
-          imageURL: imageURL || "",
+          imageURL: "",
           imagePath: "",
         });
 
@@ -562,7 +608,7 @@ export default function MinistriesPage() {
 
       await fetchMinistries();
       handleCloseModal();
-    } catch (err) {
+    } catch (err) { // <<< CORREÇÃO APLICADA AQUI
       console.error("Erro ao salvar ministério:", err);
       setIsSaving(false);
     }
@@ -574,9 +620,7 @@ export default function MinistriesPage() {
       alert("Sem permissão para excluir.");
       return;
     }
-    // remove storage primeiro (se tiver)
     await deleteByPath(itemToDelete.imagePath);
-    // remove doc
     await deleteDoc(doc(db, "ministries", itemToDelete.id));
     await fetchMinistries();
     setItemToDelete(null);

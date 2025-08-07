@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth } from "../lib/firebase/client";
-// 1. Importe o 'signOut' do Firebase auth
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const mapError = (code) => {
@@ -32,16 +31,25 @@ export default function LoginForm() {
     setErr("");
     setLoading(true);
     try {
-      // 2. Obtenha o credential do usuário ao fazer login
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
       const user = userCredential.user;
 
-      // 3. Verifique se o e-mail do usuário foi confirmado
       if (user.emailVerified) {
-        // Se sim, redirecione para o portal
+        // --- ALTERAÇÃO APLICADA AQUI ---
+        // 1. Obtenha o ID Token do usuário logado.
+        const idToken = await user.getIdToken();
+
+        // 2. Envie o token para a nossa API para criar o cookie de sessão.
+        await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        });
+
+        // 3. Após o cookie ser criado, redirecione para o portal.
         router.push("/portal");
+        // --- FIM DA ALTERAÇÃO ---
       } else {
-        // Se não, desconecte o usuário e mostre uma mensagem de erro
         await signOut(auth);
         setErr("Por favor, confirme seu e-mail para fazer login. Verifique sua caixa de entrada ou spam.");
       }

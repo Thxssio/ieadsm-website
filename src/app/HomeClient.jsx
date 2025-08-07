@@ -3,26 +3,28 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { ministries } from "./lib/ministries-data";
+import HeroSection         from "./components/sections/home/HeroSection";
+import WelcomeMessage      from "./components/sections/home/WelcomeMessage";
+import ScheduleSection     from "./components/sections/home/ScheduleSection";
+import SocialFeed          from "./components/sections/home/FacebookFeed";
+import LocationSection     from "./components/sections/home/LocationSection";
+import MinistriesSection   from "./components/sections/home/MinistriesSection";
+import CongregationsSection from "./components/sections/home/CongregationsSection";
+
 import { churchInfo } from "./lib/churchInfo";
 
-import HeroSection from "./components/sections/home/HeroSection";
-import WelcomeMessage from "./components/sections/home/WelcomeMessage";
-import ScheduleSection from "./components/sections/home/ScheduleSection";
-import LocationSection from "./components/sections/home/LocationSection";
-import MinistriesSection from "./components/sections/home/MinistriesSection";
-import CongregationsSection from "./components/sections/home/CongregationsSection";
-import SocialFeed from "./components/sections/home/FacebookFeed";
-
-export default function HomeClient() {
+export default function HomeClient({ ministries = [] }) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(ministries[0]?.id);
 
+  // Sempre que o query string `?tab=` mudar, rola até a seção certa
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab) {
       setActiveTab(tab);
-      document.getElementById("ministries")?.scrollIntoView({ behavior: "smooth" });
+      document
+        .getElementById("ministries")
+        ?.scrollIntoView({ behavior: "smooth" });
     }
   }, [searchParams]);
 
@@ -45,13 +47,11 @@ export default function HomeClient() {
         phone={churchInfo.phone}
       />
 
-      {/* Controlado: passa aba ativa para o componente */}
       <MinistriesSection
         ministries={ministries}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      
 
       <CongregationsSection />
     </>

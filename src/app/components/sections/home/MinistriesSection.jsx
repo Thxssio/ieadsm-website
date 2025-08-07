@@ -2,11 +2,35 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { LayoutGrid, X, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Users, // Ícone padrão
+  HeartHandshake, // Ícone para "missions"
+  BookOpen, // Ícone para "teaching"
+} from "lucide-react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+// ------------------------------------------------------------------
+// Helper: Renderiza o ícone correto baseado no nome
+// ------------------------------------------------------------------
+const MinistryIcon = ({ iconName, ...props }) => {
+  switch (iconName) {
+    case "missions":
+      return <HeartHandshake {...props} />;
+    case "teaching":
+      return <BookOpen {...props} />;
+    default:
+      return <Users {...props} />;
+  }
+};
+
+// ------------------------------------------------------------------
+// Modal de Detalhes do Ministério
+// ------------------------------------------------------------------
 function MinistryModal({ ministry, onClose }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -33,12 +57,12 @@ function MinistryModal({ ministry, onClose }) {
         >
           <X size={28} />
         </button>
-        <div className="relative w-full h-56 sm:h-72">
+        <div className="relative w-full h-56 sm:h-72 bg-stone-100">
           <Image
-            src={ministry.image || "/images/ministries/placeholder.jpg"}
+            src={ministry.imageURL || "/images/ministries/placeholder.jpg"}
             alt={`Imagem do ${ministry.name}`}
             layout="fill"
-            objectFit="cover"
+            objectFit="contain"
             className="rounded-t-2xl"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -47,14 +71,15 @@ function MinistryModal({ ministry, onClose }) {
           <h3 className="text-3xl sm:text-4xl font-bold text-[#2a3d57]">{ministry.name}</h3>
           <p className="mt-4 text-base md:text-lg text-stone-600">{ministry.description}</p>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            {ministry.team && (
+            {ministry.team && Object.keys(ministry.team).length > 0 && (
               <div className="space-y-4">
                 <h4 className="text-xl font-bold text-stone-800 border-b-2 border-[#2a3d57] pb-2">Nossa Equipe</h4>
                 {Object.entries(ministry.team).map(([role, names]) => (
                   <div key={role}>
                     <p className="font-semibold text-stone-700">{role}</p>
                     <ul className="list-disc list-inside pl-2 text-stone-600">
-                      {names.map((name) => <li key={name}>{name}</li>)}
+                      {/* CORREÇÃO APLICADA AQUI: Adicionado 'index' para criar uma chave única */}
+                      {(names || []).map((name, index) => <li key={`${role}-${name}-${index}`}>{name}</li>)}
                     </ul>
                   </div>
                 ))}
@@ -79,6 +104,9 @@ function MinistryModal({ ministry, onClose }) {
   );
 }
 
+// ------------------------------------------------------------------
+// Setas de Navegação do Slider
+// ------------------------------------------------------------------
 function NextArrow({ onClick }) {
   return (
     <button
@@ -103,106 +131,49 @@ function PrevArrow({ onClick }) {
   );
 }
 
+// ------------------------------------------------------------------
+// Componente Principal da Seção
+// ------------------------------------------------------------------
 export default function MinistriesSection({ ministries = [] }) {
   const [selectedMinistry, setSelectedMinistry] = useState(null);
   const [sliderInitialized, setSliderInitialized] = useState(false);
   const sliderRef = useRef();
-  const hashToProcess = useRef(null);
-
-  const navigateToSlide = (index) => {
-    console.log('Tentando navegar para slide:', index);
-    
-    if (!sliderRef.current) {
-      console.log('Slider ref não disponível');
-      return false;
-    }
-
-    if (typeof sliderRef.current.slickGoTo !== 'function') {
-      console.log('slickGoTo não é uma função');
-      return false;
-    }
-
-    try {
-      console.log('Executando slickGoTo para índice:', index);
-      sliderRef.current.slickGoTo(index);
-      
-      setTimeout(() => {
-        const section = document.getElementById("ministries");
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          window.scrollTo({
-            top: window.pageYOffset + rect.top - 100,
-            behavior: 'smooth'
-          });
-        }
-      }, 300);
-      
-      return true;
-    } catch (error) {
-      console.error('Erro ao navegar:', error);
-      return false;
-    }
-  };
-
-  useEffect(() => {
-    if (sliderInitialized && hashToProcess.current) {
-      const hash = hashToProcess.current;
-      hashToProcess.current = null;
-      
-      console.log('Slider pronto! Processando hash armazenado:', hash);
-      
-      if (hash.startsWith("#ministry-")) {
-        const id = hash.replace("#ministry-", "");
-        const index = ministries.findIndex(m => m.id.toLowerCase() === id.toLowerCase());
-        
-        if (index !== -1) {
-          console.log('Navegando para ministério:', id, 'índice:', index);
-          setTimeout(() => navigateToSlide(index), 100);
-        }
-      }
-    }
-  }, [sliderInitialized, ministries]);
 
   useEffect(() => {
     const processHash = (hash) => {
-      console.log('Processando hash:', hash);
-      
-      if (!hash.startsWith("#ministry-") || !ministries.length) {
+      if (!hash.startsWith("#ministry-") || !ministries.length || !sliderInitialized) {
         return;
       }
+      const id = hash.replace("#ministry-", "");
+      const index = ministries.findIndex(m => m.id.toLowerCase() === id.toLowerCase());
 
-      if (sliderInitialized) {
-        const id = hash.replace("#ministry-", "");
-        const index = ministries.findIndex(m => m.id.toLowerCase() === id.toLowerCase());
-        
-        if (index !== -1) {
-          console.log('Navegando imediatamente para:', id, 'índice:', index);
-          navigateToSlide(index);
-        }
-      } else {
-        console.log('Slider não pronto, armazenando hash:', hash);
-        hashToProcess.current = hash;
+      if (index !== -1 && sliderRef.current) {
+        sliderRef.current.slickGoTo(index);
+        setTimeout(() => {
+          const section = document.getElementById("ministries");
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            window.scrollTo({
+              top: window.pageYOffset + rect.top - 100, // Ajuste de offset
+              behavior: 'smooth'
+            });
+          }
+        }, 300);
       }
     };
 
-    const handleHashChange = () => {
-      console.log('Hash mudou para:', window.location.hash);
-      processHash(window.location.hash);
-    };
-
-    window.addEventListener("hashchange", handleHashChange);
-
+    const handleHashChange = () => processHash(window.location.hash);
+    
     if (window.location.hash) {
-      console.log('Hash inicial detectado:', window.location.hash);
       processHash(window.location.hash);
     }
+    
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
 
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange);
-    };
-  }, [sliderInitialized, ministries, navigateToSlide]);
+  }, [sliderInitialized, ministries]);
 
-  if (!ministries.length) return null;
+  if (!ministries || ministries.length === 0) return null;
 
   const sliderSettings = {
     dots: true,
@@ -212,10 +183,8 @@ export default function MinistriesSection({ ministries = [] }) {
         <ul className="flex items-center justify-center space-x-3">{dots}</ul>
       </div>
     ),
-    customPaging: () => (
-      <div className="w-3 h-3 bg-stone-300 rounded-full cursor-pointer"></div>
-    ),
-    infinite: true,
+    customPaging: () => <div className="w-3 h-3 bg-stone-300 rounded-full cursor-pointer"></div>,
+    infinite: ministries.length > 3,
     speed: 500,
     centerMode: true,
     centerPadding: "0px",
@@ -223,14 +192,7 @@ export default function MinistriesSection({ ministries = [] }) {
     arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-
-    onInit: () => {
-      console.log('Slider inicializado via onInit');
-      setTimeout(() => {
-        setSliderInitialized(true);
-        console.log('Slider marcado como pronto');
-      }, 500);
-    },
+    onInit: () => setTimeout(() => setSliderInitialized(true), 500),
     responsive: [
       { breakpoint: 1280, settings: { slidesToShow: 3 } },
       { breakpoint: 1024, settings: { slidesToShow: 1, centerPadding: "100px" } },
@@ -260,19 +222,19 @@ export default function MinistriesSection({ ministries = [] }) {
                         onClick={() => setSelectedMinistry(ministry)}
                         className="bg-white rounded-xl shadow-lg overflow-hidden text-left group transition-all duration-300 w-full h-[450px] flex flex-col"
                       >
-                        <div className="relative h-48 w-full flex-shrink-0">
+                        <div className="relative h-48 w-full flex-shrink-0 bg-stone-100">
                           <Image
-                            src={ministry.image || "/images/ministries/placeholder.jpg"}
+                            src={ministry.imageURL || "/images/ministries/placeholder.jpg"}
                             alt={`Imagem do ${ministry.name}`}
                             layout="fill"
-                            objectFit="cover"
+                            objectFit="contain"
                             className="transition-transform duration-300 group-hover:scale-110"
                           />
                         </div>
                         <div className="p-5 flex-grow flex flex-col">
                           <div className="flex items-start gap-3">
                             <div className="text-[#2a3d57] pt-1 flex-shrink-0">
-                              {ministry.icon || <LayoutGrid size={20} />}
+                              <MinistryIcon iconName={ministry.icon} size={24} />
                             </div>
                             <h3 className="text-xl font-bold text-stone-800">{ministry.name}</h3>
                           </div>

@@ -1,13 +1,48 @@
+"use client"; // Esta linha transforma o componente para rodar no navegador
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { LogIn } from "lucide-react";
 import IconWrapper from "../components/common/IconWrapper";
-import LoginForm from "./LoginForm"; // Renomeado de EmailPasswordForm para consistência
-
-export const metadata = {
-  title: "Área do Ministro | IEADSM",
-  description: "Login de ministros.",
-};
+import LoginForm from "./LoginForm";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [isVerifying, setIsVerifying] = useState(true);
+
+  // Lógica que roda no navegador para verificar se já existe uma sessão
+  useEffect(() => {
+    const verifySession = async () => {
+      try {
+        // Pergunta para a nossa API se o usuário está logado
+        const response = await fetch('/api/auth/session');
+        
+        if (response.ok) {
+          // Se a API responder "sim", redireciona imediatamente
+          router.push('/portal'); 
+        } else {
+          // Se responder "não", para de verificar e mostra a página
+          setIsVerifying(false);
+        }
+      } catch (error) {
+        console.error("Falha ao verificar sessão:", error);
+        setIsVerifying(false);
+      }
+    };
+
+    verifySession();
+  }, [router]);
+
+  // Enquanto a verificação acontece, mostramos uma mensagem de carregamento
+  if (isVerifying) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <p className="text-lg text-stone-600">Verificando sessão...</p>
+      </div>
+    );
+  }
+
+  // Se a verificação terminou e o usuário não foi redirecionado, mostra o formulário de login
   return (
     <div className="bg-white py-20 sm:py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -18,13 +53,9 @@ export default function LoginPage() {
         </h1>
         <p className="mt-4 text-lg text-stone-600">
           Entre com seu e‑mail e senha para continuar.
-        {/* Texto sobre conta social removido */}
         </p>
 
         <div className="mt-10 mx-auto max-w-md space-y-6">
-          {/* Bloco dos botões sociais foi completamente removido */}
-
-          {/* Email / senha */}
           <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm text-left">
             <LoginForm />
             <p className="mt-4 text-xs text-stone-500 text-center">

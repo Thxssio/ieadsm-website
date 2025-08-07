@@ -2,12 +2,19 @@
 
 import React, { useState, useRef } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown, LogIn, User, LogOut } from "lucide-react";
-import { useAuth } from "../../lib/firebase/AuthContext"; // 1. Importa o hook de autenticação
-import { auth } from "../../lib/firebase/client"; // 2. Importa o auth para o logout
+// 1. Importar a biblioteca de ícones completa
+import * as Icons from "lucide-react"; 
+import { Menu, X, ChevronDown, LogIn, User } from "lucide-react";
+import { useAuth } from "../../lib/firebase/AuthContext";
+import { auth } from "../../lib/firebase/client";
+
+// 2. Função que "traduz" o nome do ícone no componente real
+function getIconComponent(name) {
+  return Icons[name] || Icons.Circle;
+}
 
 export default function Header({ churchName, logoUrl, ministries = [] }) {
-  const { user } = useAuth(); // 3. Usa o hook para obter o usuário logado
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMinistriesOpen, setIsMinistriesOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -54,26 +61,35 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
 
             {/* Dropdown Ministérios */}
             <div className="relative" onMouseEnter={openMinistries} onMouseLeave={closeMinistries}>
-              <Link href="/#ministries" className="text-stone-600 hover:text-[#2a3d57] font-medium flex items-center gap-1 px-2 py-1 transition-colors" aria-haspopup="true" aria-expanded={isMinistriesOpen}>
+              <button className="text-stone-600 hover:text-[#2a3d57] font-medium flex items-center gap-1 px-2 py-1 transition-colors" aria-haspopup="true" aria-expanded={isMinistriesOpen}>
                 Ministérios <ChevronDown size={16} />
-              </Link>
+              </button>
               {isMinistriesOpen && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[34rem] bg-white rounded-lg shadow-xl p-4 z-20 ring-1 ring-black/5">
                   <ul className="grid grid-cols-2 gap-2">
                     {ministries.map((m) => (
-                      <li key={m.id}>
-                        <Link href={`/#ministry-${m.id}`} onClick={() => setIsMinistriesOpen(false)} className="w-full flex items-center gap-3 p-3 rounded-md text-left font-medium text-sm text-stone-700 hover:bg-[#2a3d57]/10 hover:text-[#2a3d57] transition-colors">
-                          {m.icon}
-                          <span>{m.name}</span>
-                        </Link>
-                      </li>
-                    ))}
+                        <li key={m.id}>
+                          <Link href={`/#ministry-${m.id}`} onClick={() => setIsMinistriesOpen(false)} className="w-full flex items-center gap-3 p-3 rounded-md text-left font-medium text-sm text-stone-700 hover:bg-[#2a3d57]/10 hover:text-[#2a3d57] transition-colors">
+                            
+                            {/* ======================= AJUSTE FINAL AQUI ======================= */}
+                            {typeof m.icon === 'string'
+                              // Se 'm.icon' for um TEXTO (do Firebase), cria o componente
+                              ? React.createElement(getIconComponent(m.icon), { size: 18, className: "flex-shrink-0" })
+                              // Se 'm.icon' JÁ FOR UM COMPONENTE (do arquivo estático), usa direto
+                              : m.icon 
+                            }
+                            {/* ================================================================= */}
+
+                            <span>{m.name}</span>
+                          </Link>
+                        </li>
+                      ))}
                   </ul>
                 </div>
               )}
             </div>
 
-            {/* 4. Lógica Condicional: Botão de Login OU Menu do Usuário */}
+            {/* Lógica Condicional: Botão de Login OU Menu do Usuário */}
             {user ? (
               <div className="relative ml-4" onMouseEnter={openUserMenu} onMouseLeave={closeUserMenu}>
                 <button className="flex items-center gap-2 text-stone-600 hover:text-[#2a3d57] font-medium px-2 py-1 transition-colors">
@@ -85,7 +101,7 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
                   <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-20 ring-1 ring-black/5">
                     <div className="p-2">
                       <Link href="/portal" onClick={() => setIsUserMenuOpen(false)} className="block w-full text-left px-4 py-2 text-sm text-stone-700 rounded-md hover:bg-slate-100">Acessar Portal</Link>
-                      <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-red-600 rounded-md hover:bg-slate-100">Sair</button>
+                      <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 rounded-md hover:bg-slate-100">Sair</button>
                     </div>
                   </div>
                 )}
@@ -118,15 +134,15 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
               Ministérios
             </Link>
 
-            {/* 5. Lógica Condicional no Menu Mobile */}
+            {/* Lógica Condicional no Menu Mobile */}
             {user ? (
               <div className="border-t pt-3 mt-2">
-                 <div className="px-3 py-2">
+                  <div className="px-3 py-2">
                     <p className="font-medium text-stone-800">Logado como</p>
                     <p className="text-sm text-stone-600">{user.displayName || user.email}</p>
-                 </div>
-                 <Link href="/portal" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700 hover:text-[#2a3d57] hover:bg-stone-100 transition-colors">Acessar Portal</Link>
-                 <button onClick={() => { handleLogout(); setIsMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-stone-100 transition-colors">Sair</button>
+                  </div>
+                  <Link href="/portal" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700 hover:text-[#2a3d57] hover:bg-stone-100 transition-colors">Acessar Portal</Link>
+                  <button onClick={() => { handleLogout(); setIsMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-stone-100 transition-colors">Sair</button>
               </div>
             ) : (
               <Link href="/login" onClick={() => setIsMenuOpen(false)} className="w-full mt-2 flex items-center justify-center gap-2 bg-[#2a3d57] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#202e42] transition-colors">

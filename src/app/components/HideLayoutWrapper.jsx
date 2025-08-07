@@ -1,23 +1,46 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+
 import Header from "./layout/Header";
 import Footer from "./layout/Footer";
 import DevelopmentSeal from "./layout/DevelopmentSeal";
 
 import { churchInfo } from "../lib/churchInfo";
-import { ministries } from "../lib/ministries-data";
+
+// Firestore
+import { db } from "../lib/firebase/client";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
 export default function HideLayoutWrapper({ children }) {
   const pathname = usePathname();
 
-  const pathsToHide = [
-    '/portal',
-    '/links'
-    // Você pode adicionar outras rotas aqui no futuro, como '/login'
-  ];
+  // rotas onde não queremos mostrar header/footer
+  const pathsToHide = ["/portal", "/links"];
+  const hideGlobal = pathsToHide.some((p) => pathname.startsWith(p));
 
-  const hideGlobal = pathsToHide.some(path => pathname.startsWith(path));
+  // estado p/ ministérios dinâmicos
+  const [ministries, setMinistries] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const q = query(
+          collection(db, "ministries"),
+          orderBy("name", "asc")
+        );
+        const snap = await getDocs(q);
+        setMinistries(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      } catch (e) {
+        console.error("Erro carregando ministérios:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   return (
     <>
@@ -25,13 +48,10 @@ export default function HideLayoutWrapper({ children }) {
         <Header
           churchName={churchInfo.name}
           logoUrl={churchInfo.logoUrlLight}
-          ministries={ministries}
+          ministries={loading ? [] : ministries}
         />
       )}
-
-      {/* 3. É uma boa prática manter o flex-1 para que o conteúdo principal sempre ocupe o espaço disponível */}
       <main className="flex-1">{children}</main>
-
       {!hideGlobal && (
         <Footer
           logoUrl={churchInfo.logoUrlDark}
@@ -40,7 +60,6 @@ export default function HideLayoutWrapper({ children }) {
           socialLinks={churchInfo.socialLinks}
         />
       )}
-
       {!hideGlobal && process.env.NODE_ENV !== "production" && (
         <>
           <DevelopmentSeal />

@@ -1,5 +1,5 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+const functions = require("firebase-functions/v1");
+const admin     = require("firebase-admin");
 
 try {
   admin.app();
@@ -45,7 +45,7 @@ exports.setUserRole = functions
       "supervisor_setor",
       "ministro",
       "membro",
-      null
+      null,
     ]);
     if (!allowedRoles.has(role)) {
       throw new functions.https.HttpsError("invalid-argument", "Função inválida.");
@@ -58,22 +58,19 @@ exports.setUserRole = functions
       await admin.auth().setCustomUserClaims(user.uid, role ? { role } : {});
 
       // Espelha no Firestore
-      await admin.firestore().doc(`users/${user.uid}`).set(
-        { role: role ?? null },
-        { merge: true }
-      );
+      await admin
+        .firestore()
+        .doc(`users/${user.uid}`)
+        .set({ role: role ?? null }, { merge: true });
 
       return {
         uid: user.uid,
         email: user.email,
         role: role ?? null,
-        message: `Função do usuário ${email} atualizada para ${role || "nenhuma"}.`
+        message: `Função do usuário ${email} atualizada para ${role || "nenhuma"}.`,
       };
     } catch (error) {
       console.error(error);
-      throw new functions.https.HttpsError(
-        "internal",
-        "Erro ao definir a permissão."
-      );
+      throw new functions.https.HttpsError("internal", "Erro ao definir a permissão.");
     }
   });
