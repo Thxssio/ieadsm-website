@@ -1,31 +1,22 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../lib/firebase/AuthContext";
 import RegisterForm from "./RegisterForm";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [isVerifying, setIsVerifying] = useState(true);
+  const { user, profileComplete, isLoading } = useAuth();
 
   useEffect(() => {
-    const verifySession = async () => {
-      try {
-        const response = await fetch('/api/auth/session');
-        if (response.ok) {
-          router.push('/portal'); 
-        } else {
-          setIsVerifying(false);
-        }
-      } catch (error) {
-        console.error("Falha ao verificar sessão:", error);
-        setIsVerifying(false);
-      }
-    };
-    verifySession();
-  }, [router]);
+    if (isLoading) return;
+    if (user && profileComplete) {
+      router.replace("/portal");
+    }
+  }, [user, profileComplete, isLoading, router]);
 
-  if (isVerifying) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <p className="text-lg text-stone-600">Verificando sessão...</p>
@@ -38,7 +29,7 @@ export default function RegisterPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-md">
         <h1 className="text-3xl font-bold text-stone-900">Criar conta</h1>
         <p className="mt-2 text-stone-600">
-          Use seu e‑mail e defina uma senha para se cadastrar.
+          Use seu e-mail e defina uma senha para se cadastrar.
         </p>
         <div className="mt-6 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
           <RegisterForm />

@@ -21,13 +21,10 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // AJUSTE 1: A função de 'unsubscribe' do snapshot é definida no escopo externo
-    // para que seu valor persista entre as chamadas do onAuthStateChanged.
     let unsubscribeSnapshot = () => {};
 
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
-      // AJUSTE 2: Limpa o listener do snapshot do usuário anterior ANTES de criar um novo.
-      // Isso resolve o erro de permissão no logout.
+      // limpa listener anterior
       unsubscribeSnapshot();
 
       if (firebaseUser) {
@@ -39,18 +36,26 @@ export function AuthProvider({ children }) {
           async (snap) => {
             if (snap.exists()) {
               const data = snap.data();
+
+              // só sincroniza emailVerified -> banco (sem mexer em profileComplete aqui)
               if (firebaseUser.emailVerified && !data.emailVerified) {
-                await updateDoc(userDocRef, { emailVerified: true });
-                return;
+                try {
+                  await updateDoc(userDocRef, { emailVerified: true });
+                } catch (e) {
+                  console.error("Falha ao atualizar emailVerified:", e);
+                }
               }
+
               setUser({
                 uid: firebaseUser.uid,
                 email: firebaseUser.email,
                 displayName: data.name || firebaseUser.email,
-                emailVerified: !!data.emailVerified,
+                emailVerified: !!(data.emailVerified || firebaseUser.emailVerified),
               });
               setRole(data.role || null);
-              setProfileComplete(!!(data.name && data.cpf));
+
+              // 👇 confia no flag salvo pelo formulário
+              setProfileComplete(!!data.profileComplete);
             } else {
               setUser({
                 uid: firebaseUser.uid,
@@ -69,7 +74,6 @@ export function AuthProvider({ children }) {
           }
         );
       } else {
-        // Usuário deslogado
         setUser(null);
         setRole(null);
         setProfileComplete(false);
@@ -77,7 +81,6 @@ export function AuthProvider({ children }) {
       }
     });
 
-    // Função de limpeza final do useEffect
     return () => {
       unsubscribeAuth();
       unsubscribeSnapshot();
@@ -87,8 +90,6 @@ export function AuthProvider({ children }) {
   const value = { user, role, profileComplete, isLoading };
 
   return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 }

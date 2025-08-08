@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Criar conta — IEADSM",
+  title: "Criar conta | IEADSM",
   description: "Cadastro de ministros.",
 };
 

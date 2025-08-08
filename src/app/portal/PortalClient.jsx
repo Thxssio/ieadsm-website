@@ -1,8 +1,8 @@
-// src/app/portal/PortalClient.jsx
+// app/portal/PortalClient.jsx
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../lib/firebase/AuthContext";
 import { auth } from "../lib/firebase/client";
 import AdminPortalLayout from "../components/portal/AdminPortalLayout";
@@ -11,23 +11,23 @@ import AccessDeniedPage from "../components/portal/ui/AccessDeniedPage";
 export default function PortalClient() {
   const { user, role, profileComplete, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
-  /* ---------- Redirecionamentos básicos ---------- */
   useEffect(() => {
     if (isLoading) return;
 
-    if (!user) {
+    if (!user && pathname !== "/login") {
       router.replace("/login");
       return;
     }
 
-    if (user && !profileComplete) {
-      router.replace("/CompleteRegistration");
+    if (user && !profileComplete && pathname !== "/complete-registration") {
+      router.replace("/complete-registration");
+      return;
     }
-  }, [user, profileComplete, isLoading, router]);
+  }, [user, profileComplete, isLoading, pathname, router]);
 
-  /* ---------- Gate de loading / transições ---------- */
-  if (isLoading || !user || !profileComplete) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-50">
         <p>Carregando...</p>
@@ -35,7 +35,10 @@ export default function PortalClient() {
     );
   }
 
-  /* ---------- Logout ---------- */
+  if (!user || !profileComplete) {
+    return null; 
+  }
+
   const handleLogout = async () => {
     try {
       await auth.signOut();
@@ -45,19 +48,14 @@ export default function PortalClient() {
     }
   };
 
-  /* ---------- Controle de acesso ---------- */
   const hasAccess = [
     "admin",
     "pastor",
     "supervisor_departamento",
-    "supervisor_setor",
+    "supervisor_setor"
   ].includes(role);
 
-  if (hasAccess) {
-    return (
-      <AdminPortalLayout key={user.uid} user={user} onLogout={handleLogout} />
-    );
-  }
-
-  return <AccessDeniedPage />;
+  return hasAccess
+    ? <AdminPortalLayout key={user.uid} user={user} onLogout={handleLogout} />
+    : <AccessDeniedPage />;
 }

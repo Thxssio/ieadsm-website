@@ -215,7 +215,7 @@ export default function UserManagementPage({ currentUser }) {
                       value={user.role ?? ""}
                       onChange={(e) => handleRoleChange(user.id, e.target.value)}
                       disabled={!canManageRoles || currentUser?.uid === user.id}
-                      className="block w-full rounded-md border-slate-300 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm disabled:bg-slate-200 disabled:cursor-not-allowed"
+                      className="block w-full rounded-md border-slate-300 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 disabled:bg-slate-200 disabled:cursor-not-allowed"
                       title={
                         currentUser?.uid === user.id
                           ? "Sua própria função não pode ser alterada."
@@ -299,7 +299,7 @@ export default function UserManagementPage({ currentUser }) {
                         value={user.role ?? ""}
                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         disabled={!canManageRoles || currentUser?.uid === user.id}
-                        className="flex-grow block w-full rounded-md border-slate-300 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm disabled:bg-slate-200 disabled:cursor-not-allowed"
+                        className="flex-grow block w-full rounded-md border-slate-300 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 disabled:bg-slate-200 disabled:cursor-not-allowed"
                         title={
                           currentUser?.uid === user.id
                             ? "Sua própria função não pode ser alterada."

@@ -2,7 +2,7 @@ import { getAuth } from "firebase-admin/auth";
 import { NextResponse } from "next/server";
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_KEY);
 
 if (!getApps().length) {
   initializeApp({
@@ -10,7 +10,6 @@ if (!getApps().length) {
   });
 }
 
-// A função precisa ser exportada como POST
 export async function POST(request) {
   try {
     const { idToken } = await request.json();
@@ -26,7 +25,8 @@ export async function POST(request) {
       value: sessionCookie,
       maxAge: expiresIn,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      path: "/",
     };
 
     const response = NextResponse.json({ status: "success" }, { status: 200 });
