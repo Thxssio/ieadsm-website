@@ -10,10 +10,14 @@ export default function AddressSection({ form, setForm, inputCls }) {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const { loading: cepLoading, error: cepErr, handleCepInput } =
-    useCepLookup({ form, setForm });
+    useCepLookup({ setForm });
 
   return (
-    <FormSection title="Endereço" subtitle="Residência atual" icon={<MapPinned size={18} />}>
+    <FormSection
+      title="Endereço"
+      subtitle="Residência atual"
+      icon={<MapPinned size={18} />}
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field label="Endereço" required>
           <input
@@ -22,6 +26,7 @@ export default function AddressSection({ form, setForm, inputCls }) {
             value={form.endereco || ""}
             onChange={onChange}
             placeholder="Rua / Avenida"
+            autoComplete="address-line1"
           />
         </Field>
 
@@ -33,6 +38,7 @@ export default function AddressSection({ form, setForm, inputCls }) {
             onChange={onChange}
             placeholder="Nº"
             inputMode="numeric"
+            autoComplete="address-line2"
           />
         </Field>
 
@@ -43,6 +49,7 @@ export default function AddressSection({ form, setForm, inputCls }) {
             value={form.complemento || ""}
             onChange={onChange}
             placeholder="Ap., bloco, referência..."
+            autoComplete="address-line2"
           />
         </Field>
 
@@ -52,6 +59,7 @@ export default function AddressSection({ form, setForm, inputCls }) {
             className={inputCls}
             value={form.bairro || ""}
             onChange={onChange}
+            autoComplete="address-level3"
           />
         </Field>
 
@@ -61,6 +69,7 @@ export default function AddressSection({ form, setForm, inputCls }) {
             className={inputCls}
             value={form.cidade || ""}
             onChange={onChange}
+            autoComplete="address-level2"
           />
         </Field>
 
@@ -73,10 +82,11 @@ export default function AddressSection({ form, setForm, inputCls }) {
             onChange={(e) =>
               setForm((f) => ({ ...f, uf: e.target.value.toUpperCase() }))
             }
+            autoComplete="address-level1"
           />
         </Field>
 
-        {/* CEP sem botão: busca automática quando tiver 8 dígitos */}
+        {/* CEP: busca automática quando tiver 8 dígitos numéricos */}
         <div className="md:col-span-2">
           <label className="block text-sm font-medium">CEP</label>
           <input
@@ -89,7 +99,11 @@ export default function AddressSection({ form, setForm, inputCls }) {
             autoComplete="postal-code"
           />
           {(cepLoading || cepErr) && (
-            <p className={`mt-1 text-xs ${cepErr ? "text-red-600" : "text-slate-500"}`}>
+            <p
+              className={`mt-1 text-xs ${
+                cepErr ? "text-red-600" : "text-slate-500"
+              }`}
+            >
               {cepErr ? cepErr : "Buscando CEP..."}
             </p>
           )}

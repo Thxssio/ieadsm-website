@@ -5,12 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
   Users,
-  BookText,        // Ministérios
+  BookText,
   Church,
-  LayoutTemplate,  // Conteúdo do site
+  LayoutTemplate,
   Calendar,
-  Settings,        // Programação
+  Clock,
   LogOut,
+  Settings,
 } from "lucide-react";
 
 import PageContent from "./ui/PageContent";
@@ -18,37 +19,83 @@ import DashboardPage from "./features/DashboardPage";
 import UserManagementPage from "./features/UserManagementPage";
 import SchedulePage from "./features/SchedulePage";
 import MinistriesPage from "./features/MinistriesPage";
+import ConfigurationPage from "./features/ConfigurationPage";
+
 
 import { useHasRole } from "../../hooks/useClaims";
+import { useAuthUser } from "../../hooks/useAuthUser"; // unifica Auth + Firestore
+
+// --------- helpers
+function cx(...xs) { return xs.filter(Boolean).join(" "); }
+function initialsFromName(name = "") {
+  const parts = name.trim().split(/\s+/).slice(0, 2);
+  return parts.map(p => p[0]?.toUpperCase() || "").join("");
+}
+
+function UserAvatar({ name, photoURL, size = 48 }) {
+  const [err, setErr] = React.useState(false);
+  const initials = initialsFromName(name || "Usuário");
+
+  return (
+    <div className="relative">
+      <div className="absolute inset-0 blur-md rounded-full bg-sky-100/60 scale-110" aria-hidden />
+      <div
+        className="relative rounded-full overflow-hidden border border-slate-200 bg-white"
+        style={{ width: size, height: size }}
+      >
+        {!photoURL || err ? (
+          <div className="w-full h-full grid place-items-center bg-slate-50">
+            <span className="text-sm font-semibold text-slate-600">{initials || "?"}</span>
+          </div>
+        ) : (
+          <img
+            src={photoURL}
+            alt={name || "Usuário"}
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+            onError={() => setErr(true)}
+            loading="lazy"
+          />
+        )}
+      </div>
+    </div>
+  );
+}
 
 const NavItem = ({ icon, label, active, onClick, disabled }) => (
   <button
     onClick={disabled ? undefined : onClick}
     disabled={disabled}
-    className={`w-full flex items-center px-4 py-2.5 text-sm transition-all duration-200 rounded-lg
-      ${disabled
-        ? "text-slate-400 cursor-not-allowed"
-        : active
-          ? "bg-[#2a3d57] text-white shadow-sm"
-          : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
-      }`}
-    aria-disabled={disabled}
+    className={cx(
+      "w-full relative group flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors",
+      disabled && "text-slate-400 cursor-not-allowed",
+      !disabled && !active && "text-slate-600 hover:text-slate-900 hover:bg-slate-100",
+      active && "text-sky-900 bg-sky-50 ring-1 ring-sky-200"
+    )}
   >
-    <div className="mr-3">{icon}</div>
-    <span className="font-semibold">{label}</span>
+    <span
+      className={cx(
+        "absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r",
+        active ? "bg-[#2a3d57]" : "bg-transparent group-hover:bg-slate-300"
+      )}
+    />
+    <div className={cx("shrink-0", active ? "text-sky-700" : "text-slate-500 group-hover:text-slate-700")}>
+      {icon}
+    </div>
+    <span className="font-medium">{label}</span>
   </button>
 );
 
-export default function AdminPortalLayout({ user, onLogout }) {
+export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl }) {
+  const { photoURL } = useAuthUser(userProp?.uid);
   const [activePage, setActivePage] = useState("dashboard");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Permissões por papel
-  const { allowed: canSeeUsers,  loading: rlUsers  } = useHasRole(["admin", "pastor", "supervisor_departamento", "supervisor_setor"]);
-  const { allowed: canSeeMin,    loading: rlMin    } = useHasRole(["admin", "pastor", "supervisor_departamento", "supervisor_setor", "ministro"]);
-  const { allowed: canSeeSched,  loading: rlSched  } = useHasRole(["admin", "pastor", "supervisor_departamento", "supervisor_setor"]); // ajuste se quiser abrir mais
-
+  // Permissões
+  const { allowed: canSeeUsers,  loading: rlUsers } = useHasRole(["admin","pastor","supervisor_departamento","supervisor_setor"]);
+  const { allowed: canSeeMin,    loading: rlMin   } = useHasRole(["admin","pastor","supervisor_departamento","supervisor_setor","ministro"]);
+  const { allowed: canSeeSched,  loading: rlSched } = useHasRole(["admin","pastor","supervisor_departamento","supervisor_setor"]);
   const rolesLoading = rlUsers || rlMin || rlSched;
 
   const handleNavItemClick = (page) => {
@@ -59,196 +106,141 @@ export default function AdminPortalLayout({ user, onLogout }) {
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
-    setIsLoggingOut(true); // evita que telas internas montem listeners durante a transição
+    setIsLoggingOut(true);
     try {
-      const maybePromise = onLogout?.();
-      if (maybePromise && typeof maybePromise.then === "function") {
-        await maybePromise;
-      }
-    } finally {
-      // Após o signOut, a tela que te envolve provavelmente redireciona; se não, podemos manter um estado mínimo
-    }
+      const maybe = onLogout?.();
+      if (maybe && typeof maybe.then === "function") await maybe;
+    } finally {}
   };
 
   const PageRenderer = useMemo(() => {
     if (isLoggingOut) {
       return () => (
         <PageContent title="Saindo...">
-          <p style={{ color: "#2a3d57" }}>Finalizando sua sessão, aguarde.</p>
+          <p className="text-slate-700">Finalizando sua sessão, aguarde.</p>
         </PageContent>
       );
     }
     if (rolesLoading) {
       return () => (
         <PageContent title="Carregando permissões">
-          <p style={{ color: "#2a3d57" }}>Verificando seu acesso...</p>
+          <p className="text-slate-700">Verificando seu acesso…</p>
         </PageContent>
       );
     }
     return () => {
       switch (activePage) {
-        case "dashboard":
-          return <DashboardPage user={user} />;
-        case "users":
-          return canSeeUsers ? (
-            <UserManagementPage currentUser={user} />
-          ) : (
-            <PageContent title="Acesso restrito">
-              <p style={{ color: "#2a3d57" }}>Você não tem permissão para acessar esta seção.</p>
-            </PageContent>
-          );
-        case "ministries":
-          return canSeeMin ? (
-            <MinistriesPage />
-          ) : (
-            <PageContent title="Acesso restrito">
-              <p style={{ color: "#2a3d57" }}>Você não tem permissão para acessar esta seção.</p>
-            </PageContent>
-          );
-        case "congregations":
-          return (
-            <PageContent title="Congregações">
-              <p style={{ color: "#2a3d57" }}>Página para gerenciar as congregações (em construção).</p>
-            </PageContent>
-          );
-        case "siteContent":
-          return (
-            <PageContent title="Conteúdo do Site">
-              <p style={{ color: "#2a3d57" }}>Página para gerenciar o conteúdo do site (em construção).</p>
-            </PageContent>
-          );
-        case "events":
-          return (
-            <PageContent title="Eventos">
-              <p style={{ color: "#2a3d57" }}>Página para gerenciar eventos (em construção).</p>
-            </PageContent>
-          );
-        case "schedule":
-          return canSeeSched ? (
-            <SchedulePage />
-          ) : (
-            <PageContent title="Acesso restrito">
-              <p style={{ color: "#2a3d57" }}>Você não tem permissão para acessar esta seção.</p>
-            </PageContent>
-          );
-        default:
-          return (
-            <PageContent title="Dashboard">
-              <p style={{ color: "#2a3d57" }}>Página não encontrada.</p>
-            </PageContent>
-          );
+        case "dashboard":     return <DashboardPage user={userProp} />;
+        case "users":         return canSeeUsers ? <UserManagementPage currentUser={userProp} /> : <PageContent title="Acesso restrito"><p className="text-slate-700">Você não tem permissão para acessar esta seção.</p></PageContent>;
+        case "ministries":    return canSeeMin   ? <MinistriesPage /> : <PageContent title="Acesso restrito"><p className="text-slate-700">Você não tem permissão para acessar esta seção.</p></PageContent>;
+        case "congregations": return <PageContent title="Congregações"><p className="text-slate-700">Página para gerenciar as congregações (em construção).</p></PageContent>;
+        case "siteContent":   return <PageContent title="Conteúdo do Site"><p className="text-slate-700">Página para gerenciar o conteúdo do site (em construção).</p></PageContent>;
+        case "events":        return <PageContent title="Eventos"><p className="text-slate-700">Página para gerenciar eventos (em construção).</p></PageContent>;
+        case "schedule":      return canSeeSched ? <SchedulePage /> : <PageContent title="Acesso restrito"><p className="text-slate-700">Você não tem permissão para acessar esta seção.</p></PageContent>;
+        case "configuration": return <ConfigurationPage />;
+        default:              return <PageContent title="Dashboard"><p className="text-slate-700">Página não encontrada.</p></PageContent>;
       }
     };
-  }, [activePage, user, canSeeUsers, canSeeMin, canSeeSched, rolesLoading, isLoggingOut]);
+  }, [activePage, userProp, canSeeUsers, canSeeMin, canSeeSched, rolesLoading, isLoggingOut]);
 
   const navLinksBlock = (
     <>
-      <NavItem
-        icon={<Home size={20} strokeWidth={2} />}
-        label="Dashboard"
-        active={activePage === "dashboard"}
-        onClick={() => handleNavItemClick("dashboard")}
-        disabled={isLoggingOut}
-      />
+      <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-2 mb-1">Principal</div>
+      <NavItem icon={<Home size={20} strokeWidth={2} />} label="Dashboard" active={activePage === "dashboard"} onClick={() => handleNavItemClick("dashboard")} disabled={isLoggingOut} />
 
-      {/* Usuários (somente se permitido) */}
-      {(!rolesLoading && canSeeUsers) && (
-        <NavItem
-          icon={<Users size={20} strokeWidth={2} />}
-          label="Usuários"
-          active={activePage === "users"}
-          onClick={() => handleNavItemClick("users")}
-          disabled={isLoggingOut}
-        />
+      {!rolesLoading && canSeeUsers && (
+        <>
+          <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Pessoas</div>
+          <NavItem icon={<Users size={20} strokeWidth={2} />} label="Usuários" active={activePage === "users"} onClick={() => handleNavItemClick("users")} disabled={isLoggingOut} />
+        </>
       )}
 
-      {/* Ministérios (somente se permitido) */}
-      {(!rolesLoading && canSeeMin) && (
-        <NavItem
-          icon={<BookText size={20} strokeWidth={2} />}
-          label="Ministérios"
-          active={activePage === "ministries"}
-          onClick={() => handleNavItemClick("ministries")}
-          disabled={isLoggingOut}
-        />
+      {!rolesLoading && canSeeMin && (
+        <>
+          <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Ministérios & Conteúdo</div>
+          <NavItem icon={<BookText size={20} strokeWidth={2} />} label="Ministérios" active={activePage === "ministries"} onClick={() => handleNavItemClick("ministries")} disabled={isLoggingOut} />
+        </>
       )}
 
-      {/* As demais seções podem ficar visíveis para todos (ajuste conforme política) */}
-      <NavItem
-        icon={<Church size={20} strokeWidth={2} />}
-        label="Congregações"
-        active={activePage === "congregations"}
-        onClick={() => handleNavItemClick("congregations")}
-        disabled={isLoggingOut}
-      />
-      <NavItem
-        icon={<LayoutTemplate size={20} strokeWidth={2} />}
-        label="Conteúdo do Site"
-        active={activePage === "siteContent"}
-        onClick={() => handleNavItemClick("siteContent")}
-        disabled={isLoggingOut}
-      />
-      <NavItem
-        icon={<Calendar size={20} strokeWidth={2} />}
-        label="Eventos"
-        active={activePage === "events"}
-        onClick={() => handleNavItemClick("events")}
-        disabled={isLoggingOut}
-      />
+      <NavItem icon={<Church size={20} strokeWidth={2} />} label="Congregações" active={activePage === "congregations"} onClick={() => handleNavItemClick("congregations")} disabled={isLoggingOut} />
+      <NavItem icon={<LayoutTemplate size={20} strokeWidth={2} />} label="Conteúdo do Site" active={activePage === "siteContent"} onClick={() => handleNavItemClick("siteContent")} disabled={isLoggingOut} />
+      <NavItem icon={<Calendar size={20} strokeWidth={2} />} label="Eventos" active={activePage === "events"} onClick={() => handleNavItemClick("events")} disabled={isLoggingOut} />
 
-      {/* Programação (somente se permitido) */}
-      {(!rolesLoading && canSeeSched) && (
-        <NavItem
-          icon={<Settings size={20} strokeWidth={2} />}
-          label="Programação"
-          active={activePage === "schedule"}
-          onClick={() => handleNavItemClick("schedule")}
-          disabled={isLoggingOut}
-        />
+      {!rolesLoading && canSeeSched && (
+        <>
+          <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Operacional</div>
+          <NavItem icon={<Clock size={20} strokeWidth={2} />} label="Programação" active={activePage === "schedule"} onClick={() => handleNavItemClick("schedule")} disabled={isLoggingOut} />
+          <NavItem icon={<Settings size={20} strokeWidth={2} />} label="Configurações"active={activePage === "configuration"} onClick={() => handleNavItemClick("configuration")} disabled={isLoggingOut}/>
+
+        </>
       )}
     </>
   );
 
   const overlayVariants = { visible: { opacity: 1 }, hidden: { opacity: 0 } };
-  const menuVariants = {
-    visible: { x: 0, transition: { type: "spring", stiffness: 400, damping: 40 } },
-    hidden: { x: "-100%" },
-  };
+  const menuVariants = { visible: { x: 0, transition: { type: "spring", stiffness: 400, damping: 40 } }, hidden: { x: "-100%" } };
 
   return (
     <div className="min-h-screen flex bg-slate-50">
-      {/* Sidebar (desktop) */}
-      <aside className="w-64 bg-white border-r border-slate-200 flex-col p-4 hidden lg:flex">
-        <div className="p-4 text-center border-b border-slate-200 mb-4">
-          <h2 className="text-xl font-bold text-[#2a3d57]">Portal IEADSM</h2>
-          <p className="text-sm text-slate-500 mt-1 capitalize">
-            {user?.displayName || "Usuário"}
-          </p>
+      {/* Sidebar */}
+      <aside className="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col">
+        {/* Header da sidebar — branco, com destaque suave no avatar */}
+        <div className="px-4 pt-6 pb-5 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={56} />
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                {logoUrl ? (
+                  <img src={logoUrl} alt="Logo" className="h-4 opacity-90" />
+                ) : (
+                  <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+                    IEADSM
+                  </span>
+                )}
+              </div>
+              <div className="font-semibold text-slate-900 truncate">{userProp?.displayName || "Usuário"}</div>
+              <div className="text-xs text-slate-500 truncate">{userProp?.email || "sem e-mail"}</div>
+            </div>
+          </div>
         </div>
-        <nav className="flex-1 space-y-2">{navLinksBlock}</nav>
-        <div className="pt-4 border-t border-slate-200">
-          <NavItem
-            icon={<LogOut size={20} strokeWidth={2} />}
-            label={isLoggingOut ? "Saindo..." : "Sair"}
+
+        {/* Navegação */}
+        <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">{navLinksBlock}</nav>
+
+        {/* Sair */}
+        <div className="p-3 border-t border-slate-100">
+          <button
             onClick={handleLogout}
             disabled={isLoggingOut}
-          />
+            className={cx(
+              "w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+              "border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50"
+            )}
+          >
+            <LogOut size={18} />
+            {isLoggingOut ? "Saindo..." : "Sair"}
+          </button>
         </div>
       </aside>
 
-      {/* Conteúdo */}
+      {/* Área principal */}
       <div className="flex-1 flex flex-col">
         {/* Topbar (mobile) */}
-        <header className="lg:hidden flex items-center justify-between bg-white border-b border-slate-200 p-4 sticky top-0 z-30">
-          <h2 className="text-lg font-bold text-[#2a3d57]">Portal IEADSM</h2>
+        <header className="lg:hidden flex items-center justify-between bg-white border-b border-slate-200 p-3 sticky top-0 z-30">
+          <div className="flex items-center gap-2">
+            <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={34} />
+            <div className="leading-tight">
+              <div className="text-[13px] font-semibold text-slate-800">Portal IEADSM</div>
+              <div className="text-[11px] text-slate-500 truncate">{userProp?.displayName || "Usuário"}</div>
+            </div>
+          </div>
           <button
             onClick={() => !isLoggingOut && setIsMenuOpen(true)}
             className="p-2 rounded-md hover:bg-slate-100 text-slate-700"
-            aria-label="Abrir menu"
             disabled={isLoggingOut}
+            aria-label="Abrir menu"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="3" y1="18" x2="21" y2="18" />
@@ -271,33 +263,43 @@ export default function AdminPortalLayout({ user, onLogout }) {
               />
               <motion.div
                 key="menu"
-                className="fixed top-0 left-0 h-full w-64 bg-white shadow-xl p-4 z-50 flex flex-col"
+                className="fixed top-0 left-0 h-full w-72 bg-white shadow-xl z-50 flex flex-col"
                 variants={menuVariants}
                 initial="hidden"
                 animate="visible"
                 exit="hidden"
               >
-                <div className="px-4 pt-4 pb-5 border-b border-slate-200 mb-4">
-                  <h2 className="text-lg font-semibold text-[#2a3d57]">Menu</h2>
-                  <p className="text-sm text-slate-500 capitalize">
-                    {user?.displayName || "Usuário"}
-                  </p>
+                <div className="px-4 pt-6 pb-5 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={52} />
+                    <div className="min-w-0">
+                      <div className="font-semibold text-slate-900 truncate">{userProp?.displayName || "Usuário"}</div>
+                      <div className="text-xs text-slate-500 truncate">{userProp?.email || "sem e-mail"}</div>
+                    </div>
+                  </div>
                 </div>
-                <nav className="flex-1 space-y-2">{navLinksBlock}</nav>
-                <div className="pt-4 border-t border-slate-200">
-                  <NavItem
-                    icon={<LogOut size={20} strokeWidth={2} />}
-                    label="Sair"
+
+                <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">{navLinksBlock}</nav>
+
+                <div className="p-3 border-t border-slate-100">
+                  <button
                     onClick={handleLogout}
                     disabled={isLoggingOut}
-                  />
+                    className={cx(
+                      "w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                      "border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    )}
+                  >
+                    <LogOut size={18} />
+                    {isLoggingOut ? "Saindo..." : "Sair"}
+                  </button>
                 </div>
               </motion.div>
             </>
           )}
         </AnimatePresence>
 
-        {/* Página ativa */}
+        {/* Conteúdo */}
         <main className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -305,7 +307,8 @@ export default function AdminPortalLayout({ user, onLogout }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.18 }}
+              className="p-4 md:p-6"
             >
               <PageRenderer />
             </motion.div>

@@ -1,15 +1,25 @@
+// src/app/complete-registration/CompleteRegistrationClient.jsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  doc, getDoc, setDoc, collection, query, where, getDocs
+  doc,
+  getDoc,
+  setDoc,
+  runTransaction,
+  collection,
+  query,
+  where,
+  getDocs,
+  limit,
 } from "firebase/firestore";
 import { db, storage } from "../lib/firebase/client";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useAuth } from "../lib/firebase/AuthContext";
 import { onlyDigits, validateCPF } from "../lib/utils/cpf";
 
+/* Seções do formulário */
 import RegistrationTypeSection from "../components/Registration/RegistrationTypeSection";
 import IdentificationSection   from "../components/Registration/IdentificationSection";
 import AddressSection          from "../components/Registration/AddressSection";
@@ -24,12 +34,13 @@ import SummaryCard             from "../components/Registration/SummaryCard";
 import HelpCard                from "../components/Registration/HelpCard";
 import ProfileImageUploader    from "../components/Registration/ProfileImageUploader";
 
-/* força cores para não herdar text-white */
+/* Input base (não herdar text-white) */
 const inputCls =
   "mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 " +
   "bg-white text-stone-900 placeholder-stone-400 " +
   "focus:outline-none focus:ring-2 focus:ring-[#2a3d57]";
 
+/* Estado inicial */
 const initialForm = {
   registroTipo: "ADMISSÃO",
   idInterno: "",
@@ -47,7 +58,7 @@ const initialForm = {
 
   // endereço
   endereco: "",
-  numero: "",   
+  numero: "",
   complemento: "",
   bairro: "",
   cidade: "",
@@ -59,7 +70,7 @@ const initialForm = {
   mae: "",
   cpfPai: "",
   cpfMae: "",
-  isOrphan: false, 
+  isOrphan: false, // se true, mãe não é obrigatória
 
   // pessoais
   nacionalidade: "",
@@ -105,22 +116,7 @@ const initialForm = {
   photoURL: "",
 };
 
-async function findExistingFamilyIdByCpfs(cpfs) {
-  const membersRef = collection(db, "users");
-  for (const raw of cpfs) {
-    const cpf = onlyDigits(raw);
-    if (!cpf) continue;
-    const q1 = query(membersRef, where("cpf", "==", cpf));
-    const snap = await getDocs(q1);
-    if (!snap.empty) {
-      const d = snap.docs[0].data();
-      if (d.familyId) return d.familyId;
-    }
-  }
-  return null;
-}
-
-// compressão rápida p/ WebP no browser
+/* WebP rápido no browser */
 async function fileToWebp(file, { maxWidth = 800, maxHeight = 800, quality = 0.85 } = {}) {
   const bitmap = await createImageBitmap(file);
   const ratio = Math.min(maxWidth / bitmap.width, maxHeight / bitmap.height, 1);
@@ -129,13 +125,48 @@ async function fileToWebp(file, { maxWidth = 800, maxHeight = 800, quality = 0.8
   canvas.height = Math.round(bitmap.height * ratio);
   const ctx = canvas.getContext("2d");
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  const blob = await new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/webp", quality));
+  return new File([blob], file.name.replace(/\.\w+$/, ".webp"), { type: "image/webp" });
+}
 
-  const blob = await new Promise((resolve) =>
-    canvas.toBlob((b) => resolve(b), "image/webp", quality)
-  );
-  return new File([blob], file.name.replace(/\.\w+$/, ".webp"), {
-    type: "image/webp",
+/** Pega o próximo idInterno sequencial (numérico) de forma atômica. */
+async function getNextInternalId() {
+  const ctrRef = doc(db, "counters", "idInterno");
+  const seed = 100000; // valor inicial, ajuste se quiser
+  const newId = await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ctrRef);
+    let current = snap.exists() ? (snap.data().current || seed) : seed;
+    current = Number(current);
+    if (!Number.isFinite(current)) current = seed;
+    const next = current + 1;
+    tx.set(ctrRef, { current: next, updatedAt: new Date() }, { merge: true });
+    return next;
   });
+  return String(newId); // garantir string de dígitos
+}
+
+/* Tenta incluir o usuário como "filho" em families/{CPF}/members/{uid}.
+   Se passar, retorna { ok: true, familyId }. Se falhar, { ok: false }. */
+async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
+  const familyId = onlyDigits(cpfToJoin || "");
+  if (!familyId || !validateCPF(familyId)) return { ok: false };
+  try {
+    await setDoc(
+      doc(db, "families", familyId, "members", uid),
+      {
+        uid,
+        name: userName,
+        cpf: userCpfDigits,   // CPF do usuário que está entrando
+        kinship: "filho",
+        updatedAt: new Date(),
+      },
+      { merge: true }
+    );
+    return { ok: true, familyId };
+  } catch (e) {
+    console.warn("Não foi possível entrar na família", familyId, e?.code || e);
+    return { ok: false };
+  }
 }
 
 export default function CompleteRegistrationClient() {
@@ -151,7 +182,7 @@ export default function CompleteRegistrationClient() {
   const [previewImage, setPreviewImage] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  // guards
+  /* Guards */
   useEffect(() => {
     if (isLoading) return;
     if (!user) {
@@ -161,192 +192,207 @@ export default function CompleteRegistrationClient() {
     if (profileComplete) router.replace("/portal");
   }, [user, isLoading, profileComplete, router]);
 
-  // carrega e gera idInterno, aplica foto existente
+  /* Carrega dados e gera idInterno / preview */
   useEffect(() => {
     if (!user) return;
-
     (async () => {
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
+      const r = doc(db, "users", user.uid);
+      const snap = await getDoc(r);
 
       let next = { ...initialForm, email: user?.email || "" };
+      if (snap.exists()) next = { ...next, ...snap.data() };
 
-      if (snap.exists()) {
-        const data = snap.data();
-        next = { ...next, ...data };
-      }
-
+      // Geração numérica e única do idInterno (se não existir)
       if (!next.idInterno) {
-        next.idInterno =
-          "ID-" + Math.random().toString(36).slice(2, 11).toUpperCase();
+        try {
+          next.idInterno = await getNextInternalId();
+        } catch (e) {
+          console.error("Falha ao gerar idInterno:", e);
+          // fallback simples: timestamp (ainda numérico, mas menos bonito)
+          next.idInterno = String(Date.now());
+        }
+      } else {
+        // se já veio salvo, normaliza pra dígitos (evita lixo)
+        next.idInterno = onlyDigits(next.idInterno);
       }
 
       setForm(next);
-      setPreviewImage(next.photoURL || user.photoURL || ""); // preview inicial
+      setPreviewImage(next.photoURL || user.photoURL || "");
     })();
   }, [user]);
 
-    const requiredOk = () => {
-    // telefone NÃO é obrigatório
-    // pai NÃO é obrigatório
-    // mãe é obrigatória, exceto se isOrphan = true
-    const baseReq = [
-        "congregacao","setor","name","endereco","bairro","uf","cidade","cep",
-        /* "telefone", */ "celular","cpf","rg","tituloEleitor",
-        /* "pai", */ /* "mae", */ // mãe tratada abaixo
-        "nacionalidade","profissao","grauInstrucao","sexo","dataNascimento",
-        "localNascimento","email","estadoCivil","dataConversao","origem",
-        "localBatismo","dataBatismo",
+  // manter idInterno sempre só dígitos, mesmo se editar manualmente no form
+  useEffect(() => {
+    if (!form?.idInterno) return;
+    const digits = onlyDigits(form.idInterno);
+    if (digits !== form.idInterno) {
+      setForm((old) => ({ ...old, idInterno: digits }));
+    }
+  }, [form.idInterno]);
+
+  /* Obrigatórios mínimos */
+  const requiredOk = () => {
+    const base = [
+      "name","cpf","endereco","bairro","cidade","uf","cep",
+      "sexo","dataNascimento","estadoCivil","email",
     ];
-
-    const allBaseFilled = baseReq.every((k) => String(form[k] || "").trim());
+    const baseFilled = base.every((k) => String(form[k] || "").trim());
     const motherOk = form.isOrphan ? true : Boolean(String(form.mae || "").trim());
-
-    return allBaseFilled && motherOk && form.autorizacao;
-    };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setProfileFile(file);
-    setPreviewImage(URL.createObjectURL(file));
+    return baseFilled && motherOk && form.autorizacao === true;
   };
 
-  const uploadProfileIfNeeded = async () => {
-    if (!profileFile || !user) return previewImage || form.photoURL || "";
-    // comprime e envia
+  /* Upload (opcional) */
+  const uploadProfileIfNeeded = async (uid) => {
+    if (!profileFile) return form.photoURL || previewImage || "";
     const compressed = await fileToWebp(profileFile);
-    const storageRef = ref(storage, `profileImages/${user.uid}/profile.webp`);
+    const storageRef = ref(storage, `profileImages/${uid}/profile.webp`);
     const task = uploadBytesResumable(storageRef, compressed);
     const url = await new Promise((resolve, reject) => {
-      task.on(
-        "state_changed",
-        (snap) => {
-          const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-          setUploadProgress(pct);
-        },
+      task.on("state_changed",
+        (s) => setUploadProgress(Math.round((s.bytesTransferred / s.totalBytes) * 100)),
         reject,
-        async () => {
-          const downloadURL = await getDownloadURL(task.snapshot.ref);
-          resolve(downloadURL);
-        }
+        async () => resolve(await getDownloadURL(task.snapshot.ref))
       );
     });
     return url;
   };
 
+  /* Verifica unicidade do idInterno no Firestore */
+  const assertUniqueInternalId = async (candidateId, myUid) => {
+    const q = query(
+      collection(db, "users"),
+      where("idInterno", "==", candidateId),
+      limit(1)
+    );
+    const rs = await getDocs(q);
+    if (rs.empty) return true;
+    const hit = rs.docs[0];
+    // se encontrou e não é meu documento, não é único
+    return hit.id === myUid;
+  };
+
+  /* Submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErr("");
-    if (!user) return;
-
-    if (!requiredOk()) {
-      setErr("Preencha os campos obrigatórios (*) e aceite a autorização.");
-      return;
-    }
+    if (!user) return setErr("Você precisa estar logado.");
+    if (!requiredOk()) return setErr("Preencha os obrigatórios (*) e aceite a autorização.");
 
     setSaving(true);
-    try {
-      // normalizações
-      const cpf        = onlyDigits(form.cpf);
-      const cpfConjuge = onlyDigits(form.cpfConjuge);
-      const cpfPai     = onlyDigits(form.cpfPai);
-      const cpfMae     = onlyDigits(form.cpfMae);
-      const filhos     = (form.filhos || []).map((f) => ({
-        name: (f.name || "").trim(),
-        cpf: onlyDigits(f.cpf),
-      }));
 
-      // validações de CPF
-      const invalids = [];
-      if (!validateCPF(cpf)) invalids.push("CPF do titular");
-      if (cpfConjuge && !validateCPF(cpfConjuge)) invalids.push("CPF do cônjuge");
-      if (cpfPai && !validateCPF(cpfPai)) invalids.push("CPF do pai");
-      if (cpfMae && !validateCPF(cpfMae)) invalids.push("CPF da mãe");
-      filhos.forEach((f, idx) => {
-        if (f.cpf && !validateCPF(f.cpf)) invalids.push(`CPF do filho #${idx + 1}`);
-      });
-      if (invalids.length) {
-        setErr(`Revise os seguintes CPFs inválidos: ${invalids.join(", ")}.`);
+    const step = async (label, fn) => {
+      try { return await fn(); }
+      catch (e) { e.__step = label; console.error(`✗ Falhou em: "${label}"`, e); throw e; }
+    };
+
+    try {
+      const uid       = user.uid;
+      const cpf       = onlyDigits(form.cpf);
+      const cpfConj   = onlyDigits(form.cpfConjuge);
+      const cpfPai    = onlyDigits(form.cpfPai);
+      const cpfMae    = onlyDigits(form.cpfMae);
+      const filhos    = (form.filhos || []).map((f) => ({ name: (f.name||"").trim(), cpf: onlyDigits(f.cpf) }));
+      const idInterno = onlyDigits(form.idInterno);
+
+      // valida idInterno: só dígitos e não vazio
+      if (!idInterno || !/^\d+$/.test(idInterno)) {
         setSaving(false);
-        return;
+        return setErr("ID interno inválido. Use apenas números.");
       }
 
-      // envia foto se houver
-      let photoURL = await uploadProfileIfNeeded();
+      // valida unicidade do idInterno
+      const isUnique = await step("Checar unicidade do idInterno", () =>
+        assertUniqueInternalId(idInterno, uid)
+      );
+      if (!isUnique) {
+        setSaving(false);
+        return setErr(`O ID interno ${idInterno} já existe no sistema. Por favor, escolha outro.`);
+      }
 
-      // resolve familyId: procura existente por CPFs relacionados; se não, usa CPF do titular
-      const probeCpfs = [cpf, cpfConjuge, cpfPai, cpfMae, ...filhos.map((f) => f.cpf)];
-      let familyId =
-        form.familyId ||
-        (await findExistingFamilyIdByCpfs(probeCpfs)) ||
-        cpf || null;
+      // valida CPFs
+      const invalids = [];
+      if (!validateCPF(cpf)) invalids.push("Titular");
+      if (cpfConj && !validateCPF(cpfConj)) invalids.push("Cônjuge");
+      if (cpfPai  && !validateCPF(cpfPai))  invalids.push("Pai");
+      if (cpfMae  && !validateCPF(cpfMae))  invalids.push("Mãe");
+      filhos.forEach((f, i) => { if (f.cpf && !validateCPF(f.cpf)) invalids.push(`Filho #${i+1}`); });
+      if (invalids.length) { setSaving(false); return setErr(`CPF inválido: ${invalids.join(", ")}.`); }
 
-      // salva/atualiza usuário
-      const refUser = doc(db, "users", user.uid);
-      const payload = {
-        ...form,
-        cpf,
-        cpfConjuge,
-        cpfPai,
-        cpfMae,
-        filhos,
-        familyId,
-        photoURL: photoURL || form.photoURL || "",
-        email: form.email || user.email || "",
-        cep: onlyDigits(form.cep),
-        updatedAt: new Date(),
-        profileComplete: true,
-      };
-      await setDoc(refUser, payload, { merge: true });
+      // 1) Vincular família existente (sem leitura) → write-probe pai, depois mãe
+      let familyId = null;
+      let kinship  = "titular";
 
-      // upsert da família
-      if (familyId) {
-        const famRef = doc(db, "families", familyId);
-        await setDoc(
-          famRef,
-          {
-            responsibleCpf: familyId,
-            updatedAt: new Date(),
-          },
-          { merge: true }
+      let join = await step("Vincular família pelo CPF do pai", () =>
+        tryJoinFamilyByCpf(cpfPai, uid, form.name, cpf)
+      );
+      if (!join.ok) {
+        join = await step("Vincular família pelo CPF da mãe", () =>
+          tryJoinFamilyByCpf(cpfMae, uid, form.name, cpf)
         );
-
-        // titular (usa uid) — salva photoURL também
-        await setDoc(
-          doc(collection(db, "families", familyId, "members"), user.uid),
-          {
-            uid: user.uid,
-            name: form.name,
-            cpf,
-            photoURL: photoURL || form.photoURL || "",
-            kinship: "titular",
-            updatedAt: new Date(),
-          },
-          { merge: true }
+      }
+      if (join.ok) {
+        familyId = join.familyId; // entrou como "filho"
+        kinship  = "filho";
+      } else {
+        // cria própria família (titular)
+        familyId = cpf;
+        await step("Criar/atualizar família (se titular)", () =>
+          setDoc(doc(db, "families", familyId), { responsibleCpf: familyId, updatedAt: new Date() }, { merge: true })
         );
+        await step("Adicionar titular na família", () =>
+          setDoc(doc(db, "families", familyId, "members", uid), {
+            uid, name: form.name, cpf, kinship: "titular", updatedAt: new Date(),
+          }, { merge: true })
+        );
+      }
 
-        // placeholders por CPF (cônjuge/pais/filhos)
+      // 2) Upload foto (opcional)
+      const photoURL = await step("Upload de foto (se houver)", () => uploadProfileIfNeeded(uid));
+      if (photoURL) setPreviewImage(photoURL + "?t=" + Date.now());
+
+      // 3) Salvar/atualizar usuário
+      await step("Salvar usuário (users/{uid})", () =>
+        setDoc(doc(db, "users", uid), {
+          ...form,
+          idInterno,            // já normalizado
+          cpf,
+          cpfConjuge: cpfConj,
+          cpfPai, cpfMae,
+          filhos,
+          familyId,
+          photoURL: photoURL || form.photoURL || "",
+          cep: onlyDigits(form.cep),
+          updatedAt: new Date(),
+          profileComplete: true,
+        }, { merge: true })
+      );
+
+      // 4) Placeholders (agora você já é membro)
+      await step("Adicionar placeholders (familiares)", async () => {
         const placeholders = [
-          { name: form.nomeConjuge, cpf: cpfConjuge, kinship: "cônjuge" },
-          { name: form.pai,        cpf: cpfPai,     kinship: "pai" },
-          { name: form.mae,        cpf: cpfMae,     kinship: "mãe" },
+          { name: form.nomeConjuge, cpf: cpfConj, kinship: "cônjuge" },
+          { name: form.pai,         cpf: cpfPai,  kinship: "pai" },
+          { name: form.mae,         cpf: cpfMae,  kinship: "mãe" },
           ...filhos.map((f) => ({ name: f.name, cpf: f.cpf, kinship: "filho" })),
-        ].filter((p) => p.cpf);
+        ].filter(p => p.cpf);
 
         for (const p of placeholders) {
-          await setDoc(
-            doc(collection(db, "families", familyId, "members"), p.cpf),
-            { ...p, updatedAt: new Date() },
-            { merge: true }
-          );
+          try {
+            await setDoc(
+              doc(db, "families", familyId, "members", p.cpf),
+              { ...p, updatedAt: new Date() },
+              { merge: true }
+            );
+          } catch (e) {
+            // não bloquear o fluxo por placeholder
+            console.warn("Falha ao criar placeholder", p.cpf, e?.code || e);
+          }
         }
-      }
+      });
 
       router.replace("/portal");
     } catch (e) {
-      console.error(e);
-      setErr("Não foi possível salvar. Tente novamente.");
+      setErr(e.message || `Erro em: ${e.__step || "processo"}. Tente novamente.`);
     } finally {
       setSaving(false);
     }
@@ -384,18 +430,18 @@ export default function CompleteRegistrationClient() {
         <form id="member-form" onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Coluna principal */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Foto de Perfil */}
+            {/* Foto 3x4 */}
             <section className="rounded-2xl border border-slate-200 bg-white p-4">
-            <ProfileImageUploader
-            previewImage={previewImage || form.photoURL}
-            uploadProgress={uploadProgress}
-            onFileChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                setProfileFile(file); 
-                setPreviewImage(URL.createObjectURL(file));
-            }}
-            />
+              <ProfileImageUploader
+                previewImage={previewImage || form.photoURL}
+                uploadProgress={uploadProgress}
+                onFileChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setProfileFile(file);
+                  setPreviewImage(URL.createObjectURL(file));
+                }}
+              />
             </section>
 
             <RegistrationTypeSection form={form} setForm={setForm} inputCls={inputCls} />

@@ -19,17 +19,29 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { motion, AnimatePresence } from "framer-motion";
-import { PlusCircle, XCircle } from "lucide-react";
+import {
+  PlusCircle,
+  XCircle,
+  Image as ImageIcon,
+  Users as UsersIcon,
+  CalendarClock,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import PageContent from "../ui/PageContent";
 import ConfirmationModal from "../ui/ConfirmationModal";
 import { useHasRole } from "../../../hooks/useClaims";
 
 /* ------------------------------------------------------------------ */
-/* Helper: Converte/Redimensiona imagem para WEBP (no navegador)      */
+/* Helpers                                                             */
 /* ------------------------------------------------------------------ */
+function cx(...xs) {
+  return xs.filter(Boolean).join(" ");
+}
+
+/* Converte/Redimensiona imagem para WEBP (no navegador) */
 async function fileToWebp(file, opts = {}) {
   const { maxWidth = 1600, maxHeight = 1600, quality = 0.82 } = opts;
-
   const blobUrl = URL.createObjectURL(file);
 
   const loadImg = (src) =>
@@ -66,18 +78,16 @@ async function fileToWebp(file, opts = {}) {
       );
       const w = Math.round(bitmap.width * ratio);
       const h = Math.round(bitmap.height * ratio);
-
       const canvas = document.createElement("canvas");
       canvas.width = w;
       canvas.height = h;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(bitmap, 0, 0, w, h);
-
       const webpFile = await toWebpFromCanvas(canvas);
       URL.revokeObjectURL(blobUrl);
       return webpFile;
     }
-    // Fallback <img>
+
     const imgEl = await loadImg(blobUrl);
     const ratio = Math.min(
       maxWidth / imgEl.naturalWidth,
@@ -86,13 +96,11 @@ async function fileToWebp(file, opts = {}) {
     );
     const w = Math.round(imgEl.naturalWidth * ratio);
     const h = Math.round(imgEl.naturalHeight * ratio);
-
     const canvas = document.createElement("canvas");
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(imgEl, 0, 0, w, h);
-
     const webpFile = await toWebpFromCanvas(canvas);
     URL.revokeObjectURL(blobUrl);
     return webpFile;
@@ -145,8 +153,9 @@ const MinistryFormModal = ({
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
 
+  /* Tema: inputs e foco em #2a3d57 */
   const inputStyle =
-    "block px-3 py-2 bg-slate-50 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm";
+    "block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] sm:text-sm";
 
   useEffect(() => {
     if (currentItem) {
@@ -266,16 +275,26 @@ const MinistryFormModal = ({
 
   return (
     <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="relative bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <h3 className="text-xl font-bold text-slate-800 mb-6">
-          {formData.id ? "Editar Ministério" : "Novo Ministério"}
-        </h3>
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 6 }}
+        className="relative bg-white p-6 sm:p-8 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200"
+      >
+        <div className="flex items-center gap-2 mb-6">
+          <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
+            <UsersIcon size={18} />
+          </div>
+          <h3 className="text-xl font-semibold text-slate-800">
+            {formData.id ? "Editar Ministério" : "Novo Ministério"}
+          </h3>
+        </div>
 
         {isSaving && (
           <div className="absolute left-0 right-0 top-0">
             <div className="h-1 bg-slate-200">
               <div
-                className="h-1 bg-blue-600 transition-all"
+                className="h-1 bg-[#2a3d57] transition-all"
                 style={{ width: `${uploadProgress ?? 0}%` }}
               />
             </div>
@@ -283,18 +302,34 @@ const MinistryFormModal = ({
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Nome do Ministério
-            </label>
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`${inputStyle} w-full`}
-              required
-              disabled={!canManage}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Nome do Ministério
+              </label>
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className={inputStyle}
+                required
+                disabled={!canManage}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Dias e horários
+              </label>
+              <input
+                name="schedule"
+                value={formData.schedule}
+                onChange={handleChange}
+                placeholder="Ex: Sábados, às 19h"
+                className={inputStyle}
+                disabled={!canManage}
+              />
+            </div>
           </div>
 
           <div>
@@ -305,23 +340,9 @@ const MinistryFormModal = ({
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className={`${inputStyle} w-full`}
+              className={cx(inputStyle, "min-h-[96px]")}
               rows={4}
               required
-              disabled={!canManage}
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Dias e Horários
-            </label>
-            <input
-              name="schedule"
-              value={formData.schedule}
-              onChange={handleChange}
-              placeholder="Ex: Sábados, às 19h"
-              className={`${inputStyle} w-full`}
               disabled={!canManage}
             />
           </div>
@@ -335,7 +356,7 @@ const MinistryFormModal = ({
                 name="icon"
                 value={formData.icon}
                 onChange={handleChange}
-                className={`${inputStyle} w-full`}
+                className={inputStyle}
                 required
                 disabled={!canManage}
               >
@@ -349,7 +370,7 @@ const MinistryFormModal = ({
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Upload de imagem de capa (opcional)
+                Imagem de capa (opcional)
               </label>
               <input
                 type="file"
@@ -358,17 +379,17 @@ const MinistryFormModal = ({
                 disabled={!canManage}
                 className="block w-full text-sm text-slate-700
                            file:mr-4 file:py-2 file:px-4
-                           file:rounded-md file:border-0
-                           file:text-sm file:font-semibold
-                           file:bg-slate-100 file:text-slate-700
-                           hover:file:bg-slate-200"
+                           file:rounded-lg file:border file:border-slate-300
+                           file:text-sm file:font-medium
+                           file:bg-white file:text-slate-700
+                           hover:file:bg-slate-50"
               />
               {preview && (
                 <div className="mt-2">
                   <img
                     src={preview}
                     alt="Prévia"
-                    className="h-28 w-auto rounded border object-cover bg-slate-50"
+                    className="h-28 w-auto rounded-lg border object-cover bg-slate-50"
                   />
                 </div>
               )}
@@ -376,45 +397,60 @@ const MinistryFormModal = ({
           </div>
 
           <div className="pt-2">
-            <h4 className="text-lg font-semibold text-slate-800 mb-2">Equipe</h4>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-8 w-8 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
+                <CalendarClock size={16} />
+              </div>
+              <h4 className="text-base font-semibold text-slate-800">Equipe</h4>
+            </div>
+
             <div className="space-y-4">
               {formData.team.map((group, groupIndex) => (
-                <div key={groupIndex} className="bg-slate-50 p-3 rounded-md border relative">
+                <div
+                  key={groupIndex}
+                  className="bg-white p-3 rounded-lg border border-slate-200"
+                >
                   <div className="flex items-start justify-between gap-2">
-                     <div className="flex-grow">
-                        <label className="text-xs font-medium text-slate-500 ml-1">Função</label>
-                        <input
-                            name="role"
-                            value={group.role}
-                            onChange={(e) => handleRoleChange(groupIndex, e)}
-                            placeholder="Ex: Coordenadores"
-                            className={`${inputStyle} w-full font-medium`}
-                            disabled={!canManage}
-                        />
-                     </div>
-                      {formData.team.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeRoleGroup(groupIndex)}
-                          className="text-slate-400 hover:text-red-600 transition-colors mt-1"
-                          title="Remover função"
-                          disabled={!canManage}
-                        >
-                          <XCircle size={20} />
-                        </button>
-                      )}
+                    <div className="flex-grow">
+                      <label className="text-xs font-medium text-slate-600 ml-1">
+                        Função
+                      </label>
+                      <input
+                        name="role"
+                        value={group.role}
+                        onChange={(e) => handleRoleChange(groupIndex, e)}
+                        placeholder="Ex: Coordenadores"
+                        className={cx(inputStyle, "font-medium")}
+                        disabled={!canManage}
+                      />
+                    </div>
+                    {formData.team.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeRoleGroup(groupIndex)}
+                        className="text-slate-400 hover:text-red-600 transition-colors mt-1"
+                        title="Remover função"
+                        disabled={!canManage}
+                      >
+                        <XCircle size={20} />
+                      </button>
+                    )}
                   </div>
 
                   <div className="mt-3 space-y-2">
-                    <label className="text-xs font-medium text-slate-500 ml-1">Membros</label>
+                    <label className="text-xs font-medium text-slate-600 ml-1">
+                      Membros
+                    </label>
                     {group.names.map((name, nameIndex) => (
                       <div key={nameIndex} className="flex items-center gap-2">
                         <input
                           name="name"
                           value={name}
-                          onChange={(e) => handleNameChange(groupIndex, nameIndex, e)}
+                          onChange={(e) =>
+                            handleNameChange(groupIndex, nameIndex, e)
+                          }
                           placeholder="Nome completo do membro"
-                          className={`${inputStyle} flex-1`}
+                          className={cx(inputStyle, "flex-1")}
                           disabled={!canManage}
                         />
                         <button
@@ -433,7 +469,7 @@ const MinistryFormModal = ({
                   <button
                     type="button"
                     onClick={() => addNameInput(groupIndex)}
-                    className="mt-3 text-xs text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1"
+                    className="mt-3 text-xs text-[#2a3d57] font-semibold hover:text-[#264254] flex items-center gap-1"
                     disabled={!canManage}
                   >
                     <PlusCircle size={14} /> Adicionar membro nesta função
@@ -445,14 +481,14 @@ const MinistryFormModal = ({
             <button
               type="button"
               onClick={addRoleGroup}
-              className="mt-4 text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1"
+              className="mt-4 text-sm text-[#2a3d57] font-semibold hover:text-[#264254] flex items-center gap-1"
               disabled={!canManage}
             >
               <PlusCircle size={16} /> Adicionar nova função
             </button>
           </div>
 
-          <div className="mt-8 flex justify-end gap-3 pt-4 border-t">
+          <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-slate-200">
             <button
               type="button"
               onClick={onClose}
@@ -463,14 +499,14 @@ const MinistryFormModal = ({
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 bg-[#2a3d57] text-white font-semibold rounded-lg hover:bg-opacity-90 transition-colors disabled:opacity-60"
+              className="px-5 py-2.5 bg-[#2a3d57] text-white font-semibold rounded-lg hover:bg-[#264254] transition-colors disabled:opacity-60"
               disabled={isSaving || !canManage}
             >
               {isSaving ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };
@@ -608,7 +644,7 @@ export default function MinistriesPage() {
 
       await fetchMinistries();
       handleCloseModal();
-    } catch (err) { // <<< CORREÇÃO APLICADA AQUI
+    } catch (err) {
       console.error("Erro ao salvar ministério:", err);
       setIsSaving(false);
     }
@@ -627,20 +663,30 @@ export default function MinistriesPage() {
   };
 
   return (
-    <PageContent title="Gerenciar Ministérios">
+    <PageContent
+      title="Gerenciar Ministérios"
+      subtitle="Cadastre, edite e organize os ministérios da igreja."
+    >
+      {/* Ação primária */}
       <div className="mb-6 flex justify-end">
         {!roleLoading && canManage && (
           <button
             onClick={() => handleOpenModal()}
-            className="px-4 py-2 bg-[#2a3d57] text-white font-semibold rounded-lg"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#2a3d57] text-white font-semibold rounded-lg hover:bg-[#264254] active:scale-[.99]"
           >
+            <PlusCircle size={18} />
             Adicionar Ministério
           </button>
         )}
       </div>
 
+      {/* Lista */}
       {loading ? (
-        <p>Carregando...</p>
+        <p className="text-slate-700">Carregando...</p>
+      ) : ministries.length === 0 ? (
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-slate-600">
+          <p>Nenhum ministério cadastrado ainda.</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence>
@@ -648,12 +694,12 @@ export default function MinistriesPage() {
               <motion.div
                 key={item.id}
                 layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="bg-white p-4 rounded-lg border"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                className="bg-white p-4 rounded-xl border border-slate-200 hover:shadow-sm transition-shadow"
               >
-                <div className="aspect-video w-full rounded-md overflow-hidden bg-slate-100 mb-3">
+                <div className="aspect-video w-full rounded-lg overflow-hidden bg-slate-100 mb-3 border border-slate-200">
                   {item.imageURL ? (
                     <img
                       src={item.imageURL}
@@ -663,28 +709,43 @@ export default function MinistriesPage() {
                     />
                   ) : (
                     <div className="w-full h-full grid place-items-center text-slate-400 text-sm">
-                      Sem imagem
+                      <div className="flex items-center gap-2">
+                        <ImageIcon size={16} />
+                        Sem imagem
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <h3 className="font-bold text-lg">{item.name}</h3>
-                <p className="text-sm text-slate-500 line-clamp-2 mt-1">
+                <h3 className="font-semibold text-slate-900 text-lg leading-tight">
+                  {item.name}
+                </h3>
+
+                {item.schedule && (
+                  <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                    <CalendarClock size={14} className="text-slate-400" />
+                    {item.schedule}
+                  </p>
+                )}
+
+                <p className="text-sm text-slate-600 line-clamp-2 mt-2">
                   {item.description}
                 </p>
 
                 {!roleLoading && canManage && (
-                  <div className="mt-4 flex gap-3">
+                  <div className="mt-4 flex items-center gap-2">
                     <button
                       onClick={() => handleOpenModal(item)}
-                      className="text-sm text-blue-600"
+                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
                     >
+                      <Pencil size={14} />
                       Editar
                     </button>
                     <button
                       onClick={() => setItemToDelete(item)}
-                      className="text-sm text-red-600"
+                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-md border border-red-200 text-red-700 hover:bg-red-50"
                     >
+                      <Trash2 size={14} />
                       Excluir
                     </button>
                   </div>
@@ -695,6 +756,7 @@ export default function MinistriesPage() {
         </div>
       )}
 
+      {/* Modais */}
       <MinistryFormModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

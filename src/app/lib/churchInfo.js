@@ -6,7 +6,7 @@ export const churchInfo = {
   phone: "(55) 3221-5863",
   description: "Uma igreja de fé, esperança e amor, comprometida com a comunidade.",
   faviconUrl: "/icon.svg",
-  appleTouchIconUrl: "/icon.svg",
+  appleTouchIconUrl: "/icon.png",
   ogImageUrl: "/og-image.jpg",
   mapUrl: "https://www.google.com/maps/d/u/0/embed?mid=1flrE81F-sZrBQPlVQa1FiWtzpOVutAY&ehbc=2E312F",
   socialLinks: {

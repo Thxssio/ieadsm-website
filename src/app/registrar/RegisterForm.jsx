@@ -7,63 +7,37 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
-  fetchSignInMethodsForEmail,
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import {
-  doc,
-  setDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { validateCPF, maskCPF } from "../lib/utils/cpf.js";
-
-const getProviderName = (providerId) => {
-  switch (providerId) {
-    case "google.com":
-      return "Google";
-    case "apple.com":
-      return "Apple";
-    default:
-      return providerId;
-  }
-};
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [pwd2, setPwd2] = useState("");
-  const [err, setErr] = useState("");
-  const [ok, setOk] = useState("");
+  const [name, setName]       = useState("");
+  const [email, setEmail]     = useState("");
+  const [cpf, setCpf]         = useState("");
+  const [pwd, setPwd]         = useState("");
+  const [pwd2, setPwd2]       = useState("");
+  const [err, setErr]         = useState("");
+  const [ok, setOk]           = useState("");
   const [loading, setLoading] = useState(false);
-
-  const handleCpfChange = (e) => {
-    setCpf(maskCPF(e.target.value));
-  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setErr("");
     setOk("");
 
-    if (pwd !== pwd2) {
-      return setErr("As senhas não coincidem.");
-    }
-    if (!validateCPF(cpf)) {
-      return setErr("CPF inválido. Por favor, verifique o número digitado.");
-    }
+    if (pwd !== pwd2) return setErr("As senhas não coincidem.");
+    if (!validateCPF(cpf)) return setErr("CPF inválido. Verifique o número.");
 
     setLoading(true);
     let userCreated = null;
+    const cpfDigits = String(cpf).replace(/\D/g, "");
 
     try {
-      // 1) Criar usuário no Firebase Auth
+      // 1) Criar usuário no Auth
       const cred = await createUserWithEmailAndPassword(
         auth,
         email.trim().toLowerCase(),
@@ -71,86 +45,92 @@ export default function RegisterForm() {
       );
       userCreated = cred.user;
 
-      // 2) Aguardar autenticação completa
+      // 2) Esperar autenticação “assentar”
       await new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
           unsub();
           reject(new Error("Timeout na autenticação"));
         }, 10000);
-
-        const unsub = onAuthStateChanged(auth, (user) => {
-          if (user && user.uid === cred.user.uid) {
+        const unsub = onAuthStateChanged(auth, (u) => {
+          if (u && u.uid === cred.user.uid) {
             clearTimeout(timeout);
             unsub();
-            resolve(user);
+            resolve(u);
           }
         });
       });
 
-      // 3) Forçar refresh do token
+      // 3) Forçar refresh das claims
       await cred.user.getIdToken(true);
 
-      // 4) Verificar duplicidade de CPF
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("cpf", "==", cpf.replace(/\D/g, "")));
-      const snapshot = await getDocs(q);
-      
-      if (!snapshot.empty) {
-        await cred.user.delete();
-        throw new Error("Este CPF já está cadastrado em nosso sistema.");
+      // 4) Reservar CPF (unicidade). NÃO fazer get/query — se já existir, a rule nega.
+      try {
+        await setDoc(
+          doc(db, "cpf_index", cpfDigits),
+          { uid: cred.user.uid, createdAt: serverTimestamp() },
+          { merge: false }
+        );
+      } catch (e) {
+        // Se falhar aqui, provavelmente CPF já está em uso.
+        // Remover usuário criado e abortar.
+        try {
+          await userCreated.delete();
+        } catch {}
+        throw new Error("Este CPF já está em uso.");
       }
 
-      // 5) Atualizar displayName
+      // 5) Atualizar displayName (opcional)
       if (name) {
         await updateProfile(cred.user, { displayName: name });
       }
 
-      // 6) Criar documento no Firestore
-      await setDoc(doc(db, "users", cred.user.uid), {
-        name,
-        email: cred.user.email,
-        cpf: cpf.replace(/\D/g, ""),
-        role: null,
-        createdAt: new Date(),
-        emailVerified: cred.user.emailVerified, // Salva o status inicial (false)
-        profileComplete: true,
-      });
+      // 6) Criar doc em users/{uid}
+      await setDoc(
+        doc(db, "users", cred.user.uid),
+        {
+          name,
+          email: cred.user.email,
+          cpf: cpfDigits,
+          role: null,
+          emailVerified: cred.user.emailVerified || false,
+          profileComplete: false, // começa como incompleto
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
 
-      // 7) Enviar verificação de email
+      // 7) Enviar verificação de e-mail
       await sendEmailVerification(cred.user);
 
-      // 8) Deslogar para forçar o login após verificação
+      // 8) Sair para forçar login só após verificação
       await signOut(auth);
 
-      // 9) Definir mensagem de sucesso e redirecionar para a página de LOGIN
-      setOk("Conta criada! Verifique sua caixa de entrada para confirmar seu e-mail.");
-      setTimeout(() => {
-        router.push("/login"); // Redireciona para /login
-      }, 3000);
-
+      // 9) Feedback e redireciona pro login
+      setOk("Conta criada! Verifique seu e-mail para confirmar.");
+      setTimeout(() => router.push("/login"), 2500);
     } catch (error) {
       console.error("Erro no cadastro de usuário:", error);
 
+      // Se criou o usuário no Auth mas falhou depois, tente remover
       if (userCreated) {
         try {
           await userCreated.delete();
-        } catch (deleteError) {
-          console.error("Erro ao remover usuário:", deleteError);
+        } catch (e2) {
+          console.error("Erro ao remover usuário após falha:", e2);
         }
       }
 
-      if (error.code === "auth/email-already-in-use") {
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-        if (methods.length > 0) {
-          const providerName = getProviderName(methods[0]);
-          setErr(`Este e-mail já foi cadastrado via ${providerName}. Por favor, faça login.`);
-        } else {
-          setErr("Este e-mail já está cadastrado.");
-        }
-      } else if (error.code === "auth/weak-password") {
+      // Mensagens amigáveis
+      const code = error?.code || "";
+      if (error?.message === "Este CPF já está em uso.") {
+        setErr(error.message);
+      } else if (code === "auth/email-already-in-use") {
+        setErr("Este e-mail já está cadastrado.");
+      } else if (code === "auth/weak-password") {
         setErr("Senha fraca (mínimo 6 caracteres).");
       } else {
-        setErr(error.message || "Ocorreu um erro inesperado. Tente novamente.");
+        setErr(error?.message || "Ocorreu um erro inesperado. Tente novamente.");
       }
     } finally {
       setLoading(false);
@@ -160,32 +140,42 @@ export default function RegisterForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-stone-700">Nome</label>
+        <label className="block text-sm font-medium text-stone-700">
+          Nome
+        </label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          autoComplete="name"
           className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
           placeholder="Seu nome completo"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-stone-700">CPF</label>
+        <label className="block text-sm font-medium text-stone-700">
+          CPF
+        </label>
         <input
           value={cpf}
-          onChange={handleCpfChange}
+          onChange={(e) => setCpf(maskCPF(e.target.value))}
           required
+          inputMode="numeric"
+          autoComplete="off"
           className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
           placeholder="000.000.000-00"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-stone-700">E-mail</label>
+        <label className="block text-sm font-medium text-stone-700">
+          E-mail
+        </label>
         <input
           type="email"
           value={email}
+          autoComplete="email"
           onChange={(e) => setEmail(e.target.value)}
           required
           className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
@@ -194,12 +184,15 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-stone-700">Senha</label>
+        <label className="block text-sm font-medium text-stone-700">
+          Senha
+        </label>
         <input
           type="password"
           value={pwd}
           onChange={(e) => setPwd(e.target.value)}
           required
+          autoComplete="new-password"
           className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
           placeholder="Mínimo 6 caracteres"
         />
@@ -214,6 +207,7 @@ export default function RegisterForm() {
           value={pwd2}
           onChange={(e) => setPwd2(e.target.value)}
           required
+          autoComplete="new-password"
           className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
           placeholder="Repita a senha"
         />

@@ -4,6 +4,7 @@ export default function SummaryCard({ form, photoURL }) {
   const src = photoURL || "/avatar-3x4.png"; // coloque um placeholder em /public/images/
 
   const items = [
+    { k: "ID Interno",   v: form.idInterno }, // novo campo
     { k: "Nome",         v: form.name },
     { k: "CPF",          v: form.cpf },
     { k: "Congregação",  v: form.congregacao },

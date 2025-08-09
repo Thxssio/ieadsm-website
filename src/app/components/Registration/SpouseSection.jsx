@@ -26,6 +26,8 @@ export default function SpouseSection({ form, setForm, inputCls }) {
             <option value="fundamental completo">Fundamental completo</option>
             <option value="médio incompleto">Médio incompleto</option>
             <option value="médio completo">Médio completo</option>
+            <option value="técnico incompleto">Técnico incompleto</option>
+            <option value="técnico completo">Técnico completo</option>
             <option value="superior incompleto">Superior incompleto</option>
             <option value="superior completo">Superior completo</option>
             <option value="pós-graduação">Pós-graduação</option>

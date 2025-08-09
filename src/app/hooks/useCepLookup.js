@@ -1,65 +1,107 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-// máscara simples de CEP 00000-000
-export const maskCEP = (v = "") =>
-  v.replace(/\D/g, "").slice(0, 8).replace(/(\d{5})(\d)/, "$1-$2");
+const digitsOnly = (s = "") => (s || "").replace(/\D/g, "");
+const maskCep = (digs) =>
+  digs.length <= 5 ? digs : `${digs.slice(0, 5)}-${digs.slice(5, 8)}`;
 
-export function useCepLookup({ form, setForm }) {
+export function useCepLookup({ setForm, debounceMs = 350 }) {
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState("");
-  const [lastFetched, setLastFetched] = useState("");
+  const [error, setError] = useState("");
+  const timerRef = useRef(null);
+  const abortRef = useRef(null);
+  const reqSeq = useRef(0);
+  const cacheRef = useRef(new Map()); // Map<cep8, response>
 
-  const setCepMasked = (value) => {
-    const masked = maskCEP(value || "");
+  const handleCepInput = (value) => {
+    const digs = digitsOnly(value).slice(0, 8);
+    const masked = maskCep(digs);
+
+    // Atualiza campo CEP sempre com máscara
     setForm((f) => ({ ...f, cep: masked }));
+
+    // Enquanto não tiver 8 dígitos, não busca
+    if (digs.length < 8) {
+      setError("");
+      setLoading(false);
+      clearTimeout(timerRef.current);
+      if (abortRef.current) abortRef.current.abort();
+      return;
+    }
+
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => fetchCep(digs), debounceMs);
   };
 
-  const fetchByCep = async (cepDigits, { onlyIfMissing = true } = {}) => {
-    if (cepDigits === lastFetched) return;
+  async function fetchCep(cep8) {
+    // Cache
+    if (cacheRef.current.has(cep8)) {
+      applyCepData(cep8, cacheRef.current.get(cep8));
+      return;
+    }
+
+    // Cancela req anterior
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+
+    const mySeq = ++reqSeq.current;
+    setLoading(true);
     setError("");
-    if (cepDigits.length !== 8) return;
 
     try {
-      setLoading(true);
-      const res  = await fetch(`https://viacep.com.br/ws/${cepDigits}/json/`);
-      const data = await res.json();
+      const resp = await fetch(`https://viacep.com.br/ws/${cep8}/json/`, {
+        signal: abortRef.current.signal,
+        headers: { Accept: "application/json" },
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-      if (!res.ok || data?.erro) {
-        setError("CEP não encontrado.");
-        return;
-      }
+      const data = await resp.json();
+      if (data?.erro) throw new Error("CEP não encontrado.");
 
-      setForm((f) => ({
-        ...f,
-        endereco: onlyIfMissing && f.endereco ? f.endereco : (data.logradouro || f.endereco),
-        bairro:   onlyIfMissing && f.bairro   ? f.bairro   : (data.bairro     || f.bairro),
-        cidade:   onlyIfMissing && f.cidade   ? f.cidade   : (data.localidade || f.cidade),
-        uf:       onlyIfMissing && f.uf       ? f.uf       : ((data.uf || f.uf || "").toUpperCase()),
-      }));
-      setLastFetched(cepDigits);
-    } catch (e) {
-      console.error(e);
-      setError("Falha ao consultar o CEP.");
+      cacheRef.current.set(cep8, data);
+
+      // evita aplicar resposta antiga
+      if (mySeq !== reqSeq.current) return;
+
+      applyCepData(cep8, data);
+    } catch (err) {
+      if (err.name === "AbortError") return;
+      if (mySeq !== reqSeq.current) return;
+      setError(
+        err?.message === "CEP não encontrado."
+          ? "CEP não encontrado."
+          : "Falha ao buscar o CEP. Tente novamente."
+      );
     } finally {
-      setLoading(false);
+      if (mySeq === reqSeq.current) setLoading(false);
     }
-  };
+  }
 
-  // uso direto no onChange do CEP
-  const handleCepInput = (value) => {
+  // Aplica usando setForm funcional para não ler 'form' “stale”
+  function applyCepData(cep8, data) {
+    setForm((prev) => {
+      // Se o usuário mudou o CEP no meio do caminho, não sobrescreve
+      const now = digitsOnly(prev?.cep);
+      if (now !== cep8) return prev;
+
+      return {
+        ...prev,
+        endereco: data.logradouro || prev.endereco || "",
+        bairro: data.bairro || prev.bairro || "",
+        cidade: data.localidade || prev.cidade || "",
+        uf: (data.uf || prev.uf || "").toUpperCase(),
+      };
+    });
     setError("");
-    setCepMasked(value);
-    const digits = (value || "").replace(/\D/g, "");
-    if (digits.length === 8) {
-      fetchByCep(digits, { onlyIfMissing: true });
-    }
-  };
+  }
 
-  return {
-    loading,
-    error,
-    handleCepInput,
-  };
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerRef.current);
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, []);
+
+  return { loading, error, handleCepInput };
 }
