@@ -12,7 +12,7 @@ const mapError = (code) => {
     case "auth/user-disabled": return "Usuário desativado.";
     case "auth/user-not-found": return "Usuário não encontrado.";
     case "auth/wrong-password": return "Senha incorreta.";
-    case "auth/invalid-credential": return "Credenciais inválidas.";
+    case "auth/invalid-credential": return "E-mail ou senha incorretos.";
     case "auth/too-many-requests": return "Muitas tentativas. Tente novamente em alguns minutos.";
     default: return "Não foi possível entrar. Tente novamente.";
   }

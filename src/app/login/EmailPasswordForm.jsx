@@ -42,17 +42,19 @@ export default function EmailPasswordForm() {
         try {
           const methods = await fetchSignInMethodsForEmail(auth, email);
 
-          if (methods.length > 0) {
+          if (methods.includes('password')) {
+            setErr('Senha incorreta.');
+          } else if (methods.length > 0) {
             const providerName = getProviderName(methods[0]);
             setErr(`Este e-mail foi usado com ${providerName}. Por favor, faça login com o botão correspondente.`);
           } else {
-            setErr("E-mail ou senha inválidos.");
+            setErr('E-mail não encontrado.');
           }
         } catch (fetchError) {
-          setErr("Ocorreu um erro ao verificar seu e-mail.");
+          setErr('Ocorreu um erro ao verificar seu e-mail.');
         }
       } else {
-        setErr("Ocorreu um erro inesperado. Tente novamente.");
+        setErr('Ocorreu um erro inesperado. Tente novamente.');
       }
     } finally {
       setLoading(false);
