@@ -99,7 +99,7 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
           </nav>
 
           {/* Botão Mobile */}
-          <button onClick={() => setIsMenuOpen((v) => !v)} className="md:hidden text-stone-700 hover:text-[#2a3d57]" aria-label="Abrir menu" aria-expanded={isMenuOpen}>
+          <button onClick={() => setIsMenuOpen((v) => !v)} className="md:hidden text-stone-700 hover:text-[#2a3d57]" aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={isMenuOpen}>
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
