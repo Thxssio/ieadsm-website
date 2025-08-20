@@ -5,8 +5,8 @@ import Header from "./layout/Header";
 import Footer from "./layout/Footer";
 import DevelopmentSeal from "./layout/DevelopmentSeal";
 
-import { churchInfo } from "../lib/churchInfo";
-import { ministries } from "../lib/ministries-data";
+import { churchInfo } from "@/lib/churchInfo";
+import { ministries } from "@/lib/ministries-data";
 
 export default function HideLayoutWrapper({ children }) {
   const pathname = usePathname();

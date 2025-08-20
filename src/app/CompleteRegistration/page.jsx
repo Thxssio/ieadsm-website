@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../lib/firebase/AuthContext";
-import { db } from "../lib/firebase/client";
+import { useAuth } from "@/lib/firebase/AuthContext";
+import { db } from "@/lib/firebase/client";
 import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { validateCPF, maskCPF } from "../lib/utils/cpf";
+import { validateCPF, maskCPF } from "@/lib/utils/cpf";
 
 export default function CompleteRegistration() {
   const { user, profileComplete, isLoading, refreshAuthData } = useAuth();

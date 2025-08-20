@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Users, MessageSquare, Book, Briefcase } from "lucide-react";
-import { churchInfo } from "../lib/churchInfo";
+import { churchInfo } from "@/lib/churchInfo";
 
 
 export default function InstitucionalPage() {

@@ -3,8 +3,8 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { Menu, X, ChevronDown, LogIn, User, LogOut } from "lucide-react";
-import { useAuth } from "../../lib/firebase/AuthContext"; // 1. Importa o hook de autenticação
-import { auth } from "../../lib/firebase/client"; // 2. Importa o auth para o logout
+import { useAuth } from "@/lib/firebase/AuthContext"; // 1. Importa o hook de autenticação
+import { auth } from "@/lib/firebase/client"; // 2. Importa o auth para o logout
 
 export default function Header({ churchName, logoUrl, ministries = [] }) {
   const { user } = useAuth(); // 3. Usa o hook para obter o usuário logado

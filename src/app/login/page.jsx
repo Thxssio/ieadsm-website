@@ -1,5 +1,5 @@
 import { LogIn } from "lucide-react";
-import IconWrapper from "../components/common/IconWrapper";
+import IconWrapper from "@/components/common/IconWrapper";
 import EmailPasswordForm from "./EmailPasswordForm";
 import SocialButtons from "./SocialButtons";
 

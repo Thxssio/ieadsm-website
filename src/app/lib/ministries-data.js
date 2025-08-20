@@ -122,23 +122,9 @@ export const ministries = [
       "Supervisores": ["Ev. Artur Paula da Silva", "Ev. Antonio Dalmiro da Silva", "Ev. Alexandre Beck", "Ev. Marcílio Ruíz Bissoli", "Ev. Mauro Tiago de Freitas", "Pb. Jairo Santos de Lima"]
     }
   },
-  { 
-    id: 'defam', 
-    name: "DEFAM – Departamento da Família", 
-    icon: <Heart size={20} />,
-    description: "O DEFAM atua na edificação de lares segundo os princípios bíblicos, promovendo encontros, palestras e aconselhamentos para casais, pais e filhos. Seu objetivo é fortalecer as famílias como alicerce da igreja e da sociedade.",
-    schedule: "Encontros e palestras divulgados previamente.",
-    // --- Liderança ---
-    leader: "Supervisão: Ev. Alexandre Flores e Marinês Sganzerla",
-    leaderPhoto: "/default.jpg",
-    image: "/default-img.png",
-    team: {
-      "Supervisores": ["Ev. Alexandre Flores e Marinês Sganzerla", "Pr. Cláudio Moisés Ferreira e Elisângela Ferreira", "Ev. Rodrigo Lopes e Simei Leal Oliveira", "Ir. Renato Pereira e Cássia Lauane P. de Jesus"]
-    }
-  },
-  { 
-    id: 'depinf', 
-    name: "DEPINF – Departamento Infantil", 
+  {
+    id: 'depinf',
+    name: "DEPINF – Departamento Infantil",
     icon: <Smile size={20} />,
     description: "O DEPINF tem como missão evangelizar, ensinar e cuidar das crianças, conduzindo-as ao conhecimento de Deus desde os primeiros passos. Com linguagem acessível e atividades criativas, forma corações firmes no caminho do Senhor.",
     schedule: "Atividades durante os cultos principais.",
