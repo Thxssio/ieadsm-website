@@ -1,6 +1,6 @@
 
 import { MapPin, Phone, Mail } from "lucide-react";
-import { churchInfo } from "../lib/churchInfo";
+import { churchInfo } from "@/lib/churchInfo";
 
 export const metadata = {
   title: "Contato | IEADSM",

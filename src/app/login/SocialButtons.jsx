@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, db } from "../lib/firebase/client"; // 1. Importa o 'db'
+import { auth, db } from "@/lib/firebase/client"; // 1. Importa o 'db'
 import { signInWithPopup, GoogleAuthProvider, OAuthProvider } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore"; // 2. Importa funções do Firestore
 import { Apple } from "lucide-react";

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, db } from "../lib/firebase/client";
+import { auth, db } from "@/lib/firebase/client";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -18,7 +18,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { validateCPF, maskCPF } from "../lib/utils/cpf.js";
+import { validateCPF, maskCPF } from "@/lib/utils/cpf";
 
 const getProviderName = (providerId) => {
   switch (providerId) {
