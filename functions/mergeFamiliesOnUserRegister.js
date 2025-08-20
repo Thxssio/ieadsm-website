@@ -33,6 +33,7 @@ exports.mergeFamiliesOnUserRegister = functions
 
     // Verifica se algum dos CPFs relacionados já está em uma família
     for (const cpf of cpfsRelacionados) {
+      // primeiro procura por famílias onde o CPF é o responsável
       const familiesSnap = await db
         .collection("families")
         .where("responsibleCpf", "==", cpf)
@@ -41,6 +42,18 @@ exports.mergeFamiliesOnUserRegister = functions
 
       if (!familiesSnap.empty) {
         familyIdToUse = familiesSnap.docs[0].id;
+        break;
+      }
+
+      // se não encontrou pelo responsável, procura em membros existentes
+      const membersSnap = await db
+        .collectionGroup("members")
+        .where("cpf", "==", cpf)
+        .limit(1)
+        .get();
+
+      if (!membersSnap.empty) {
+        familyIdToUse = membersSnap.docs[0].ref.parent.parent.id;
         break;
       }
     }

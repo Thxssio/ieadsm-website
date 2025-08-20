@@ -132,7 +132,7 @@ async function fileToWebp(file, { maxWidth = 800, maxHeight = 800, quality = 0.8
 /** Pega o próximo idInterno sequencial (numérico) de forma atômica. */
 async function getNextInternalId() {
   const ctrRef = doc(db, "counters", "idInterno");
-  const seed = 100000; // valor inicial, ajuste se quiser
+  const seed = 0; // começa em 000000
   const newId = await runTransaction(db, async (tx) => {
     const snap = await tx.get(ctrRef);
     let current = snap.exists() ? (snap.data().current || seed) : seed;
@@ -142,7 +142,7 @@ async function getNextInternalId() {
     tx.set(ctrRef, { current: next, updatedAt: new Date() }, { merge: true });
     return next;
   });
-  return String(newId); // garantir string de dígitos
+  return String(newId).padStart(6, "0"); // garantir string com 6 dígitos
 }
 
 /* Tenta incluir o usuário como "filho" em families/{CPF}/members/{uid}.

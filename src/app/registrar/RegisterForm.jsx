@@ -63,12 +63,12 @@ export default function RegisterForm() {
       // 3) Forçar refresh das claims
       await cred.user.getIdToken(true);
 
-      // 4) Reservar CPF (unicidade). NÃO fazer get/query — se já existir, a rule nega.
+      // 4) Reservar CPF (unicidade). Se já existir placeholder, será reivindicado.
       try {
         await setDoc(
           doc(db, "cpf_index", cpfDigits),
           { uid: cred.user.uid, createdAt: serverTimestamp() },
-          { merge: false }
+          { merge: true }
         );
       } catch (e) {
         // Se falhar aqui, provavelmente CPF já está em uso.
