@@ -44,9 +44,13 @@ service cloud.firestore {
       allow create: if request.auth != null
         && !exists(/databases/$(database)/documents/cpf_index/$(cpf));
 
+      allow update: if request.auth != null
+        && (!('uid' in resource.data) || resource.data.uid == request.auth.uid)
+        && request.resource.data.uid == request.auth.uid;
+
       allow read: if isAdmin();
 
-      allow update, delete: if isAdmin();
+      allow delete: if isAdmin();
     }
 
     match /families/{familyId} {
