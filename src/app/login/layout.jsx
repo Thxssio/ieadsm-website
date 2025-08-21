@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Área do Ministro | IEADSM",
-  description: "Login de ministros.",
+  title: "Área do Membro | IEADSM",
+  description: "Login de membros.",
 };
 
 export default function LoginLayout({ children }) {

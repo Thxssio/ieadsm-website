@@ -109,7 +109,7 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
             ) : (
               <Link href="/login" className="ml-4 flex items-center gap-2 bg-[#2a3d57] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#202e42] transition-colors">
                 <LogIn size={16} />
-                Área do Ministro
+                Área do Membro
               </Link>
             )}
           </nav>
@@ -147,7 +147,7 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
             ) : (
               <Link href="/login" onClick={() => setIsMenuOpen(false)} className="w-full mt-2 flex items-center justify-center gap-2 bg-[#2a3d57] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#202e42] transition-colors">
                 <LogIn size={16} />
-                Área do Ministro
+                Área do Membro
               </Link>
             )}
           </div>

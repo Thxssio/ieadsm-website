@@ -40,7 +40,7 @@ export default function LoginPage() {
         <IconWrapper><LogIn size={32} /></IconWrapper>
 
         <h1 className="mt-6 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">
-          Área do Ministro
+          Área do Membro
         </h1>
         <p className="mt-4 text-lg text-stone-600">
           Entre com seu e-mail e senha para continuar.
