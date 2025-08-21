@@ -14,10 +14,18 @@ export default function RegistrationTypeSection({ form, setForm, inputCls }) {
   useEffect(() => {
     const loadSectors = async () => {
       const snap = await getDocs(collection(db, "sectors"));
-      setSectors(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      if (snap.empty) {
+        const defaultSector = { id: "default", name: "Setor 01" };
+        const defaultCong  = { id: "default", name: "Matriz" };
+        setSectors([defaultSector]);
+        setCongregations([defaultCong]);
+        setForm((f) => ({ ...f, setor: defaultSector.name, congregacao: defaultCong.name }));
+      } else {
+        setSectors(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      }
     };
     loadSectors();
-  }, []);
+  }, [setForm]);
 
   const handleSectorChange = async (e) => {
     const name = e.target.value;

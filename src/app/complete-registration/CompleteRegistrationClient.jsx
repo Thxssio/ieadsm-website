@@ -44,8 +44,8 @@ const inputCls =
 const initialForm = {
   registroTipo: "ADMISSÃO",
   idInterno: "",
-  congregacao: "",
-  setor: "",
+  congregacao: "Matriz",
+  setor: "Setor 01",
 
   // identificação/contato
   name: "",
