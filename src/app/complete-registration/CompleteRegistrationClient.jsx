@@ -129,6 +129,15 @@ async function fileToWebp(file, { maxWidth = 800, maxHeight = 800, quality = 0.8
   return new File([blob], file.name.replace(/\.\w+$/, ".webp"), { type: "image/webp" });
 }
 
+/** Pega o próximo idInterno sequencial (numérico) sem atualizar o contador. */
+async function peekNextInternalId() {
+  const ctrRef = doc(db, "counters", "idInterno");
+  const snap = await getDoc(ctrRef);
+  const current = snap.exists() ? Number(snap.data().current || 0) : 0;
+  const next = Number.isFinite(current) ? current + 1 : 1;
+  return String(next).padStart(6, "0");
+}
+
 /** Pega o próximo idInterno sequencial (numérico) de forma atômica. */
 async function getNextInternalId() {
   const ctrRef = doc(db, "counters", "idInterno");
@@ -202,10 +211,10 @@ export default function CompleteRegistrationClient() {
       let next = { ...initialForm, email: user?.email || "" };
       if (snap.exists()) next = { ...next, ...snap.data() };
 
-      // Geração numérica e única do idInterno (se não existir)
+      // Geração numérica (sem atualizar o contador) do idInterno, se não existir
       if (!next.idInterno) {
         try {
-          next.idInterno = await getNextInternalId();
+          next.idInterno = await peekNextInternalId();
         } catch (e) {
           console.error("Falha ao gerar idInterno:", e);
           // fallback simples: timestamp (ainda numérico, mas menos bonito)
@@ -292,7 +301,12 @@ export default function CompleteRegistrationClient() {
       const cpfPai    = onlyDigits(form.cpfPai);
       const cpfMae    = onlyDigits(form.cpfMae);
       const filhos    = (form.filhos || []).map((f) => ({ name: (f.name||"").trim(), cpf: onlyDigits(f.cpf) }));
-      const idInterno = onlyDigits(form.idInterno);
+
+      let idInterno = onlyDigits(form.idInterno);
+      if (!idInterno) {
+        idInterno = await step("Gerar idInterno", () => getNextInternalId());
+        setForm((old) => ({ ...old, idInterno }));
+      }
 
       // valida idInterno: só dígitos e não vazio
       if (!idInterno || !/^\d+$/.test(idInterno)) {
