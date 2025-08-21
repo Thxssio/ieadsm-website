@@ -393,7 +393,7 @@ async function toPngDataUrl(url) {
       return canvas.toDataURL("image/png", 0.92);
     }
   } catch (e) {
-    console.warn("[UserFichaPDF] Falha ao preparar imagem:", e, "URL:", url);
+    console.error(e);
     return null;
   }
 }

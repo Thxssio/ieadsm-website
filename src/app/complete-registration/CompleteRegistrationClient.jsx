@@ -164,7 +164,7 @@ async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
     );
     return { ok: true, familyId };
   } catch (e) {
-    console.warn("Não foi possível entrar na família", familyId, e?.code || e);
+    console.error(e);
     return { ok: false };
   }
 }
@@ -387,13 +387,14 @@ export default function CompleteRegistrationClient() {
             );
           } catch (e) {
             // não bloquear o fluxo por placeholder
-            console.warn("Falha ao criar placeholder", p.cpf, e?.code || e);
+            console.error(e);
           }
         }
       });
 
       router.replace("/portal");
     } catch (e) {
+      console.error(e);
       setErr(e.message || `Erro em: ${e.__step || "processo"}. Tente novamente.`);
     } finally {
       setSaving(false);
