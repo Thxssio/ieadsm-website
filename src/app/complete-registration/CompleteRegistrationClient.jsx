@@ -8,11 +8,6 @@ import {
   getDoc,
   setDoc,
   runTransaction,
-  collection,
-  query,
-  where,
-  getDocs,
-  limit,
 } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase/client";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -266,18 +261,19 @@ export default function CompleteRegistrationClient() {
     return url;
   };
 
-  /* Verifica unicidade do idInterno no Firestore */
+  /* Verifica unicidade do idInterno usando índice dedicado */
   const assertUniqueInternalId = async (candidateId, myUid) => {
-    const q = query(
-      collection(db, "users"),
-      where("idInterno", "==", candidateId),
-      limit(1)
-    );
-    const rs = await getDocs(q);
-    if (rs.empty) return true;
-    const hit = rs.docs[0];
-    // se encontrou e não é meu documento, não é único
-    return hit.id === myUid;
+    try {
+      await setDoc(
+        doc(db, "idInterno_index", candidateId),
+        { uid: myUid, updatedAt: new Date() },
+        { merge: true }
+      );
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   };
 
   /* Submit */
