@@ -25,16 +25,20 @@ export default function CongregationsPage() {
         name: "Setor 01",
         isDefault: true,
       });
-      await addDoc(collection(db, "sectors", defaultSectorRef.id, "congregations"), {
-        name: "Matriz",
-        isDefault: true,
-      });
+      await addDoc(
+        collection(db, "sectors", defaultSectorRef.id, "congregations"),
+        {
+          name: "Matriz",
+          isDefault: true,
+        }
+      );
       return loadData();
     }
     const data = [];
     for (const s of secSnap.docs) {
-      const congSnap = await getDocs(collection(db, "sectors", s.id, "congregations"));
-      data.push({ id: s.id, ...s.data(), congregations: congSnap.docs.map((c) => ({ id: c.id, ...c.data() })) });
+      const congSnap = await getDocs(
+        collection(db, "sectors", s.id, "congregations")
+      );
       data.push({
         id: s.id,
         ...s.data(),
@@ -58,7 +62,10 @@ export default function CongregationsPage() {
   };
 
   const updateForm = (sectorId, updater) => {
-    setForms((prev) => ({ ...prev, [sectorId]: updater(prev[sectorId] || { ...emptyCongForm }) }));
+    setForms((prev) => ({
+      ...prev,
+      [sectorId]: updater(prev[sectorId] || { ...emptyCongForm }),
+    }));
   };
 
   const handleAddCongregation = async (sectorId) => {
@@ -90,23 +97,25 @@ export default function CongregationsPage() {
   return (
     <PageContent title="Congregações">
       <div className="space-y-8">
-        <form onSubmit={handleAddSector} className="flex gap-2">
-        <form onSubmit={handleAddSector} className="bg-slate-50 p-4 rounded flex gap-2">
+        <form
+          onSubmit={handleAddSector}
+          className="bg-slate-50 p-4 rounded flex gap-2"
+        >
           <input
             className="border border-slate-300 rounded px-2 py-1 flex-1"
             placeholder="Novo setor"
             value={newSector}
             onChange={(e) => setNewSector(e.target.value)}
           />
-          <button type="submit" className="bg-blue-600 text-white px-4 py-1 rounded">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-1 rounded"
+          >
             Adicionar Setor
           </button>
         </form>
 
         {sectors.map((sector) => (
-          <div key={sector.id} className="border-t border-slate-200 pt-4">
-            <h3 className="font-semibold text-lg mb-2">{sector.name}</h3>
-            <ul className="list-disc pl-5 mb-4">
           <div
             key={sector.id}
             className="border border-slate-200 rounded p-4 space-y-4"
@@ -115,8 +124,6 @@ export default function CongregationsPage() {
 
             <div className="space-y-2">
               {sector.congregations.map((c) => (
-                <li key={c.id} className="mb-1">
-                  <span className="font-medium">{c.name}</span>
                 <div
                   key={c.id}
                   className="pl-4 border-l-2 border-slate-200"
@@ -130,30 +137,23 @@ export default function CongregationsPage() {
                     )}
                   </div>
                   {c.supervisors?.primary?.husband && (
-                    <span className="text-sm text-slate-600">
-                      {" "}- Sup.1: {c.supervisors.primary.husband} & {c.supervisors.primary.wife}
-                    </span>
                     <div className="text-sm text-slate-600 pl-4">
-                      Sup.1: {c.supervisors.primary.husband} & {c.supervisors.primary.wife}
+                      Sup.1: {c.supervisors.primary.husband} &
+                      {" "}
+                      {c.supervisors.primary.wife}
                     </div>
                   )}
                   {c.supervisors?.secondary?.husband && (
-                    <span className="text-sm text-slate-600">
-                      {" "}- Sup.2: {c.supervisors.secondary.husband} & {c.supervisors.secondary.wife}
-                    </span>
                     <div className="text-sm text-slate-600 pl-4">
-                      Sup.2: {c.supervisors.secondary.husband} & {c.supervisors.secondary.wife}
+                      Sup.2: {c.supervisors.secondary.husband} &
+                      {" "}
+                      {c.supervisors.secondary.wife}
                     </div>
                   )}
-                </li>
                 </div>
               ))}
-            </ul>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded">
-              <h4 className="font-medium mb-2">Nova congregação</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
             <div className="bg-slate-50 p-4 rounded space-y-2">
               <h4 className="font-medium">Nova congregação</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -161,14 +161,19 @@ export default function CongregationsPage() {
                   className="border border-slate-300 rounded px-2 py-1"
                   placeholder="Nome"
                   value={forms[sector.id]?.name || ""}
-                  onChange={(e) => updateForm(sector.id, (f) => ({ ...f, name: e.target.value }))}
+                  onChange={(e) =>
+                    updateForm(sector.id, (f) => ({ ...f, name: e.target.value }))
+                  }
                 />
                 <label className="flex items-center gap-1 text-sm">
                   <input
                     type="checkbox"
                     checked={forms[sector.id]?.isDefault || false}
                     onChange={(e) =>
-                      updateForm(sector.id, (f) => ({ ...f, isDefault: e.target.checked }))
+                      updateForm(sector.id, (f) => ({
+                        ...f,
+                        isDefault: e.target.checked,
+                      }))
                     }
                   />
                   Padrão
@@ -198,7 +203,7 @@ export default function CongregationsPage() {
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-@@ -143,82 +184,82 @@ export default function CongregationsPage() {
+                  <input
                     className="border border-slate-300 rounded px-2 py-1"
                     placeholder="2º Sup. Esposo"
                     value={forms[sector.id]?.secondary?.husband || ""}
@@ -223,58 +228,59 @@ export default function CongregationsPage() {
                 </div>
               </div>
 
-              {(forms[sector.id]?.responsibles || [{ husband: "", wife: "" }]).map((r, idx) => (
-                <div key={idx} className="grid grid-cols-2 gap-2 mb-2">
-                <div key={idx} className="grid grid-cols-2 gap-2">
-                  <input
-                    className="border border-slate-300 rounded px-2 py-1"
-                    placeholder={`Responsável ${idx + 1} Esposo`}
-                    value={r.husband}
-                    onChange={(e) =>
-                      updateForm(sector.id, (f) => {
-                        const rs = [...f.responsibles];
-                        rs[idx] = { ...rs[idx], husband: e.target.value };
-                        return { ...f, responsibles: rs };
-                      })
-                    }
-                  />
-                  <input
-                    className="border border-slate-300 rounded px-2 py-1"
-                    placeholder={`Responsável ${idx + 1} Esposa`}
-                    value={r.wife}
-                    onChange={(e) =>
-                      updateForm(sector.id, (f) => {
-                        const rs = [...f.responsibles];
-                        rs[idx] = { ...rs[idx], wife: e.target.value };
-                        return { ...f, responsibles: rs };
-                      })
-                    }
-                  />
-                </div>
-              ))}
+              {(forms[sector.id]?.responsibles || [{ husband: "", wife: "" }]).map(
+                (r, idx) => (
+                  <div key={idx} className="grid grid-cols-2 gap-2">
+                    <input
+                      className="border border-slate-300 rounded px-2 py-1"
+                      placeholder={`Responsável ${idx + 1} Esposo`}
+                      value={r.husband}
+                      onChange={(e) =>
+                        updateForm(sector.id, (f) => {
+                          const rs = [...f.responsibles];
+                          rs[idx] = { ...rs[idx], husband: e.target.value };
+                          return { ...f, responsibles: rs };
+                        })
+                      }
+                    />
+                    <input
+                      className="border border-slate-300 rounded px-2 py-1"
+                      placeholder={`Responsável ${idx + 1} Esposa`}
+                      value={r.wife}
+                      onChange={(e) =>
+                        updateForm(sector.id, (f) => {
+                          const rs = [...f.responsibles];
+                          rs[idx] = { ...rs[idx], wife: e.target.value };
+                          return { ...f, responsibles: rs };
+                        })
+                      }
+                    />
+                  </div>
+                )
+              )}
 
               <button
                 type="button"
-                className="text-sm text-blue-600 mb-2"
                 className="text-sm text-blue-600"
                 onClick={() =>
                   updateForm(sector.id, (f) => ({
                     ...f,
-                    responsibles: [...(f.responsibles || []), { husband: "", wife: "" }],
+                    responsibles: [
+                      ...(f.responsibles || []),
+                      { husband: "", wife: "" },
+                    ],
                   }))
                 }
               >
                 Adicionar responsável
               </button>
-              <div>
+
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={() => handleAddCongregation(sector.id)}
-                  className="bg-green-600 text-white px-3 py-1 rounded"
                   className="bg-blue-600 text-white px-3 py-1 rounded"
                 >
-                  Salvar Congregação
                   Adicionar Congregação
                 </button>
               </div>
@@ -285,5 +291,4 @@ export default function CongregationsPage() {
     </PageContent>
   );
 }
-
 
