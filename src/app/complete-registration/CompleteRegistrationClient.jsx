@@ -340,9 +340,11 @@ export default function CompleteRegistrationClient() {
           setDoc(doc(db, "families", familyId), { responsibleCpf: familyId, updatedAt: new Date() }, { merge: true })
         );
         await step("Adicionar titular na família", () =>
-          setDoc(doc(db, "families", familyId, "members", uid), {
-            uid, name: form.name, cpf, kinship: "titular", updatedAt: new Date(),
-          }, { merge: true })
+          setDoc(
+            doc(db, "families", familyId, "members", uid),
+            { uid, name: form.name, cpf, kinship, updatedAt: new Date() },
+            { merge: true },
+          )
         );
       }
 
