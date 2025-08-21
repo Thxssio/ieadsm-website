@@ -42,6 +42,7 @@ service cloud.firestore {
     // ministries (público lê; só perfis autorizados escrevem)
     match /ministries/{ministryId} {
       allow read: if true;
+      allow write: if isAdmin();
       allow write: if canWriteMinistry();
     }
 

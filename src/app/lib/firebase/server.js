@@ -18,7 +18,7 @@ export async function getCurrentUser(sessionCookie) {
     const decodedClaims = await getAuth().verifySessionCookie(sessionCookie, true);
     return decodedClaims;
   } catch (error) {
-    console.error("Error verifying session cookie on server:", error.message);
+    console.error(error);
     return null;
   }
 }

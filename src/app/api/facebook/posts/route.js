@@ -45,6 +45,7 @@ export async function GET() {
 
     return NextResponse.json({ posts });
   } catch (e) {
+    console.error(e);
     return NextResponse.json(
       { error: true, details: String(e) },
       { status: 500 }
