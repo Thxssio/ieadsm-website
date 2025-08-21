@@ -12,5 +12,9 @@ export const churchInfo = {
   socialLinks: {
     instagram: "https://www.instagram.com/adsantamariars/",
     facebook: "https://www.facebook.com/adsantamariars/?locale=pt_BR"
+  },
+  rssFeeds: {
+    // RSS feed for Facebook posts (via fetchrss.com). Replace if the URL expires.
+    facebook: "https://fetchrss.com/feed/aJAgtlY2SQiUaJAgh_xu4BUE.rss"
   }
 };
