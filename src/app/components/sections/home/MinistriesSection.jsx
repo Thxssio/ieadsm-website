@@ -134,7 +134,12 @@ function PrevArrow({ onClick }) {
 // ------------------------------------------------------------------
 // Componente Principal da Seção
 // ------------------------------------------------------------------
-export default function MinistriesSection({ ministries = [] }) {
+export default function MinistriesSection({
+  ministries = [],
+  preTitle = "Envolva-se",
+  title = "Nossos Ministérios",
+  subtitle = "Encontre o seu lugar em nossa Igreja. Temos diversos departamentos atuando para o crescimento do Reino de Deus.",
+}) {
   const [selectedMinistry, setSelectedMinistry] = useState(null);
   const [sliderInitialized, setSliderInitialized] = useState(false);
   const sliderRef = useRef();
@@ -205,11 +210,9 @@ export default function MinistriesSection({ ministries = [] }) {
       <section id="ministries" className="py-20 sm:py-28 bg-stone-50">
         <div className="container mx-auto">
           <div className="text-center max-w-3xl mx-auto px-4">
-            <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">Envolva-se</h2>
-            <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Nossos Ministérios</p>
-            <p className="mt-4 text-lg text-stone-600">
-              Encontre o seu lugar em nossa Igreja. Temos diversos departamentos atuando para o crescimento do Reino de Deus.
-            </p>
+            <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">{preTitle}</h2>
+            <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">{title}</p>
+            <p className="mt-4 text-lg text-stone-600">{subtitle}</p>
           </div>
 
           <div className="mt-16 relative">

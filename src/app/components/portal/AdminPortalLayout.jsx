@@ -21,6 +21,7 @@ import SchedulePage from "@/components/portal/features/SchedulePage";
 import MinistriesPage from "@/components/portal/features/MinistriesPage";
 import ConfigurationPage from "@/components/portal/features/ConfigurationPage";
 import CongregationsPage from "@/components/portal/features/CongregationsPage";
+import SiteContentPage from "@/components/portal/features/SiteContentPage";
 
 
 import { useHasRole } from "@/hooks/useClaims";
@@ -151,11 +152,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
       case "congregations":
         return <CongregationsPage />;
       case "siteContent":
-        return (
-          <PageContent title="Conteúdo do Site">
-            <p className="text-slate-700">Página para gerenciar o conteúdo do site (em construção).</p>
-          </PageContent>
-        );
+        return <SiteContentPage />;
       case "events":
         return (
           <PageContent title="Eventos">
