@@ -2,12 +2,9 @@
 
 import { useState } from "react";
 import { Users, MessageSquare, Book, Briefcase } from "lucide-react";
-import { churchInfo } from "@/lib/churchInfo";
 
 
 export default function InstitucionalPage() {
-  const logoUrl = churchInfo.logoUrlLight;
-
   const [activeTab, setActiveTab] = useState("diretoria");
 
   const tabs = [

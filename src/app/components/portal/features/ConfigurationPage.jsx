@@ -195,7 +195,11 @@ export default function ConfigurationPage() {
       );
 
       if (photoPath && photoPath !== path) {
-        try { await deleteObject(ref(storage, photoPath)); } catch {}
+        try {
+          await deleteObject(ref(storage, photoPath));
+        } catch (err) {
+          /* ignore stale image */
+        }
       }
 
       setPhotoURL(url);
@@ -256,7 +260,11 @@ export default function ConfigurationPage() {
         { email: newEmail, updatedAt: serverTimestamp() },
         { merge: true }
       );
-      try { await sendEmailVerification(u); } catch {}
+      try {
+        await sendEmailVerification(u);
+      } catch (err) {
+        /* ignore verification email errors */
+      }
       setEmailPwd("");
       showMsg("success", "E-mail atualizado. Verifique sua caixa de entrada.");
     } catch (err) {
