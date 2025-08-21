@@ -20,6 +20,7 @@ import UserManagementPage from "@/components/portal/features/UserManagementPage"
 import SchedulePage from "@/components/portal/features/SchedulePage";
 import MinistriesPage from "@/components/portal/features/MinistriesPage";
 import ConfigurationPage from "@/components/portal/features/ConfigurationPage";
+import CongregationsPage from "@/components/portal/features/CongregationsPage";
 
 
 import { useHasRole } from "@/hooks/useClaims";
@@ -133,7 +134,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         case "dashboard":     return <DashboardPage user={userProp} />;
         case "users":         return canSeeUsers ? <UserManagementPage currentUser={userProp} /> : <PageContent title="Acesso restrito"><p className="text-slate-700">Você não tem permissão para acessar esta seção.</p></PageContent>;
         case "ministries":    return canSeeMin   ? <MinistriesPage /> : <PageContent title="Acesso restrito"><p className="text-slate-700">Você não tem permissão para acessar esta seção.</p></PageContent>;
-        case "congregations": return <PageContent title="Congregações"><p className="text-slate-700">Página para gerenciar as congregações (em construção).</p></PageContent>;
+        case "congregations": return <CongregationsPage />;
         case "siteContent":   return <PageContent title="Conteúdo do Site"><p className="text-slate-700">Página para gerenciar o conteúdo do site (em construção).</p></PageContent>;
         case "events":        return <PageContent title="Eventos"><p className="text-slate-700">Página para gerenciar eventos (em construção).</p></PageContent>;
         case "schedule":      return canSeeSched ? <SchedulePage /> : <PageContent title="Acesso restrito"><p className="text-slate-700">Você não tem permissão para acessar esta seção.</p></PageContent>;
