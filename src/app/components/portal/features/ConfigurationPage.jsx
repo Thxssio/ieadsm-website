@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import PageContent from "../ui/PageContent";
+import PageContent from "@/components/portal/ui/PageContent";
 import {
   getAuth,
   updateProfile,
@@ -11,7 +11,7 @@ import {
   EmailAuthProvider,
   sendEmailVerification,
 } from "firebase/auth";
-import { db, storage } from "../../../lib/firebase/client";
+import { db, storage } from "@/lib/firebase/client";
 import {
   doc,
   getDoc,

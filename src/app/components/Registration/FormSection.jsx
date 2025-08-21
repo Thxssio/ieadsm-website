@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "../../lib/utils/cn";
+import { cn } from "@/lib/utils/cn";
 
 export default function FormSection({ title, subtitle, icon, children }) {
   return (
@@ -25,3 +25,4 @@ export default function FormSection({ title, subtitle, icon, children }) {
     </section>
   );
 }
+

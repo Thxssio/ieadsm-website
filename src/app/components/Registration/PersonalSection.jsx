@@ -1,7 +1,7 @@
 "use client";
 
-import FormSection from "./FormSection";
-import Field from "./Field";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
 import { BadgeInfo } from "lucide-react";
 
 const ESTADOS_CIVIS = ["Solteiro(a)", "Casado(a)", "Viúvo(a)", "Divorciado(a)"];
@@ -177,3 +177,4 @@ export default function PersonalSection({ form, setForm, inputCls }) {
     </FormSection>
   );
 }
+

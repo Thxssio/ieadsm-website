@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { auth, db } from "./client";
+import { auth, db } from "@/lib/firebase/client";
 
 const AuthContext = createContext({
   user: null,
@@ -93,3 +93,4 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 }
+

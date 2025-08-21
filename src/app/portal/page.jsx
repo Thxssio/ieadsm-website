@@ -3,8 +3,9 @@ export const metadata = {
   description: "Área restrita para membros.",
 };
 
-import PortalClient from "./PortalClient";
+import PortalClient from "@/portal/PortalClient";
 
 export default function PortalPage() {
   return <PortalClient />;
 }
+

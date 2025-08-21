@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-import HeroSection         from "./components/sections/home/HeroSection";
-import WelcomeMessage      from "./components/sections/home/WelcomeMessage";
-import ScheduleSection     from "./components/sections/home/ScheduleSection";
-import SocialFeed          from "./components/sections/home/FacebookFeed";
-import LocationSection     from "./components/sections/home/LocationSection";
-import MinistriesSection   from "./components/sections/home/MinistriesSection";
-import CongregationsSection from "./components/sections/home/CongregationsSection";
+import HeroSection         from "@/components/sections/home/HeroSection";
+import WelcomeMessage      from "@/components/sections/home/WelcomeMessage";
+import ScheduleSection     from "@/components/sections/home/ScheduleSection";
+import SocialFeed          from "@/components/sections/home/FacebookFeed";
+import LocationSection     from "@/components/sections/home/LocationSection";
+import MinistriesSection   from "@/components/sections/home/MinistriesSection";
+import CongregationsSection from "@/components/sections/home/CongregationsSection";
 
-import { churchInfo } from "./lib/churchInfo";
+import { churchInfo } from "@/lib/churchInfo";
 
 export default function HomeClient({ ministries = [] }) {
   const searchParams = useSearchParams();
@@ -57,3 +57,4 @@ export default function HomeClient({ ministries = [] }) {
     </>
   );
 }
+

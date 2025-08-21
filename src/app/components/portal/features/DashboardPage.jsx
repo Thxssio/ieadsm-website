@@ -1,5 +1,5 @@
 import React from 'react';
-import PageContent from '../ui/PageContent';
+import PageContent from '@/components/portal/ui/PageContent';
 
 export default function DashboardPage({ user }) {
   const getGreeting = () => {

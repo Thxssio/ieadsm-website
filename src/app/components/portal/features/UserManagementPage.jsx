@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { db } from "../../../lib/firebase/client";
+import { db } from "@/lib/firebase/client";
 import {
   collection,
   getDocs,
@@ -14,13 +14,13 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
-import PageContent from "../ui/PageContent";
-import ConfirmationModal from "../ui/ConfirmationModal";
-import StatusBadge from "../ui/StatusBadge";
-import { useHasRole } from "../../../hooks/useClaims";
-import { maskCPF } from "../../../lib/utils/cpf";
-import { downloadUserFichaPDF } from "./UserFichaPDF"; 
-import { churchInfo } from "../../../lib/churchInfo";
+import PageContent from "@/components/portal/ui/PageContent";
+import ConfirmationModal from "@/components/portal/ui/ConfirmationModal";
+import StatusBadge from "@/components/portal/ui/StatusBadge";
+import { useHasRole } from "@/hooks/useClaims";
+import { maskCPF } from "@/lib/utils/cpf";
+import { downloadUserFichaPDF } from "@/components/portal/features/UserFichaPDF";
+import { churchInfo } from "@/lib/churchInfo";
 
 
 
@@ -43,7 +43,7 @@ import {
   Printer,
 } from "lucide-react";
 
-import { setUserRoleCallable } from "../../../lib/firebase/callables/setUserRole";
+import { setUserRoleCallable } from "@/lib/firebase/callables/setUserRole";
 
 /* ----------------------------------------------------------- */
 /* Helpers                                                     */
@@ -699,3 +699,4 @@ export default function UserManagementPage({ currentUser }) {
     </PageContent>
   );
 }
+

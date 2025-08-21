@@ -5,8 +5,8 @@ import Link from "next/link";
 // 1. Importar a biblioteca de ícones completa
 import * as Icons from "lucide-react"; 
 import { Menu, X, ChevronDown, LogIn, User } from "lucide-react";
-import { useAuth } from "../../lib/firebase/AuthContext";
-import { auth } from "../../lib/firebase/client";
+import { useAuth } from "@/lib/firebase/AuthContext";
+import { auth } from "@/lib/firebase/client";
 
 // 2. Função que "traduz" o nome do ícone no componente real
 function getIconComponent(name) {

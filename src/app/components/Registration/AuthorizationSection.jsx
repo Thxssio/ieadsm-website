@@ -1,7 +1,7 @@
 "use client";
 
-import FormSection from "./FormSection";
-import Field from "./Field";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
 import { ShieldCheck } from "lucide-react";
 
 export default function AuthorizationSection({ form, setForm }) {
@@ -22,3 +22,4 @@ export default function AuthorizationSection({ form, setForm }) {
     </FormSection>
   );
 }
+

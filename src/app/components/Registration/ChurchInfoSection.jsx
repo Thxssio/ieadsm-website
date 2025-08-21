@@ -2,8 +2,8 @@
 
 import { Switch } from "@headlessui/react";
 import { Church } from "lucide-react";
-import FormSection from "./FormSection";
-import Field from "./Field";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
 
 export default function ChurchInfoSection({ form, setForm, inputCls }) {
   const onChange = (e) => {
@@ -98,3 +98,4 @@ export default function ChurchInfoSection({ form, setForm, inputCls }) {
     </FormSection>
   );
 }
+

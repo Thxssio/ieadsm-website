@@ -7,7 +7,7 @@ import {
   connectFunctionsEmulator,
 } from "firebase/functions";
 import { getAuth } from "firebase/auth";
-import { app } from "../client"; // seu init do Firebase app
+import { app } from "@/lib/firebase/client"; // seu init do Firebase app
 
 // Região da função (deve bater com a usada no deploy/emulador)
 const REGION = process.env.NEXT_PUBLIC_FUNCTIONS_REGION || "us-east1";
@@ -115,3 +115,4 @@ export async function maybeRefreshCurrentUserClaimsIfAffected(targetEmail) {
     // silencioso
   }
 }
+

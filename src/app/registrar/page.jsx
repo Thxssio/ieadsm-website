@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../lib/firebase/AuthContext";
-import RegisterForm from "./RegisterForm";
+import { useAuth } from "@/lib/firebase/AuthContext";
+import RegisterForm from "@/registrar/RegisterForm";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -38,3 +38,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { db } from '../../../lib/firebase/client';
+import { db } from '@/lib/firebase/client';
 import { collection, getDocs, doc, addDoc, updateDoc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import PageContent from '../ui/PageContent';
+import PageContent from '@/components/portal/ui/PageContent';
 
 import { Hand, Users, BookOpen, Star, BookMarked, Radio, CalendarDays, Trash2 as TrashIcon } from 'lucide-react';
 

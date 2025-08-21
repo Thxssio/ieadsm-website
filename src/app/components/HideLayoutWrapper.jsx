@@ -3,14 +3,14 @@
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
-import Header from "./layout/Header";
-import Footer from "./layout/Footer";
-import DevelopmentSeal from "./layout/DevelopmentSeal";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import DevelopmentSeal from "@/components/layout/DevelopmentSeal";
 
-import { churchInfo } from "../lib/churchInfo";
+import { churchInfo } from "@/lib/churchInfo";
 
 // Firestore
-import { db } from "../lib/firebase/client";
+import { db } from "@/lib/firebase/client";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
 export default function HideLayoutWrapper({ children }) {
@@ -69,3 +69,4 @@ export default function HideLayoutWrapper({ children }) {
     </>
   );
 }
+

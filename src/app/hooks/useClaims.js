@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { onSnapshot, doc } from "firebase/firestore";
-import { db } from "../lib/firebase/client";
+import { db } from "@/lib/firebase/client";
 
 export function useClaims() {
   const [claims, setClaims] = useState(null);
