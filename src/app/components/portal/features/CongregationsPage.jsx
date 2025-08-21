@@ -12,6 +12,7 @@ export default function CongregationsPage() {
 
   const emptyCongForm = {
     name: "",
+    isDefault: false,
     primary: { husband: "", wife: "" },
     secondary: { husband: "", wife: "" },
     responsibles: [{ husband: "", wife: "" }],
@@ -19,10 +20,25 @@ export default function CongregationsPage() {
 
   const loadData = async () => {
     const secSnap = await getDocs(collection(db, "sectors"));
+    if (secSnap.empty) {
+      const defaultSectorRef = await addDoc(collection(db, "sectors"), {
+        name: "Setor 01",
+        isDefault: true,
+      });
+      await addDoc(collection(db, "sectors", defaultSectorRef.id, "congregations"), {
+        name: "Matriz",
+        isDefault: true,
+      });
+      return loadData();
+    }
     const data = [];
     for (const s of secSnap.docs) {
       const congSnap = await getDocs(collection(db, "sectors", s.id, "congregations"));
-      data.push({ id: s.id, ...s.data(), congregations: congSnap.docs.map((c) => ({ id: c.id, ...c.data() })) });
+      data.push({
+        id: s.id,
+        ...s.data(),
+        congregations: congSnap.docs.map((c) => ({ id: c.id, ...c.data() })),
+      });
     }
     setSectors(data);
   };
@@ -50,6 +66,7 @@ export default function CongregationsPage() {
     if (!name) return;
     const payload = {
       name,
+      isDefault: form.isDefault || false,
       supervisors: {
         primary: {
           husband: form.primary.husband.trim(),
@@ -91,6 +108,9 @@ export default function CongregationsPage() {
               {sector.congregations.map((c) => (
                 <li key={c.id} className="mb-1">
                   <span className="font-medium">{c.name}</span>
+                  {c.isDefault && (
+                    <span className="ml-2 text-xs text-blue-600">(default)</span>
+                  )}
                   {c.supervisors?.primary?.husband && (
                     <span className="text-sm text-slate-600">
                       {" "}- Sup.1: {c.supervisors.primary.husband} & {c.supervisors.primary.wife}
@@ -114,6 +134,16 @@ export default function CongregationsPage() {
                   value={forms[sector.id]?.name || ""}
                   onChange={(e) => updateForm(sector.id, (f) => ({ ...f, name: e.target.value }))}
                 />
+                <label className="flex items-center gap-1 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={forms[sector.id]?.isDefault || false}
+                    onChange={(e) =>
+                      updateForm(sector.id, (f) => ({ ...f, isDefault: e.target.checked }))
+                    }
+                  />
+                  Padrão
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     className="border border-slate-300 rounded px-2 py-1"
@@ -209,9 +239,9 @@ export default function CongregationsPage() {
                 <button
                   type="button"
                   onClick={() => handleAddCongregation(sector.id)}
-                  className="bg-green-600 text-white px-3 py-1 rounded"
+                  className="bg-blue-600 text-white px-3 py-1 rounded"
                 >
-                  Salvar Congregação
+                  Adicionar Congregação
                 </button>
               </div>
             </div>
