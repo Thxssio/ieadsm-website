@@ -19,6 +19,30 @@ export default function AddressSection({ form, setForm, inputCls }) {
       icon={<MapPinned size={18} />}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* CEP: busca automática quando tiver 8 dígitos numéricos */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium">CEP</label>
+          <input
+            name="cep"
+            className={`${inputCls} mt-1`}
+            value={form.cep || ""}
+            onChange={(e) => handleCepInput(e.target.value)}
+            placeholder="00000-000"
+            inputMode="numeric"
+            autoComplete="postal-code"
+            autoFocus
+          />
+          {(cepLoading || cepErr) && (
+            <p
+              className={`mt-1 text-xs ${
+                cepErr ? "text-red-600" : "text-slate-500"
+              }`}
+            >
+              {cepErr ? cepErr : "Buscando CEP..."}
+            </p>
+          )}
+        </div>
+
         <Field label="Endereço" required>
           <input
             name="endereco"
@@ -85,29 +109,6 @@ export default function AddressSection({ form, setForm, inputCls }) {
             autoComplete="address-level1"
           />
         </Field>
-
-        {/* CEP: busca automática quando tiver 8 dígitos numéricos */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium">CEP</label>
-          <input
-            name="cep"
-            className={`${inputCls} mt-1`}
-            value={form.cep || ""}
-            onChange={(e) => handleCepInput(e.target.value)}
-            placeholder="00000-000"
-            inputMode="numeric"
-            autoComplete="postal-code"
-          />
-          {(cepLoading || cepErr) && (
-            <p
-              className={`mt-1 text-xs ${
-                cepErr ? "text-red-600" : "text-slate-500"
-              }`}
-            >
-              {cepErr ? cepErr : "Buscando CEP..."}
-            </p>
-          )}
-        </div>
       </div>
     </FormSection>
   );
