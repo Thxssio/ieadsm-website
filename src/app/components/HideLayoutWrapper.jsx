@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import DevelopmentSeal from "@/components/layout/DevelopmentSeal";
 
 import { churchInfo } from "@/lib/churchInfo";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 // Firestore
 import { db } from "@/lib/firebase/client";
@@ -23,6 +24,7 @@ export default function HideLayoutWrapper({ children }) {
   // estado p/ ministérios dinâmicos
   const [ministries, setMinistries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { content } = useSiteContent();
 
   useEffect(() => {
     const load = async () => {
@@ -47,17 +49,21 @@ export default function HideLayoutWrapper({ children }) {
       {!hideGlobal && (
         <Header
           churchName={churchInfo.name}
-          logoUrl={churchInfo.logoUrlLight}
+          logoUrl={content.logoLightURL || churchInfo.logoUrlLight}
           ministries={loading ? [] : ministries}
         />
       )}
       <main className="flex-1">{children}</main>
       {!hideGlobal && (
         <Footer
-          logoUrl={churchInfo.logoUrlDark}
-          address={churchInfo.address}
-          phone={churchInfo.phone}
-          socialLinks={churchInfo.socialLinks}
+          logoUrl={content.logoDarkURL || churchInfo.logoUrlDark}
+          address={content.address || churchInfo.address}
+          phone={content.phone || churchInfo.phone}
+          tagline={content.footerText}
+          socialLinks={{
+            instagram: content.instagramLink || churchInfo.socialLinks.instagram,
+            facebook: content.facebookLink || churchInfo.socialLinks.facebook,
+          }}
         />
       )}
       {!hideGlobal && process.env.NODE_ENV !== "production" && (

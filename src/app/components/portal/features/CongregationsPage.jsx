@@ -34,6 +34,7 @@ export default function CongregationsPage() {
     const data = [];
     for (const s of secSnap.docs) {
       const congSnap = await getDocs(collection(db, "sectors", s.id, "congregations"));
+      data.push({ id: s.id, ...s.data(), congregations: congSnap.docs.map((c) => ({ id: c.id, ...c.data() })) });
       data.push({
         id: s.id,
         ...s.data(),
@@ -89,6 +90,7 @@ export default function CongregationsPage() {
   return (
     <PageContent title="Congregações">
       <div className="space-y-8">
+        <form onSubmit={handleAddSector} className="flex gap-2">
         <form onSubmit={handleAddSector} className="bg-slate-50 p-4 rounded flex gap-2">
           <input
             className="border border-slate-300 rounded px-2 py-1 flex-1"
@@ -102,6 +104,9 @@ export default function CongregationsPage() {
         </form>
 
         {sectors.map((sector) => (
+          <div key={sector.id} className="border-t border-slate-200 pt-4">
+            <h3 className="font-semibold text-lg mb-2">{sector.name}</h3>
+            <ul className="list-disc pl-5 mb-4">
           <div
             key={sector.id}
             className="border border-slate-200 rounded p-4 space-y-4"
@@ -110,6 +115,8 @@ export default function CongregationsPage() {
 
             <div className="space-y-2">
               {sector.congregations.map((c) => (
+                <li key={c.id} className="mb-1">
+                  <span className="font-medium">{c.name}</span>
                 <div
                   key={c.id}
                   className="pl-4 border-l-2 border-slate-200"
@@ -123,19 +130,30 @@ export default function CongregationsPage() {
                     )}
                   </div>
                   {c.supervisors?.primary?.husband && (
+                    <span className="text-sm text-slate-600">
+                      {" "}- Sup.1: {c.supervisors.primary.husband} & {c.supervisors.primary.wife}
+                    </span>
                     <div className="text-sm text-slate-600 pl-4">
                       Sup.1: {c.supervisors.primary.husband} & {c.supervisors.primary.wife}
                     </div>
                   )}
                   {c.supervisors?.secondary?.husband && (
+                    <span className="text-sm text-slate-600">
+                      {" "}- Sup.2: {c.supervisors.secondary.husband} & {c.supervisors.secondary.wife}
+                    </span>
                     <div className="text-sm text-slate-600 pl-4">
                       Sup.2: {c.supervisors.secondary.husband} & {c.supervisors.secondary.wife}
                     </div>
                   )}
+                </li>
                 </div>
               ))}
+            </ul>
             </div>
 
+            <div className="bg-slate-50 p-4 rounded">
+              <h4 className="font-medium mb-2">Nova congregação</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
             <div className="bg-slate-50 p-4 rounded space-y-2">
               <h4 className="font-medium">Nova congregação</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -180,7 +198,7 @@ export default function CongregationsPage() {
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <input
+@@ -143,82 +184,82 @@ export default function CongregationsPage() {
                     className="border border-slate-300 rounded px-2 py-1"
                     placeholder="2º Sup. Esposo"
                     value={forms[sector.id]?.secondary?.husband || ""}
@@ -206,6 +224,7 @@ export default function CongregationsPage() {
               </div>
 
               {(forms[sector.id]?.responsibles || [{ husband: "", wife: "" }]).map((r, idx) => (
+                <div key={idx} className="grid grid-cols-2 gap-2 mb-2">
                 <div key={idx} className="grid grid-cols-2 gap-2">
                   <input
                     className="border border-slate-300 rounded px-2 py-1"
@@ -236,6 +255,7 @@ export default function CongregationsPage() {
 
               <button
                 type="button"
+                className="text-sm text-blue-600 mb-2"
                 className="text-sm text-blue-600"
                 onClick={() =>
                   updateForm(sector.id, (f) => ({
@@ -246,12 +266,15 @@ export default function CongregationsPage() {
               >
                 Adicionar responsável
               </button>
+              <div>
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={() => handleAddCongregation(sector.id)}
+                  className="bg-green-600 text-white px-3 py-1 rounded"
                   className="bg-blue-600 text-white px-3 py-1 rounded"
                 >
+                  Salvar Congregação
                   Adicionar Congregação
                 </button>
               </div>
@@ -262,4 +285,5 @@ export default function CongregationsPage() {
     </PageContent>
   );
 }
+
 
