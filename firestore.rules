@@ -75,6 +75,19 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    match /idInterno_index/{idInterno} {
+      allow create: if request.auth != null
+        && !exists(/databases/$(database)/documents/idInterno_index/$(idInterno));
+
+      allow update: if request.auth != null
+        && (!('uid' in resource.data) || resource.data.uid == request.auth.uid)
+        && request.resource.data.uid == request.auth.uid;
+
+      allow read: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
     match /families/{familyId} {
       allow read, write: if isAdmin() || isFamilyMember(familyId);
 
