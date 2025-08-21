@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { db, storage } from "../../../lib/firebase/client";
+import { db, storage } from "@/lib/firebase/client";
 import {
   collection,
   getDocs,
@@ -28,9 +28,9 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import PageContent from "../ui/PageContent";
-import ConfirmationModal from "../ui/ConfirmationModal";
-import { useHasRole } from "../../../hooks/useClaims";
+import PageContent from "@/components/portal/ui/PageContent";
+import ConfirmationModal from "@/components/portal/ui/ConfirmationModal";
+import { useHasRole } from "@/hooks/useClaims";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
@@ -781,3 +781,4 @@ export default function MinistriesPage() {
     </PageContent>
   );
 }
+

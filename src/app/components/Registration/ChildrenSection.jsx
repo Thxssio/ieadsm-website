@@ -1,9 +1,9 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import FormSection from "./FormSection";
-import Field from "./Field";
-import { maskCPF } from "../../lib/utils/cpf";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
+import { maskCPF } from "@/lib/utils/cpf";
 
 export default function ChildrenSection({ form, setForm, inputCls }) {
   const filhos = Array.isArray(form.filhos) ? form.filhos : [];
@@ -81,3 +81,4 @@ export default function ChildrenSection({ form, setForm, inputCls }) {
     </FormSection>
   );
 }
+

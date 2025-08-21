@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LogIn } from "lucide-react";
-import IconWrapper from "../components/common/IconWrapper";
-import LoginForm from "./LoginForm";
-import { useAuth } from "../lib/firebase/AuthContext"; // ← usar AuthContext
+import IconWrapper from "@/components/common/IconWrapper";
+import LoginForm from "@/login/LoginForm";
+import { useAuth } from "@/lib/firebase/AuthContext"; // ← usar AuthContext
 
 export default function LoginPage() {
   const router = useRouter();
@@ -58,3 +58,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

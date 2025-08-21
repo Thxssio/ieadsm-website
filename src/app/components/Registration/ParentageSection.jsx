@@ -1,8 +1,8 @@
 "use client";
 
-import FormSection from "./FormSection";
-import Field from "./Field";
-import { maskCPF } from "../../lib/utils/cpf";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
+import { maskCPF } from "@/lib/utils/cpf";
 import { Users } from "lucide-react";
 
 export default function ParentageSection({ form, setForm, inputCls }) {
@@ -90,3 +90,4 @@ export default function ParentageSection({ form, setForm, inputCls }) {
     </FormSection>
   );
 }
+

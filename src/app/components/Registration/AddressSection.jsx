@@ -1,9 +1,9 @@
 "use client";
 
-import FormSection from "./FormSection";
-import Field from "./Field";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
 import { MapPinned } from "lucide-react";
-import { useCepLookup } from "../../hooks/useCepLookup";
+import { useCepLookup } from "@/hooks/useCepLookup";
 
 export default function AddressSection({ form, setForm, inputCls }) {
   const onChange = (e) =>
@@ -112,3 +112,4 @@ export default function AddressSection({ form, setForm, inputCls }) {
     </FormSection>
   );
 }
+

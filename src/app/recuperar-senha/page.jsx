@@ -1,4 +1,4 @@
-import ResetPasswordForm from "./ResetPasswordForm";
+import ResetPasswordForm from "@/recuperar-senha/ResetPasswordForm";
 
 export const metadata = {
   title: "Recuperar senha | IEADSM",
@@ -18,3 +18,4 @@ export default function ResetPage() {
     </div>
   );
 }
+

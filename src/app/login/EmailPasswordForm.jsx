@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { auth } from "../lib/firebase/client";
+import { auth } from "@/lib/firebase/client";
 import { 
   signInWithEmailAndPassword,
   fetchSignInMethodsForEmail 
@@ -48,7 +48,7 @@ export default function EmailPasswordForm() {
           } else {
             setErr("E-mail ou senha inválidos.");
           }
-        } catch (fetchError) {
+        } catch {
           setErr("Ocorreu um erro ao verificar seu e-mail.");
         }
       } else {

@@ -1,4 +1,4 @@
-import FacebookEmbeds from "./FacebookEmbeds";
+import FacebookEmbeds from "@/midia/FacebookEmbeds";
 
 export const metadata = {
   title: "Mídia | IEADSM",
@@ -28,3 +28,4 @@ export default function MidiaPage() {
     </section>
   );
 }
+

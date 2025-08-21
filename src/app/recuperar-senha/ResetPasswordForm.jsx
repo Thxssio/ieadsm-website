@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { auth } from "../lib/firebase/client";
+import { auth } from "@/lib/firebase/client";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function ResetPasswordForm() {
@@ -17,7 +17,7 @@ export default function ResetPasswordForm() {
     try {
       await sendPasswordResetEmail(auth, email.trim());
       setMsg("Se o e‑mail estiver cadastrado, enviaremos um link para redefinir a senha.");
-    } catch (e) {
+    } catch {
       setErr("Não foi possível enviar o e‑mail. Verifique o endereço e tente novamente.");
     } finally {
       setLoading(false);
@@ -47,3 +47,4 @@ export default function ResetPasswordForm() {
     </form>
   );
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
-import FormSection from "./FormSection";
-import Field from "./Field";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
 import { Settings2 } from "lucide-react";
 
 export default function RegistrationTypeSection({ form, setForm, inputCls }) {
@@ -66,3 +66,4 @@ export default function RegistrationTypeSection({ form, setForm, inputCls }) {
     </FormSection>
   );
 }
+

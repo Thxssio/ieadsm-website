@@ -1,6 +1,7 @@
     "use client";
 
     import { useState, useEffect } from 'react';
+    import Image from "next/image";
 
     const MoonIcon = () => (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
@@ -105,11 +106,14 @@
                     <main className="w-full text-center">
                         {/* Seção do Perfil */}
                         <header className="flex flex-col items-center mb-6">
-                            <img 
-                                className="w-24 h-24 rounded-full object-contain shadow-lg mb-4 bg-white p-1" 
-                                src="https://adsm.org.br/wp-content/uploads/2022/08/logo-adsm-azul.png" 
+                            <Image
+                                className="w-24 h-24 rounded-full object-contain shadow-lg mb-4 bg-white p-1"
+                                src="https://adsm.org.br/wp-content/uploads/2022/08/logo-adsm-azul.png"
                                 alt="Logo AD Santa Maria"
+                                width={96}
+                                height={96}
                                 onError={(e) => { e.currentTarget.src='https://placehold.co/200x200/e0e0e0/333333?text=Logo'; }}
+                                unoptimized
                             />
                             <h1 className="text-xl font-semibold text-gray-900 dark:text-white">@adsantamariars</h1>
                             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 px-4">Igreja Evangélica Assembleia de Deus de Santa Maria/RS.</p>
@@ -126,7 +130,7 @@
                                     rel="noopener noreferrer"
                                     className="border-2 border-gray-300/80 dark:border-gray-500/80 font-semibold py-3 px-4 rounded-lg flex items-center w-full transition-all transform hover:scale-[1.02] hover:bg-black/5 dark:hover:bg-white/5"
                                 >
-                                    {link.icon && <img src={link.icon} className={`w-6 h-6 mr-3 ${link.icon.includes('placehold') || link.icon.includes('adsm') ? 'rounded-full' : ''}`} alt="" />}
+                                    {link.icon && <Image src={link.icon} width={24} height={24} className={`w-6 h-6 mr-3 ${link.icon.includes('placehold') || link.icon.includes('adsm') ? 'rounded-full' : ''}`} alt="" unoptimized />}
                                     <span className={`flex-grow text-sm ${link.icon ? 'text-left' : 'text-center'}`}>{link.text}</span>
                                     <MoreIcon />
                                 </a>
@@ -149,3 +153,4 @@
             </div>
         );
     }
+

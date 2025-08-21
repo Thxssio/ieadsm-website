@@ -14,25 +14,25 @@ import {
   getDocs,
   limit,
 } from "firebase/firestore";
-import { db, storage } from "../lib/firebase/client";
+import { db, storage } from "@/lib/firebase/client";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { useAuth } from "../lib/firebase/AuthContext";
-import { onlyDigits, validateCPF } from "../lib/utils/cpf";
+import { useAuth } from "@/lib/firebase/AuthContext";
+import { onlyDigits, validateCPF } from "@/lib/utils/cpf";
 
 /* Seções do formulário */
-import RegistrationTypeSection from "../components/Registration/RegistrationTypeSection";
-import IdentificationSection   from "../components/Registration/IdentificationSection";
-import AddressSection          from "../components/Registration/AddressSection";
-import ParentageSection        from "../components/Registration/ParentageSection";
-import PersonalSection         from "../components/Registration/PersonalSection";
-import SpouseSection           from "../components/Registration/SpouseSection";
-import ChildrenSection         from "../components/Registration/ChildrenSection";
-import ChurchInfoSection       from "../components/Registration/ChurchInfoSection";
-import BaptismSection          from "../components/Registration/BaptismSection";
-import AuthorizationSection    from "../components/Registration/AuthorizationSection";
-import SummaryCard             from "../components/Registration/SummaryCard";
-import HelpCard                from "../components/Registration/HelpCard";
-import ProfileImageUploader    from "../components/Registration/ProfileImageUploader";
+import RegistrationTypeSection from "@/components/Registration/RegistrationTypeSection";
+import IdentificationSection   from "@/components/Registration/IdentificationSection";
+import AddressSection          from "@/components/Registration/AddressSection";
+import ParentageSection        from "@/components/Registration/ParentageSection";
+import PersonalSection         from "@/components/Registration/PersonalSection";
+import SpouseSection           from "@/components/Registration/SpouseSection";
+import ChildrenSection         from "@/components/Registration/ChildrenSection";
+import ChurchInfoSection       from "@/components/Registration/ChurchInfoSection";
+import BaptismSection          from "@/components/Registration/BaptismSection";
+import AuthorizationSection    from "@/components/Registration/AuthorizationSection";
+import SummaryCard             from "@/components/Registration/SummaryCard";
+import HelpCard                from "@/components/Registration/HelpCard";
+import ProfileImageUploader    from "@/components/Registration/ProfileImageUploader";
 
 /* Input base (não herdar text-white) */
 const inputCls =
@@ -469,3 +469,4 @@ export default function CompleteRegistrationClient() {
     </div>
   );
 }
+

@@ -1,8 +1,8 @@
 "use client";
 
-import FormSection from "./FormSection";
-import Field from "./Field";
-import { maskCPF } from "../../lib/utils/cpf";
+import FormSection from "@/components/Registration/FormSection";
+import Field from "@/components/Registration/Field";
+import { maskCPF } from "@/lib/utils/cpf";
 import { IdCard } from "lucide-react";
 
 export default function IdentificationSection({ form, setForm, inputCls }) {
@@ -41,3 +41,4 @@ export default function IdentificationSection({ form, setForm, inputCls }) {
     </FormSection>
   );
 }
+

@@ -1,4 +1,4 @@
-import InstitutionalContent from "./InstitutionalContent";
+import InstitutionalContent from "@/institutional/InstitutionalContent";
 
 export const metadata = {
   title: "Institucional | IEADSM",
@@ -12,3 +12,4 @@ export default function InstitucionalPage() {
     </main>
   );
 }
+

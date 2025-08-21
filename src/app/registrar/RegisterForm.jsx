@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, db } from "../lib/firebase/client";
+import { auth, db } from "@/lib/firebase/client";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -11,7 +11,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { validateCPF, maskCPF } from "../lib/utils/cpf.js";
+import { validateCPF, maskCPF } from "@/lib/utils/cpf";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -70,12 +70,14 @@ export default function RegisterForm() {
           { uid: cred.user.uid, createdAt: serverTimestamp() },
           { merge: true }
         );
-      } catch (e) {
+      } catch {
         // Se falhar aqui, provavelmente CPF já está em uso.
         // Remover usuário criado e abortar.
         try {
           await userCreated.delete();
-        } catch {}
+        } catch {
+          // ignore
+        }
         throw new Error("Este CPF já está em uso.");
       }
 
@@ -226,3 +228,4 @@ export default function RegisterForm() {
     </form>
   );
 }
+

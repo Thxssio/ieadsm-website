@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUser } from '../../../lib/firebase/server';
+import { getCurrentUser } from '@/lib/firebase/server';
 
 export const dynamic = 'force-dynamic';
 

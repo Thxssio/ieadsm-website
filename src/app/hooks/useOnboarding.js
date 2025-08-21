@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { db } from "../lib/firebase/client";
+import { db } from "@/lib/firebase/client";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export function useOnboarding(uid) {
@@ -32,3 +32,4 @@ export function useOnboarding(uid) {
 
   return { onboarding: state, setOnboarding, loading };
 }
+

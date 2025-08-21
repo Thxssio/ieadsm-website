@@ -14,16 +14,16 @@ import {
   Settings,
 } from "lucide-react";
 
-import PageContent from "./ui/PageContent";
-import DashboardPage from "./features/DashboardPage";
-import UserManagementPage from "./features/UserManagementPage";
-import SchedulePage from "./features/SchedulePage";
-import MinistriesPage from "./features/MinistriesPage";
-import ConfigurationPage from "./features/ConfigurationPage";
+import PageContent from "@/components/portal/ui/PageContent";
+import DashboardPage from "@/components/portal/features/DashboardPage";
+import UserManagementPage from "@/components/portal/features/UserManagementPage";
+import SchedulePage from "@/components/portal/features/SchedulePage";
+import MinistriesPage from "@/components/portal/features/MinistriesPage";
+import ConfigurationPage from "@/components/portal/features/ConfigurationPage";
 
 
-import { useHasRole } from "../../hooks/useClaims";
-import { useAuthUser } from "../../hooks/useAuthUser"; // unifica Auth + Firestore
+import { useHasRole } from "@/hooks/useClaims";
+import { useAuthUser } from "@/hooks/useAuthUser"; // unifica Auth + Firestore
 
 // --------- helpers
 function cx(...xs) { return xs.filter(Boolean).join(" "); }
@@ -318,3 +318,4 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
     </div>
   );
 }
+
