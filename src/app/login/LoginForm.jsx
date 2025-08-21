@@ -54,6 +54,7 @@ export default function LoginForm() {
         setErr("Por favor, confirme seu e-mail para fazer login. Verifique sua caixa de entrada ou spam.");
       }
     } catch (e) {
+      console.error(e);
       setErr(mapError(e.code));
     } finally {
       setLoading(false);

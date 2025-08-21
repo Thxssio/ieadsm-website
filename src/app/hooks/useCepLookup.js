@@ -67,6 +67,7 @@ export function useCepLookup({ setForm, debounceMs = 350 }) {
       applyCepData(cep8, data);
     } catch (err) {
       if (err.name === "AbortError") return;
+      console.error(err);
       if (mySeq !== reqSeq.current) return;
       setError(
         err?.message === "CEP não encontrado."

@@ -105,6 +105,7 @@ async function fileToWebp(file, opts = {}) {
     URL.revokeObjectURL(blobUrl);
     return webpFile;
   } catch (e) {
+    console.error(e);
     URL.revokeObjectURL(blobUrl);
     throw e;
   }

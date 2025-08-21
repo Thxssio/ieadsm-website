@@ -38,6 +38,7 @@ export default function EmailPasswordForm() {
       await signInWithEmailAndPassword(auth, email.trim(), pwd);
       router.push("/portal");
     } catch (error) {
+      console.error(error);
       if (error.code === 'auth/invalid-credential') {
         try {
           const methods = await fetchSignInMethodsForEmail(auth, email);

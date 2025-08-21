@@ -150,7 +150,7 @@ export default function PdfFlipbook({
       setIndexReady(true);
       return true;
     } catch (err) {
-      console.error("Index error:", err);
+      console.error(err);
       pageTextsRef.current = [];
       setIndexReady(false);
       return false;

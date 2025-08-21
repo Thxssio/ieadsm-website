@@ -90,6 +90,7 @@ export async function setUserRoleCallable(emailOrPayload, maybeRole) {
     const res = await callable({ email, role });
     return res.data; // { ok, uid, email, role, message }
   } catch (err) {
+    console.error(err);
     // Firebase Functions HttpsError → tem .code e .message
     const code = err?.code || "functions/internal";
     const fallback =
