@@ -1,4 +1,4 @@
-import EventsViewer from "../components/eventos/EventsViewer";
+import EventsViewer from "@/app/components/eventos/EventsViewer";
 
 export const metadata = {
   title: "Eventos | IEADSM",

@@ -1,4 +1,4 @@
-import SocialButtons from "../login/SocialButtons"; // opcional: também permitir Google/Apple aqui
+import SocialButtons from "@/app/login/SocialButtons"; // opcional: também permitir Google/Apple aqui
 import RegisterForm from "./RegisterForm";
 
 export const metadata = {
