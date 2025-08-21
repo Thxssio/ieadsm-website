@@ -116,77 +116,76 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
     }
   };
 
+  const LoggingOutPage = () => (
+    <PageContent title="Saindo...">
+      <p className="text-slate-700">Finalizando sua sessão, aguarde.</p>
+    </PageContent>
+  );
+
+  const LoadingPermissionsPage = () => (
+    <PageContent title="Carregando permissões">
+      <p className="text-slate-700">Verificando seu acesso…</p>
+    </PageContent>
+  );
+
+  const ActivePage = () => {
+    switch (activePage) {
+      case "dashboard":
+        return <DashboardPage user={userProp} />;
+      case "users":
+        return canSeeUsers ? (
+          <UserManagementPage currentUser={userProp} />
+        ) : (
+          <PageContent title="Acesso restrito">
+            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+          </PageContent>
+        );
+      case "ministries":
+        return canSeeMin ? (
+          <MinistriesPage />
+        ) : (
+          <PageContent title="Acesso restrito">
+            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+          </PageContent>
+        );
+      case "congregations":
+        return <CongregationsPage />;
+      case "siteContent":
+        return (
+          <PageContent title="Conteúdo do Site">
+            <p className="text-slate-700">Página para gerenciar o conteúdo do site (em construção).</p>
+          </PageContent>
+        );
+      case "events":
+        return (
+          <PageContent title="Eventos">
+            <p className="text-slate-700">Página para gerenciar eventos (em construção).</p>
+          </PageContent>
+        );
+      case "schedule":
+        return canSeeSched ? (
+          <SchedulePage />
+        ) : (
+          <PageContent title="Acesso restrito">
+            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+          </PageContent>
+        );
+      case "configuration":
+        return <ConfigurationPage />;
+      default:
+        return (
+          <PageContent title="Dashboard">
+            <p className="text-slate-700">Página não encontrada.</p>
+          </PageContent>
+        );
+    }
+  };
+
   const PageRenderer = useMemo(() => {
-    if (isLoggingOut) {
-      const LoggingOutPage = () => (
-        <PageContent title="Saindo...">
-          <p className="text-slate-700">Finalizando sua sessão, aguarde.</p>
-        </PageContent>
-      );
-      return LoggingOutPage;
-    }
-    if (rolesLoading) {
-      const LoadingPermissionsPage = () => (
-        <PageContent title="Carregando permissões">
-          <p className="text-slate-700">Verificando seu acesso…</p>
-        </PageContent>
-      );
-      return LoadingPermissionsPage;
-    }
-    const ActivePage = () => {
-      switch (activePage) {
-        case "dashboard":
-          return <DashboardPage user={userProp} />;
-        case "users":
-          return canSeeUsers ? (
-            <UserManagementPage currentUser={userProp} />
-          ) : (
-            <PageContent title="Acesso restrito">
-              <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
-            </PageContent>
-          );
-        case "ministries":
-          return canSeeMin ? (
-            <MinistriesPage />
-          ) : (
-            <PageContent title="Acesso restrito">
-              <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
-            </PageContent>
-          );
-        case "congregations":
-          return <CongregationsPage />;
-        case "siteContent":
-          return (
-            <PageContent title="Conteúdo do Site">
-              <p className="text-slate-700">Página para gerenciar o conteúdo do site (em construção).</p>
-            </PageContent>
-          );
-        case "events":
-          return (
-            <PageContent title="Eventos">
-              <p className="text-slate-700">Página para gerenciar eventos (em construção).</p>
-            </PageContent>
-          );
-        case "schedule":
-          return canSeeSched ? (
-            <SchedulePage />
-          ) : (
-            <PageContent title="Acesso restrito">
-              <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
-            </PageContent>
-          );
-        case "configuration":
-          return <ConfigurationPage />;
-        default:
-          return (
-            <PageContent title="Dashboard">
-              <p className="text-slate-700">Página não encontrada.</p>
-            </PageContent>
-          );
-      }
-    }
+    if (isLoggingOut) return LoggingOutPage;
+    if (rolesLoading) return LoadingPermissionsPage;
     return ActivePage;
-  }, [activePage, userProp, canSeeUsers, canSeeMin, canSeeSched, rolesLoading, isLoggingOut]);
+  }, [isLoggingOut, rolesLoading, activePage, userProp, canSeeUsers, canSeeMin, canSeeSched]);
 
   const navLinksBlock = (
     <>
