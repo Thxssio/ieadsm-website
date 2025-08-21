@@ -89,10 +89,18 @@ service cloud.firestore {
     }
 
     match /families/{familyId} {
-      allow read, write: if isAdmin() || isFamilyMember(familyId);
+      // Qualquer usuário autenticado pode criar sua própria família. Leitura
+      // e demais operações ficam restritas aos administradores ou membros
+      // daquela família.
+      allow create: if request.auth != null;
+      allow read, update, delete: if isAdmin() || isFamilyMember(familyId);
 
       match /members/{memberId} {
-        allow read, write: if isAdmin() || isFamilyMember(familyId);
+        // Permite que o usuário crie seu próprio registro de membro antes de
+        // existir vínculo com a família. Após vinculado, qualquer membro ou
+        // administrador pode gerenciar os demais integrantes.
+        allow create: if isAdmin() || isFamilyMember(familyId) || (request.auth != null && request.auth.uid == memberId);
+        allow read, update, delete: if isAdmin() || isFamilyMember(familyId);
       }
     }
   }
