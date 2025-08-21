@@ -45,7 +45,7 @@ export default function PdfFlipbook({
   const [matchIdx, setMatchIdx] = useState(0);
 
   // Loading / erro
-  const [pdfLoading, setPdfLoading] = useState(true);
+  const [, setPdfLoading] = useState(true);
   const [pdfProgress, setPdfProgress] = useState(null);
   const [pdfError, setPdfError] = useState(null);
   const [docKey, setDocKey] = useState(0);
@@ -125,7 +125,9 @@ export default function PdfFlipbook({
       const v = pdfPage.getViewport({ scale: 1 });
       const r = v.height / v.width;
       if (Number.isFinite(r) && Math.abs(r - ratio) > 0.001) setRatio(r);
-    } catch {}
+    } catch (err) {
+      /* ignore proportional errors */
+    }
   };
 
   // Indexação

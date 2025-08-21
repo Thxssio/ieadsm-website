@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { db } from "@/lib/firebase/client";
 import {
   collection,
@@ -102,10 +102,6 @@ function UserFormModal({ open, onClose, userId }) {
 
   const children = Array.isArray(data?.filhos) ? data.filhos : [];
 
-  const handlePrint = () => {
-    // garante que imagens e layout terminaram de renderizar
-    requestAnimationFrame(() => window.print());
-  };
 
   return (
     <div className="fixed inset-0 z-50">
@@ -399,7 +395,9 @@ export default function UserManagementPage({ currentUser }) {
       setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
       try {
         await getAuth().currentUser?.getIdToken(true);
-      } catch {}
+      } catch (err) {
+        /* ignore refresh token errors */
+      }
       setMessage("Função atualizada com sucesso!");
       resetMsgSoon();
     } catch (error) {

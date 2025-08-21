@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { db, storage } from "@/lib/firebase/client";
 import {
   collection,
@@ -122,16 +122,19 @@ const MinistryFormModal = ({
   uploadProgress,
   canManage,
 }) => {
-  const initialFormState = {
-    id: undefined,
-    name: "",
-    description: "",
-    imageURL: "",
-    imagePath: "",
-    icon: "Users",
-    schedule: "",
-    team: [{ role: "", names: [""] }],
-  };
+  const initialFormState = useMemo(
+    () => ({
+      id: undefined,
+      name: "",
+      description: "",
+      imageURL: "",
+      imagePath: "",
+      icon: "Users",
+      schedule: "",
+      team: [{ role: "", names: [""] }],
+    }),
+    [],
+  );
 
   const iconOptions = [
     { value: "Users", label: "Pessoas / Grupo (Users)" },
@@ -184,7 +187,7 @@ const MinistryFormModal = ({
       setImageFile(null);
       setPreview(null);
     }
-  }, [currentItem]);
+  }, [currentItem, initialFormState]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Lock } from 'lucide-react';
 
 export default function AccessDeniedPage() {
@@ -10,9 +11,9 @@ export default function AccessDeniedPage() {
       <h1 className="mt-6 text-3xl font-bold text-slate-800">Acesso Negado</h1>
       <p className="mt-2 text-slate-600">Sem permissão para acessar esta área.</p>
       <p className="mt-4">
-        <a href="/" className="text-sm font-semibold text-blue-600 hover:text-blue-800">
+        <Link href="/" className="text-sm font-semibold text-blue-600 hover:text-blue-800">
           ← Voltar para o início
-        </a>
+        </Link>
       </p>
     </div>
   );
