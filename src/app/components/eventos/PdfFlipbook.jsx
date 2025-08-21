@@ -125,7 +125,7 @@ export default function PdfFlipbook({
       const v = pdfPage.getViewport({ scale: 1 });
       const r = v.height / v.width;
       if (Number.isFinite(r) && Math.abs(r - ratio) > 0.001) setRatio(r);
-    } catch (err) {
+    } catch {
       /* ignore proportional errors */
     }
   };
