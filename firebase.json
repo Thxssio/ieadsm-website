@@ -36,7 +36,6 @@
     "functions": { "host": "127.0.0.1", "port": 5001 },
     "hosting": { "host": "127.0.0.1", "port": 5000 },
     "ui": { "enabled": true, "host": "127.0.0.1", "port": 4000 },
-    "singleProjectMode": true,
-    "exportOnExit": { "path": ".firebase/emulator-data" }
+    "singleProjectMode": true
   }
 }
