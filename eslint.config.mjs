@@ -2,8 +2,10 @@ import js from '@eslint/js';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import nextPlugin from '@next/eslint-plugin-next';
+import globals from 'globals';
 
 export default [
+  { ignores: ["public/**", "functions/**"] },
   js.configs.recommended,
   ...tsPlugin.configs['flat/recommended'],
   nextPlugin.flatConfig.coreWebVitals,
@@ -13,6 +15,10 @@ export default [
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
       },
     },
     settings: {

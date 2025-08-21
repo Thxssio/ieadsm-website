@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { MapPin, Phone, Instagram, Facebook } from "lucide-react";
 
-export default function Footer({ logoUrl, address, phone, socialLinks }) {
+export default function Footer({
+  logoUrl,
+  address,
+  phone,
+  socialLinks,
+  tagline = "Um lugar de fé, esperança e amor para toda a família.",
+}) {
   return (
     <footer className="bg-slate-900 text-stone-300 border-t-4 border-[#2a3d57]">
       <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -19,7 +25,7 @@ export default function Footer({ logoUrl, address, phone, socialLinks }) {
               }}
             />
             <p className="text-sm text-center md:text-left text-stone-400">
-              Um lugar de fé, esperança e amor para toda a família.
+              {tagline}
             </p>
           </div>
 

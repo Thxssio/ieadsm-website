@@ -11,11 +11,12 @@ import LocationSection     from "@/components/sections/home/LocationSection";
 import MinistriesSection   from "@/components/sections/home/MinistriesSection";
 import CongregationsSection from "@/components/sections/home/CongregationsSection";
 
-import { churchInfo } from "@/lib/churchInfo";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 export default function HomeClient({ ministries = [] }) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(ministries[0]?.id);
+  const { content } = useSiteContent();
 
   // Sempre que o query string `?tab=` mudar, rola até a seção certa
   useEffect(() => {
@@ -31,29 +32,42 @@ export default function HomeClient({ ministries = [] }) {
   return (
     <>
       <HeroSection
-        backgroundSrc="/wallpapertest.png"
-        title="Bem-vindo!"
-        subtitle="Um lugar de fé, esperança e amor. Junte-se à nossa Igreja."
+        backgroundSrc={content.heroImageURL}
+        title={content.heroTitle}
+        subtitle={content.heroSubtitle}
         primaryCta={{ href: "/#location", label: "Planeje sua Visita" }}
         secondaryCta={{ href: "#", label: "Assista Online" }}
       />
 
-      <WelcomeMessage />
+      <WelcomeMessage
+        title={content.welcomeTitle}
+        verse={content.welcomeVerse}
+        reference={content.welcomeReference}
+      />
       <ScheduleSection />
       <SocialFeed />
 
       <LocationSection
-        address={churchInfo.address}
-        phone={churchInfo.phone}
+        address={content.address}
+        phone={content.phone}
+        title={content.visitTitle}
+        subtitle={content.visitSubtitle}
+        apiKey={content.mapApiKey}
       />
 
       <MinistriesSection
         ministries={ministries}
+        preTitle={content.ministriesPreTitle}
+        title={content.ministriesTitle}
+        subtitle={content.ministriesSubtitle}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
 
-      <CongregationsSection />
+      <CongregationsSection
+        title={content.congregationsTitle}
+        subtitle={content.congregationsSubtitle}
+      />
     </>
   );
 }
