@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { churchInfo } from "@/lib/churchInfo";
 
 const SkeletonCard = () => (
   <div className="bg-white p-4 rounded-lg shadow-md animate-pulse">
@@ -64,7 +65,8 @@ export default function FacebookFeed() {
 
         setPosts(normalized);
       } catch {
-        const rssUrl = "https://rss.app/feeds/jf32bozp3A2fGrEu.xml";
+        const rssUrl = churchInfo.rssFeeds?.facebook;
+        if (!rssUrl) throw new Error("RSS feed URL not configured");
         const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(
           rssUrl
         )}`;
