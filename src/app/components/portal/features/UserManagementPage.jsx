@@ -395,7 +395,7 @@ export default function UserManagementPage({ currentUser }) {
       setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
       try {
         await getAuth().currentUser?.getIdToken(true);
-      } catch (err) {
+      } catch {
         /* ignore refresh token errors */
       }
       setMessage("Função atualizada com sucesso!");

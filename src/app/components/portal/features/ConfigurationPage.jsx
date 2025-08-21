@@ -197,7 +197,7 @@ export default function ConfigurationPage() {
       if (photoPath && photoPath !== path) {
         try {
           await deleteObject(ref(storage, photoPath));
-        } catch (err) {
+        } catch {
           /* ignore stale image */
         }
       }
@@ -262,7 +262,7 @@ export default function ConfigurationPage() {
       );
       try {
         await sendEmailVerification(u);
-      } catch (err) {
+      } catch {
         /* ignore verification email errors */
       }
       setEmailPwd("");

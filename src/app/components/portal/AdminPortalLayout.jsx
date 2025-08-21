@@ -118,26 +118,22 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
 
   const PageRenderer = useMemo(() => {
     if (isLoggingOut) {
-      function LoggingOutPage() {
-        return (
-          <PageContent title="Saindo...">
-            <p className="text-slate-700">Finalizando sua sessão, aguarde.</p>
-          </PageContent>
-        );
-      }
+      const LoggingOutPage = () => (
+        <PageContent title="Saindo...">
+          <p className="text-slate-700">Finalizando sua sessão, aguarde.</p>
+        </PageContent>
+      );
       return LoggingOutPage;
     }
     if (rolesLoading) {
-      function LoadingPermissionsPage() {
-        return (
-          <PageContent title="Carregando permissões">
-            <p className="text-slate-700">Verificando seu acesso…</p>
-          </PageContent>
-        );
-      }
+      const LoadingPermissionsPage = () => (
+        <PageContent title="Carregando permissões">
+          <p className="text-slate-700">Verificando seu acesso…</p>
+        </PageContent>
+      );
       return LoadingPermissionsPage;
     }
-    function ActivePage() {
+    const ActivePage = () => {
       switch (activePage) {
         case "dashboard":
           return <DashboardPage user={userProp} />;
