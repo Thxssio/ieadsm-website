@@ -11,7 +11,7 @@ export default function ContactPage() {
   const { address, phone } = churchInfo;
 
   return (
-    <div className="bg-stone-50 dark:bg-slate-800 py-20 sm:py-28">
+    <div className="bg-background py-20 sm:py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
           <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">

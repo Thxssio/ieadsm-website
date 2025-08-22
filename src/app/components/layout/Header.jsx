@@ -17,6 +17,11 @@ function getIconComponent(name) {
 export default function Header({ churchName, logoUrl, ministries = [] }) {
   const { user } = useAuth();
   const { isDark, toggle } = useDarkMode();
+  const logoSrc = isDark
+    ? (logoUrl?.includes("logo-dark")
+        ? logoUrl.replace("logo-dark", "logo-light")
+        : logoUrl || "/logo-light.svg")
+    : logoUrl || "/logo-dark.svg";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMinistriesOpen, setIsMinistriesOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -40,19 +45,17 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#abcedd] dark:bg-slate-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 supports-[backdrop-filter]:bg-[#abcedd]/90 supports-[backdrop-filter]:dark:bg-slate-800/90 supports-[backdrop-filter]:backdrop-blur">
+    <header className="sticky top-0 z-50 bg-white dark:bg-slate-800 shadow-md ring-1 ring-black/5 dark:ring-white/10 supports-[backdrop-filter]:bg-white/90 supports-[backdrop-filter]:dark:bg-slate-800/90 supports-[backdrop-filter]:backdrop-blur">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0 group" aria-label="Ir para a página inicial">
-            {logoUrl && (
-              <img
-                className="block h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                src={logoUrl}
-                alt={`Logo ${churchName}`}
-                onError={(e) => { e.currentTarget.src = "https://placehold.co/160x60/0ea5e9/ffffff?text=Logo"; }}
-              />
-            )}
+            <img
+              className="block h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              src={logoSrc}
+              alt={`Logo ${churchName}`}
+              onError={(e) => { e.currentTarget.src = "https://placehold.co/160x60/0ea5e9/ffffff?text=Logo"; }}
+            />
           </Link>
 
           {/* Navegação Desktop */}

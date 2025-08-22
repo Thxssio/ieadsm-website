@@ -82,14 +82,14 @@ const NavItem = ({ icon, label, active, onClick, disabled }) => (
       !disabled && !active &&
         "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700",
       active &&
-        "text-sky-900 dark:text-slate-100 bg-sky-50 dark:bg-slate-800 ring-1 ring-sky-200 dark:ring-slate-600"
+        "text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 ring-1 ring-slate-300 dark:ring-slate-600"
     )}
   >
     <span
       className={cx(
         "absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r",
         active
-          ? "bg-[#2a3d57]"
+          ? "bg-slate-900 dark:bg-slate-200"
           : "bg-transparent group-hover:bg-slate-300 dark:group-hover:bg-slate-600"
       )}
     />
@@ -97,7 +97,7 @@ const NavItem = ({ icon, label, active, onClick, disabled }) => (
       className={cx(
         "shrink-0",
         active
-          ? "text-sky-700 dark:text-slate-200"
+          ? "text-slate-900 dark:text-slate-200"
           : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
       )}
     >
