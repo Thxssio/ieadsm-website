@@ -83,23 +83,23 @@ export default function InstitucionalPage() {
       case "diretoria":
         return (
           <div>
-            <h3 className="text-3xl font-bold text-stone-900 mb-8">Diretoria</h3>
+            <h3 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-8">Diretoria</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {diretoria.map((membro) => (
                 <div
                   key={membro.name}
-                  className="bg-stone-50 p-6 rounded-2xl text-center shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  className="bg-stone-50 dark:bg-slate-800 p-6 rounded-2xl text-center shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   <img
                     src={membro.imageUrl}
                     alt={`Foto de ${membro.name}`}
-                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-white shadow-md"
+                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-white dark:border-slate-700 shadow-md"
                     onError={(e) => {
                       e.currentTarget.src = "https://placehold.co/256x256/cccccc/969696?text=Foto";
                     }}
                   />
                   <p className="font-bold text-[#2a3d57]">{membro.role}</p>
-                  <p className="text-lg font-semibold text-stone-800 mt-1">{membro.name}</p>
+                  <p className="text-lg font-semibold text-stone-800 dark:text-stone-200 mt-1">{membro.name}</p>
                 </div>
               ))}
             </div>

@@ -10,7 +10,6 @@ export default function Providers({ children }) {
     <ThemeProvider
       attribute="class"
       defaultTheme="light"
-      enableSystem
       storageKey="site-theme"
     >
       <AuthProvider>
