@@ -21,6 +21,8 @@ import { useHasRole } from "@/hooks/useClaims";
 import { maskCPF } from "@/lib/utils/cpf";
 import { downloadUserFichaPDF } from "@/components/portal/features/UserFichaPDF";
 import { churchInfo } from "@/lib/churchInfo";
+import MemberCard from "@/components/portal/ui/MemberCard";
+import { downloadMemberCardPDF } from "@/components/portal/features/MemberCardPDF";
 
 
 
@@ -317,6 +319,103 @@ function UserFormModal({ open, onClose, userId }) {
 }
 
 /* ----------------------------------------------------------- */
+/* Modal da carteirinha                                        */
+/* ----------------------------------------------------------- */
+function MemberCardModal({ open, onClose, userId }) {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+
+  const handleDownload = async () => {
+    if (!data) return;
+    await downloadMemberCardPDF({ data, logoUrl: churchInfo.logoUrlLight });
+  };
+
+  const load = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
+    try {
+      const snap = await getDoc(doc(db, "users", userId));
+      setData(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (open) load();
+  }, [open, load]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50">
+      <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-x-0 top-6 md:top-12 mx-auto max-w-3xl px-3">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
+                <IdCard size={18} />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">Carteirinha do Membro</h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDownload}
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 rounded-md border border-slate-300 bg-white hover:bg-slate-50"
+                title="Baixar PDF da carteirinha"
+              >
+                <Printer size={16} />
+                Baixar PDF
+              </button>
+              <button
+                onClick={onClose}
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 rounded-md border border-slate-300 bg-white hover:bg-slate-50"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+          <div className="p-4 md:p-6 max-h-[80vh] overflow-y-auto">
+            {loading ? (
+              <div className="flex items-center justify-center py-16 text-slate-600">
+                <Loader2 className="animate-spin mr-2" /> Carregando…
+              </div>
+            ) : !data ? (
+              <div className="text-center py-12 text-slate-600">Não encontramos dados para este usuário.</div>
+            ) : (
+              <MemberCard
+                side="both"
+                id={data.idInterno || data.id}
+                role={data.role || "Membro"}
+                issuedAt={new Date().toLocaleDateString("pt-BR")}
+                name={data.name || ""}
+                memberSince={data.memberSince || data.dataBatismo}
+                photoUrl={data.photoURL}
+                logoUrl={churchInfo.logoUrlLight}
+                parents={{ father: data.pai, mother: data.mae }}
+                birthDate={data.dataNascimento}
+                maritalStatus={data.estadoCivil}
+                cpf={data.cpf ? maskCPF(data.cpf) : ""}
+                rg={data.rg}
+                addressLine={{
+                  street: data.endereco,
+                  number: data.numero,
+                  neighborhood: data.bairro,
+                  city: data.cidade,
+                  state: data.uf,
+                  zip: data.cep,
+                }}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------- */
 /* Página de Gestão de Usuários                                */
 /* ----------------------------------------------------------- */
 export default function UserManagementPage({ currentUser }) {
@@ -328,6 +427,8 @@ export default function UserManagementPage({ currentUser }) {
 
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerUserId, setViewerUserId] = useState(null);
+  const [cardViewerOpen, setCardViewerOpen] = useState(false);
+  const [cardViewerUserId, setCardViewerUserId] = useState(null);
 
   const availableRoles = [
     "admin",
@@ -564,6 +665,13 @@ export default function UserManagementPage({ currentUser }) {
                   <td className="px-4 py-4 whitespace-nowrap text-right text-sm">
                     <div className="inline-flex items-center gap-1.5">
                       <button
+                        onClick={() => { setCardViewerUserId(u.id); setCardViewerOpen(true); }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
+                        title="Ver carteirinha"
+                      >
+                        <IdCard size={14} /> Carteirinha
+                      </button>
+                      <button
                         onClick={() => { setViewerUserId(u.id); setViewerOpen(true); }}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
                         title="Ver ficha de cadastro"
@@ -646,6 +754,12 @@ export default function UserManagementPage({ currentUser }) {
 
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
+                    onClick={() => { setCardViewerUserId(u.id); setCardViewerOpen(true); }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
+                  >
+                    <IdCard size={14} /> Carteirinha
+                  </button>
+                  <button
                     onClick={() => { setViewerUserId(u.id); setViewerOpen(true); }}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
                   >
@@ -689,6 +803,11 @@ export default function UserManagementPage({ currentUser }) {
         </p>
       </ConfirmationModal>
 
+      <MemberCardModal
+        open={cardViewerOpen}
+        onClose={() => setCardViewerOpen(false)}
+        userId={cardViewerUserId}
+      />
       <UserFormModal
         open={viewerOpen}
         onClose={() => setViewerOpen(false)}
