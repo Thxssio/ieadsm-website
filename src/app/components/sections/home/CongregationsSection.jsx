@@ -15,6 +15,7 @@ export default function CongregationsSection({
         </p>
 
         {mapUrl && (
+
           <>
             <div className="mt-12 rounded-2xl shadow-xl overflow-hidden">
               <iframe
@@ -35,7 +36,9 @@ export default function CongregationsSection({
               </p>
             </noscript>
           </>
+
         )}
+
       </div>
     </section>
   );
