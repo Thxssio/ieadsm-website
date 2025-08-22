@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs";
 
 const HTMLFlipBook = dynamic(() => import("react-pageflip"), { ssr: false });
 const Document     = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false });
@@ -51,12 +52,12 @@ export default function PdfFlipbook({
   const [docKey, setDocKey] = useState(0);
   const loadedRef = useRef(false); // evita voltar para "loading" após sucesso
 
-  // Worker local do PDF.js (coloque /pdf.worker.min.mjs em /public)
+  // Worker do PDF.js importado de pdfjs-dist
   useEffect(() => {
     let mounted = true;
     (async () => {
       const { pdfjs } = await import("react-pdf");
-      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
       pdfjsRef.current = pdfjs;
       if (mounted) setPdfReady(true);
     })();
