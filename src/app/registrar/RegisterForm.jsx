@@ -143,7 +143,7 @@ export default function RegisterForm() {
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-stone-700">
-          Nome
+          Nome completo
         </label>
         <input
           value={name}
