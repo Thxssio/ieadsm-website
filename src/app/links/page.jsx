@@ -60,13 +60,11 @@ const Skeleton = ({ className = "" }) => (
 
 /* ---------- Página ---------- */
 export default function LinktreePage() {
-  const [isMounted, setIsMounted] = useState(false);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
     const q = query(collection(db, "links"), orderBy("order"));
     const unsub = onSnapshot(
       q,
