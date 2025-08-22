@@ -3,29 +3,30 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PageContent from "@/components/portal/ui/PageContent";
 import {
-  getAuth,
-  updateProfile,
+    getAuth,
+    updateProfile,
   updateEmail,
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
   sendEmailVerification,
 } from "firebase/auth";
-import { db, storage } from "@/lib/firebase/client";
+  import { db, storage } from "@/lib/firebase/client";
 import {
   doc,
   getDoc,
   setDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
-import { AnimatePresence, motion } from "framer-motion";
-import { Upload, Loader2, Image as ImageIcon, UserCircle2, Mail, Lock, RotateCcw } from "lucide-react";
+  import {
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+    deleteObject,
+  } from "firebase/storage";
+  import { AnimatePresence, motion } from "framer-motion";
+  import { Upload, Loader2, Image as ImageIcon, UserCircle2, Mail, Lock, RotateCcw, Moon, Sun } from "lucide-react";
+  import { useTheme } from "@/lib/ThemeContext";
 
 /* Helpers */
 function cx(...xs) { return xs.filter(Boolean).join(" "); }
@@ -140,6 +141,21 @@ export default function ConfigurationPage() {
   const [savingPassword, setSavingPassword] = useState(false);
 
   const [message, setMessage] = useState(null);
+
+  const { theme, toggleTheme } = useTheme();
+
+  const handleThemeToggle = async () => {
+    const uid = currentUser?.uid;
+    const next = theme === "dark" ? "light" : "dark";
+    toggleTheme();
+    if (uid) {
+      try {
+        await setDoc(doc(db, "users", uid), { theme: next }, { merge: true });
+      } catch (e) {
+        console.error("Erro ao salvar tema:", e);
+      }
+    }
+  };
 
   /* Carrega doc do usuário */
   useEffect(() => {
@@ -414,6 +430,26 @@ export default function ConfigurationPage() {
                 </button>
               </div>
             </form>
+          </section>
+
+          {/* TEMA */}
+          <section className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
+                  {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+                </div>
+                <h3 className="text-base font-semibold text-slate-800 leading-tight">Tema</h3>
+              </div>
+              <button
+                type="button"
+                onClick={handleThemeToggle}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              >
+                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                {theme === "dark" ? "Modo claro" : "Modo escuro"}
+              </button>
+            </div>
           </section>
         </div>
 
