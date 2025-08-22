@@ -1,11 +1,8 @@
 // src/app/layout.js  (ou page.js se você chamou diferente)
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";                       // ⬅️ novo
-import HideLayoutWrapper from "@/components/HideLayoutWrapper";
 import { churchInfo } from "@/lib/churchInfo";
-import { AuthProvider } from "@/lib/firebase/AuthContext";
-import { ThemeProvider } from "next-themes";
-
+import Providers from "./providers";
 import "@/globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -71,7 +68,7 @@ const siteJsonLd = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-BR" className="h-full">
+    <html lang="pt-BR" className="h-full" suppressHydrationWarning>
       {/* HEAD personalizado — qualquer conteúdo aqui será renderizado no <head> */}
       <head>
         {/* Script injetando os dados estruturados */}
@@ -90,11 +87,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-white text-stone-900 dark:bg-stone-900 dark:text-stone-100 transition-colors`}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AuthProvider>
-            <HideLayoutWrapper>{children}</HideLayoutWrapper>
-          </AuthProvider>
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

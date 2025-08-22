@@ -35,8 +35,8 @@ import ProfileImageUploader    from "@/components/Registration/ProfileImageUploa
 
 /* Input base (não herdar text-white) */
 const inputCls =
-  "mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 " +
-  "bg-white text-stone-900 placeholder-stone-400 " +
+  "mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 px-3 py-2 " +
+  "bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 dark:placeholder-slate-400 " +
   "focus:outline-none focus:ring-2 focus:ring-[#2a3d57]";
 
 /* Estado inicial */
@@ -445,20 +445,20 @@ export default function CompleteRegistrationClient() {
 
   if (isLoading || !user || profileComplete) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-50">
-        <p className="text-stone-800">Carregando...</p>
+      <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900">
+        <p className="text-stone-800 dark:text-stone-200">Carregando...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
       {/* Header sticky */}
-      <header className="sticky top-0 z-30 backdrop-blur bg-white/70 border-b border-slate-200">
+      <header className="sticky top-0 z-30 backdrop-blur bg-white/70 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
-            <h1 className="text-xl md:text-2xl font-semibold text-slate-900">Ficha Cadastral de Membros</h1>
-            <p className="text-sm text-slate-500">Preencha os dados com atenção. Campos com * são obrigatórios.</p>
+            <h1 className="text-xl md:text-2xl font-semibold text-slate-900 dark:text-slate-100">Ficha Cadastral de Membros</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Preencha os dados com atenção. Campos com * são obrigatórios.</p>
           </div>
           <button
             type="submit"
@@ -476,7 +476,7 @@ export default function CompleteRegistrationClient() {
           {/* Coluna principal */}
           <div className="lg:col-span-2 space-y-6">
             {/* Foto 3x4 */}
-            <section className="rounded-2xl border border-slate-200 bg-white p-4">
+            <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
               <ProfileImageUploader
                 previewImage={previewImage || form.photoURL}
                 uploadProgress={uploadProgress}
@@ -499,7 +499,7 @@ export default function CompleteRegistrationClient() {
             <ChurchInfoSection       form={form} setForm={setForm} inputCls={inputCls} />
             <BaptismSection          form={form} setForm={setForm} inputCls={inputCls} />
             <AuthorizationSection    form={form} setForm={setForm} />
-            {err && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">{err}</p>}
+            {err && <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-700 rounded-md p-3">{err}</p>}
           </div>
 
           {/* Coluna lateral */}

@@ -255,10 +255,10 @@ export default function InstitucionalPage() {
   };
 
   return (
-    <div className="bg-white py-20 sm:py-28">
+    <div className="bg-white dark:bg-slate-900 py-20 sm:py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
-          <p className="text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">Institucional</p>
+          <p className="text-3xl font-bold text-stone-900 dark:text-stone-100 tracking-tight sm:text-4xl">Institucional</p>
         </div>
 
         <div className="mt-16 flex flex-col lg:flex-row gap-8 lg:gap-12 max-w-7xl mx-auto">
@@ -271,7 +271,7 @@ export default function InstitucionalPage() {
                     className={`w-full flex items-center gap-3 p-4 rounded-lg text-left font-semibold transition-all duration-200 ${
                       activeTab === tab.id
                         ? "bg-[#2a3d57] text-white shadow-lg"
-                        : "bg-white hover:bg-[#2a3d57]/10 hover:text-[#2a3d57] text-stone-700"
+                        : "bg-white dark:bg-slate-800 hover:bg-[#2a3d57]/10 dark:hover:bg-[#2a3d57]/20 hover:text-[#2a3d57] dark:text-stone-200 text-stone-700"
                     }`}
                   >
                     {tab.icon}
@@ -282,7 +282,7 @@ export default function InstitucionalPage() {
             </ul>
           </div>
 
-          <div className="lg:w-3/4 bg-stone-50 p-8 md:p-12 rounded-2xl shadow-inner">
+          <div className="lg:w-3/4 bg-stone-50 dark:bg-slate-800 p-8 md:p-12 rounded-2xl shadow-inner">
             {renderContent()}
           </div>
         </div>

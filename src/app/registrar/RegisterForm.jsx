@@ -142,7 +142,7 @@ export default function RegisterForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
           Nome
         </label>
         <input
@@ -150,13 +150,13 @@ export default function RegisterForm() {
           onChange={(e) => setName(e.target.value)}
           required
           autoComplete="name"
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="Seu nome completo"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
           CPF
         </label>
         <input
@@ -165,13 +165,13 @@ export default function RegisterForm() {
           required
           inputMode="numeric"
           autoComplete="off"
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="000.000.000-00"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
           E-mail
         </label>
         <input
@@ -180,13 +180,13 @@ export default function RegisterForm() {
           autoComplete="email"
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="usuario@mail.com"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
           Senha
         </label>
         <input
@@ -195,13 +195,13 @@ export default function RegisterForm() {
           onChange={(e) => setPwd(e.target.value)}
           required
           autoComplete="new-password"
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="Mínimo 6 caracteres"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
           Confirmar senha
         </label>
         <input
@@ -210,13 +210,13 @@ export default function RegisterForm() {
           onChange={(e) => setPwd2(e.target.value)}
           required
           autoComplete="new-password"
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57]"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="Repita a senha"
         />
       </div>
 
-      {err && <p className="text-sm text-red-600">{err}</p>}
-      {ok && <p className="text-sm text-emerald-600">{ok}</p>}
+      {err && <p className="text-sm text-red-600 dark:text-red-400">{err}</p>}
+      {ok && <p className="text-sm text-emerald-600 dark:text-emerald-400">{ok}</p>}
 
       <button
         type="submit"

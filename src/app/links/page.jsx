@@ -43,7 +43,6 @@
               setIsMounted(true);
           }, []);
 
-
         // Função para o botão de compartilhar
         const handleShare = () => {
             navigator.clipboard.writeText(window.location.href).then(() => {

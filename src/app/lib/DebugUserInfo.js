@@ -47,27 +47,27 @@ export default function DebugModal() {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h3 className="font-bold text-lg">Debug - Informações do Usuário</h3>
+      <div className="bg-white dark:bg-slate-800 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between">
+          <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100">Debug - Informações do Usuário</h3>
           <button
             onClick={() => setShowDebug(false)}
-            className="text-gray-500 hover:text-gray-700 text-xl"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl"
           >
             ×
           </button>
         </div>
-        
+
         <div className="p-4 space-y-4">
           {loading ? (
             <div className="text-center py-4">Carregando informações...</div>
           ) : !user ? (
-            <div className="text-center py-4 text-gray-600">Usuário não autenticado</div>
+            <div className="text-center py-4 text-gray-600 dark:text-gray-400">Usuário não autenticado</div>
           ) : (
-            <>
+              <>
               <div className="space-y-2">
                 <h4 className="font-semibold text-blue-600">Firebase Auth:</h4>
-                <div className="bg-gray-50 p-3 rounded text-sm">
+                <div className="bg-gray-50 dark:bg-slate-700 p-3 rounded text-sm">
                   <p><strong>UID:</strong> {user.uid}</p>
                   <p><strong>Email:</strong> {user.email}</p>
                   <p><strong>DisplayName:</strong> {user.displayName || "Não definido"}</p>
@@ -90,7 +90,7 @@ export default function DebugModal() {
 
               <div className="space-y-2">
                 <h4 className="font-semibold text-green-600">Documento Firestore:</h4>
-                <div className="bg-gray-50 p-3 rounded text-sm">
+                <div className="bg-gray-50 dark:bg-slate-700 p-3 rounded text-sm">
                   {userDoc ? (
                     <div className="space-y-1">
                       <p><strong>Nome:</strong> {userDoc.name || "Não definido"}</p>
@@ -101,7 +101,7 @@ export default function DebugModal() {
                       <p><strong>Perfil Completo:</strong> {userDoc.profileComplete ? "Sim" : "Não"}</p>
                     </div>
                   ) : (
-                    <p className="text-red-600">Documento não encontrado no Firestore!</p>
+                    <p className="text-red-600 dark:text-red-400">Documento não encontrado no Firestore!</p>
                   )}
                 </div>
               </div>
@@ -113,7 +113,7 @@ export default function DebugModal() {
                 >
                   Log no Console
                 </button>
-                
+
                 <button
                   onClick={() => {
                     const info = {
