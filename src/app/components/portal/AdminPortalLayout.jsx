@@ -50,12 +50,12 @@ function UserAvatar({ name, photoURL, size = 48 }) {
     <div className="relative">
       <div className="absolute inset-0 blur-md rounded-full bg-sky-100/60 scale-110" aria-hidden />
       <div
-        className="relative rounded-full overflow-hidden border border-slate-200 bg-white"
+        className="relative rounded-full overflow-hidden border border-slate-200 bg-white dark:bg-slate-800"
         style={{ width: size, height: size }}
       >
         {!photoURL || err ? (
-          <div className="w-full h-full grid place-items-center bg-slate-50">
-            <span className="text-sm font-semibold text-slate-600">{initials || "?"}</span>
+          <div className="w-full h-full grid place-items-center bg-background">
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{initials || "?"}</span>
           </div>
         ) : (
           <img
@@ -80,7 +80,7 @@ const NavItem = ({ icon, label, active, onClick, disabled }) => (
       "w-full relative group flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors",
       disabled && "text-slate-400 dark:text-slate-600 cursor-not-allowed",
       !disabled && !active &&
-        "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700",
+        "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700",
       active &&
         "text-sky-900 dark:text-slate-100 bg-sky-50 dark:bg-slate-800 ring-1 ring-sky-200 dark:ring-slate-600"
     )}
@@ -265,7 +265,7 @@ function AdminPortalLayoutInner({ user: userProp, onLogout, logoUrl }) {
   const menuVariants = { visible: { x: 0, transition: { type: "spring", stiffness: 400, damping: 40 } }, hidden: { x: "-100%" } };
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen flex bg-background text-slate-700 dark:text-slate-300">
       {/* Sidebar */}
       <aside className="w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 hidden lg:flex flex-col">
         {/* Header da sidebar — branco, com destaque suave no avatar */}
@@ -277,12 +277,12 @@ function AdminPortalLayoutInner({ user: userProp, onLogout, logoUrl }) {
                 {logoUrl ? (
                   <img src={logoUrl} alt="Logo" className="h-4 opacity-90" />
                 ) : (
-                  <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold text-slate-700 dark:text-slate-300 bg-background px-1.5 py-0.5 rounded">
                     IEADSM
                   </span>
                 )}
               </div>
-              <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">{userProp?.displayName || "Usuário"}</div>
+              <div className="font-semibold text-slate-700 dark:text-slate-300 truncate">{userProp?.displayName || "Usuário"}</div>
               <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{userProp?.email || "sem e-mail"}</div>
             </div>
           </div>
@@ -295,7 +295,7 @@ function AdminPortalLayoutInner({ user: userProp, onLogout, logoUrl }) {
         <div className="p-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-2">
           <button
             onClick={handleThemeToggle}
-            className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+            className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
             aria-label="Alternar tema"
           >
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -321,7 +321,7 @@ function AdminPortalLayoutInner({ user: userProp, onLogout, logoUrl }) {
           <div className="flex items-center gap-2">
             <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={34} />
             <div className="leading-tight">
-              <div className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">Portal IEADSM</div>
+              <div className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Portal IEADSM</div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{userProp?.displayName || "Usuário"}</div>
             </div>
           </div>
@@ -364,7 +364,7 @@ function AdminPortalLayoutInner({ user: userProp, onLogout, logoUrl }) {
                   <div className="flex items-center gap-3">
                     <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={52} />
                     <div className="min-w-0">
-                      <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">{userProp?.displayName || "Usuário"}</div>
+                      <div className="font-semibold text-slate-700 dark:text-slate-300 truncate">{userProp?.displayName || "Usuário"}</div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{userProp?.email || "sem e-mail"}</div>
                     </div>
                   </div>
@@ -375,7 +375,7 @@ function AdminPortalLayoutInner({ user: userProp, onLogout, logoUrl }) {
                 <div className="p-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-2">
                   <button
                     onClick={handleThemeToggle}
-                    className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+                    className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                     aria-label="Alternar tema"
                   >
                     {isDark ? <Sun size={18} /> : <Moon size={18} />}
