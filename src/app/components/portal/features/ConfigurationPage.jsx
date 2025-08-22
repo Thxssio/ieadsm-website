@@ -344,8 +344,10 @@ export default function ConfigurationPage() {
   }
 
   const inputBase =
-    "block w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg " +
-    "placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] sm:text-sm";
+    "block w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg " +
+    "placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] " +
+    "sm:text-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100";
+
 
   return (
     <PageContent
@@ -393,7 +395,7 @@ export default function ConfigurationPage() {
               <div>
                 <label className="inline-flex items-center gap-2 cursor-pointer">
                   <input type="file" accept="image/*" className="hidden" onChange={handleSelectPhoto} />
-                  <span className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[.99]">
+                  <span className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 active:scale-[.99]">
                     <Upload size={16} /> Escolher arquivo
                   </span>
                 </label>
@@ -457,7 +459,7 @@ export default function ConfigurationPage() {
               <button
                 type="button"
                 onClick={handleThemeToggle}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700"
               >
                 {isDark ? <Sun size={16} /> : <Moon size={16} />}
                 {isDark ? "Modo claro" : "Modo escuro"}

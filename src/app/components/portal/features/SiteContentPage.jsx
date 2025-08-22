@@ -30,7 +30,7 @@ const BRAND = "#0f172b";
 const BRAND_HOVER = "#1e293b";
 
 const inputBase =
-  "block w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2";
+  "block w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2";
 const inputStyle = `${inputBase} focus:ring-[${BRAND}] sm:text-sm`;
 
 const initialForm = {
@@ -183,7 +183,7 @@ export default function SiteContentPage() {
   return (
     <PageContent title="Conteúdo do Site">
       {message && (
-        <div className="mb-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm text-slate-700 dark:text-slate-100">
+        <div className="mb-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
           {message}
         </div>
       )}
@@ -487,7 +487,7 @@ export default function SiteContentPage() {
                   caption="PNG/SVG com fundo transparente"
                 />
               ) : (
-                <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-800 dark:bg-slate-900 p-3">
+                <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-800 p-3">
                   <ImagePreview
                     url={form.logoDarkURL}
                     ratioClass="h-24"
@@ -577,14 +577,14 @@ export default function SiteContentPage() {
 
 function SectionCard({ icon: Icon, title, desc, children }) {
   return (
-    <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
+    <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
       <header className="flex items-start gap-3 border-b border-slate-200 dark:border-slate-700 px-4 py-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-full" style={{ backgroundColor: `${BRAND}15` }}>
           <Icon className="h-5 w-5" style={{ color: BRAND }} />
         </div>
         <div>
           <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
-          {desc && <p className="text-sm text-slate-600 dark:text-slate-300">{desc}</p>}
+          {desc && <p className="text-sm text-slate-600 dark:text-slate-400">{desc}</p>}
         </div>
       </header>
       <div className="p-4">{children}</div>
@@ -621,7 +621,7 @@ function UploadBox({ onPick, caption = "Selecione um arquivo" }) {
     <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-600 p-4 text-center">
       <div className="flex flex-col items-center gap-2">
         <ImageIcon className="h-6 w-6 text-slate-400 dark:text-slate-500" />
-        <p className="text-sm text-slate-600 dark:text-slate-300">{caption}</p>
+        <p className="text-sm text-slate-600 dark:text-slate-400">{caption}</p>
         <label
           className="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white shadow-sm"
           style={{ backgroundColor: BRAND }}
@@ -646,7 +646,8 @@ function ImagePreview({ url, ratioClass = "h-32", onRemove, darkBg = false }) {
       <button
         type="button"
         onClick={onRemove}
-        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/90 dark:bg-slate-800/90 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-100 shadow hover:bg-white dark:hover:bg-slate-800"
+        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/90 dark:bg-slate-800/90 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 shadow hover:bg-white dark:bg-slate-800 dark:hover:bg-slate-700"
+
         title="Remover"
       >
         <X className="h-3.5 w-3.5" />

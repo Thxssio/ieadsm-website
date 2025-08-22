@@ -201,56 +201,56 @@ export default function LinksPage() {
       )}
 
       {/* Formulário */}
-      <form onSubmit={handleSubmit} className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <form onSubmit={handleSubmit} className="mb-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-sm">
         <div className="grid gap-3 md:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Texto</label>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Texto</label>
             <input
               name="text"
               value={form.text}
               onChange={handleChange}
               placeholder="Ex.: Instagram"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">URL</label>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">URL</label>
             <input
               name="href"
               value={form.href}
               onChange={handleChange}
               placeholder="https://seusite.com/perfil"
               type="url"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Ícone (opcional)</label>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Ícone (opcional)</label>
             <input
               name="icon"
               value={form.icon}
               onChange={handleChange}
               placeholder="https://.../icone.png"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
             />
-            <p className="mt-1 text-xs text-slate-500">Deixe vazio para usar o favicon do domínio.</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Deixe vazio para usar o favicon do domínio.</p>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Ordem</label>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Ordem</label>
             <input
               name="order"
               value={form.order}
               onChange={handleChange}
               placeholder="Auto"
               type="number"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
             />
-            <p className="mt-1 text-xs text-slate-500">Se vazio, será {maxOrder + 10}.</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Se vazio, será {maxOrder + 10}.</p>
           </div>
         </div>
 
@@ -270,7 +270,7 @@ export default function LinksPage() {
                 setForm(emptyForm);
                 setEditingId(null);
               }}
-              className="text-sm text-slate-700 underline"
+              className="text-sm text-slate-700 dark:text-slate-300 underline"
             >
               Cancelar edição
             </button>
@@ -279,7 +279,7 @@ export default function LinksPage() {
           <button
             type="button"
             onClick={normalizeOrders}
-            className="ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            className="ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
             title="Normalizar ordem (10,20,30,...)"
           >
             <RefreshCw className="h-4 w-4" /> Normalizar ordem
@@ -291,23 +291,23 @@ export default function LinksPage() {
       {loading ? (
         <div className="space-y-2">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-14 animate-pulse rounded-xl border border-slate-200 bg-slate-100" />
+            <div key={i} className="h-14 animate-pulse rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-700" />
           ))}
         </div>
       ) : links.length === 0 ? (
-        <p className="text-center text-slate-500">Nenhum link cadastrado.</p>
+        <p className="text-center text-slate-500 dark:text-slate-400">Nenhum link cadastrado.</p>
       ) : (
         <ul className="space-y-3">
           {links.map((link, idx) => (
             <li
               key={link.id}
-              className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+              className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 shadow-sm"
             >
               <div className="flex min-w-0 items-center gap-3">
                 {link.icon ? (
                   <img src={link.icon} alt="" className="h-8 w-8 rounded" />
                 ) : (
-                  <div className="h-8 w-8 rounded bg-slate-200 text-slate-600 grid place-items-center text-sm">
+                  <div className="h-8 w-8 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 grid place-items-center text-sm">
                     {domainFromUrl(link.href)?.[0]?.toUpperCase() || <LinkIcon className="h-4 w-4" />}
                   </div>
                 )}
@@ -316,17 +316,17 @@ export default function LinksPage() {
                     href={sanitizeUrl(link.href)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="truncate font-semibold text-slate-900 hover:underline"
+                    className="truncate font-semibold text-slate-900 dark:text-slate-100 hover:underline"
                     title={link.href}
                   >
                     {link.text}
                   </a>
-                  <p className="truncate text-xs text-slate-500">{domainFromUrl(link.href)}</p>
+                  <p className="truncate text-xs text-slate-500 dark:text-slate-400">{domainFromUrl(link.href)}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-700">
+                <span className="rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-1 text-[11px] font-medium text-slate-700 dark:text-slate-300">
                   #{link.order}
                 </span>
 
@@ -334,7 +334,7 @@ export default function LinksPage() {
                   type="button"
                   onClick={() => move(link.id, -1)}
                   disabled={idx === 0}
-                  className="inline-flex items-center rounded-md border border-slate-200 bg-white p-1 text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+                  className="inline-flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800 disabled:opacity-40"
                   title="Mover para cima"
                 >
                   <ArrowUp className="h-4 w-4" />
@@ -343,7 +343,7 @@ export default function LinksPage() {
                   type="button"
                   onClick={() => move(link.id, +1)}
                   disabled={idx === links.length - 1}
-                  className="inline-flex items-center rounded-md border border-slate-200 bg-white p-1 text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+                  className="inline-flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800 disabled:opacity-40"
                   title="Mover para baixo"
                 >
                   <ArrowDown className="h-4 w-4" />
@@ -352,7 +352,7 @@ export default function LinksPage() {
                 <button
                   type="button"
                   onClick={() => handleEdit(link)}
-                  className="inline-flex items-center rounded-md border border-slate-200 bg-white p-1 text-blue-700 hover:bg-blue-50"
+                  className="inline-flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-blue-700 hover:bg-blue-50"
                   title="Editar"
                 >
                   <Pencil size={16} />
@@ -361,7 +361,7 @@ export default function LinksPage() {
                 <button
                   type="button"
                   onClick={() => handleDelete(link.id)}
-                  className="inline-flex items-center rounded-md border border-slate-200 bg-white p-1 text-red-700 hover:bg-red-50"
+                  className="inline-flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-red-700 hover:bg-red-50"
                   title="Excluir"
                 >
                   <Trash2 size={16} />

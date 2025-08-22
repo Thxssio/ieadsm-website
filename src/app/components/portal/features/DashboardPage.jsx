@@ -11,10 +11,10 @@ export default function DashboardPage({ user }) {
 
   return (
     <PageContent title="Dashboard">
-      <p className="text-lg text-slate-700">
+      <p className="text-lg text-slate-700 dark:text-slate-300">
         {getGreeting()}, <span className="font-semibold">{user.displayName}</span>.
       </p>
-      <p className="mt-2 text-slate-500">
+      <p className="mt-2 text-slate-500 dark:text-slate-400">
         Este é o seu painel de controle. Use o menu para navegar entre as diferentes seções do portal.
       </p>
     </PageContent>
