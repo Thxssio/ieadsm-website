@@ -43,12 +43,14 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0 group" aria-label="Ir para a página inicial">
-            <img
-              className="block h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-              src={logoUrl}
-              alt={`Logo ${churchName}`}
-              onError={(e) => { e.currentTarget.src = "https://placehold.co/160x60/0ea5e9/ffffff?text=Logo"; }}
-            />
+            {logoUrl && (
+              <img
+                className="block h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                src={logoUrl}
+                alt={`Logo ${churchName}`}
+                onError={(e) => { e.currentTarget.src = "https://placehold.co/160x60/0ea5e9/ffffff?text=Logo"; }}
+              />
+            )}
           </Link>
 
           {/* Navegação Desktop */}
