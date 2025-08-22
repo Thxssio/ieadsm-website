@@ -47,6 +47,7 @@ const initialForm = {
   address: "",
   phone: "",
   mapApiKey: "",
+  congregationsMapUrl: "",
   ministriesPreTitle: "",
   ministriesTitle: "",
   ministriesSubtitle: "",
@@ -352,7 +353,6 @@ export default function SiteContentPage() {
             <Field
               label="Google Maps API Key"
               iconLeft={<Globe className="h-4 w-4 text-slate-400" />}
-              className="md:col-span-2"
             >
               <input
                 name="mapApiKey"
@@ -360,6 +360,19 @@ export default function SiteContentPage() {
                 onChange={handleChange}
                 className={inputStyle}
                 placeholder="AIzaSyA... (opcional)"
+              />
+            </Field>
+
+            <Field
+              label="Link do mapa das congregações (URL de embed, ex.: Google My Maps)"
+              iconLeft={<Link2 className="h-4 w-4 text-slate-400" />}
+            >
+              <input
+                name="congregationsMapUrl"
+                value={form.congregationsMapUrl}
+                onChange={handleChange}
+                className={inputStyle}
+                placeholder="https://www.google.com/maps/d/embed?..."
               />
             </Field>
           </div>

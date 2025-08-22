@@ -1,5 +1,5 @@
 export default function CongregationsSection({
-  mapUrl = "https://www.google.com/maps/d/u/0/embed?mid=1flrE81F-sZrBQPlVQa1FiWtzpOVutAY&ehbc=2E312F",
+  mapUrl,
   heightClass = "h-96 md:h-[600px]",
   title = "Nossas Congregações",
   subtitle = "Explore o mapa de nossas congregações e encontre uma igreja perto de você.",
@@ -17,7 +17,7 @@ export default function CongregationsSection({
         <div className="mt-12 rounded-2xl shadow-xl overflow-hidden">
           <iframe
             title="Mapa de Congregações IEADSM"
-            src={mapUrl}
+            src={mapUrl || ""}
             className={`w-full ${heightClass}`}
             style={{ border: 0 }}
             allowFullScreen
