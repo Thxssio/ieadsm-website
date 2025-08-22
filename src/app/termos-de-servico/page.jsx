@@ -101,7 +101,7 @@ export default function TermosDeServicoPage() {
         outro, por mais privilegiado que seja, salvo competência legal diversa.
       </p>
 
-      <p className="mt-10 text-sm text-stone-500">Última atualização: 06/08/2025</p>
+      <p className="mt-10 text-sm text-stone-500">Última atualização: 22/08/2025</p>
     </section>
   );
 }
