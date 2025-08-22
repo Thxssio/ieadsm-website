@@ -30,7 +30,7 @@ const BRAND = "#0f172b";
 const BRAND_HOVER = "#1e293b";
 
 const inputBase =
-  "block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-2";
+  "block w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2";
 const inputStyle = `${inputBase} focus:ring-[${BRAND}] sm:text-sm`;
 
 const initialForm = {
@@ -171,7 +171,7 @@ export default function SiteContentPage() {
     return (
       <PageContent title="Conteúdo do Site">
         <div className="flex min-h-[40vh] items-center justify-center">
-          <div className="flex items-center gap-3 text-slate-600">
+          <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
             <Loader2 className="h-5 w-5 animate-spin" />
             Carregando…
           </div>
@@ -183,7 +183,7 @@ export default function SiteContentPage() {
   return (
     <PageContent title="Conteúdo do Site">
       {message && (
-        <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+        <div className="mb-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm text-slate-700 dark:text-slate-100">
           {message}
         </div>
       )}
@@ -197,7 +197,7 @@ export default function SiteContentPage() {
           desc="Configure a fonte de posts para sua página inicial."
         >
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <Field label="Link RSS do Facebook" iconLeft={<Link2 className="h-4 w-4 text-slate-400" />}>
+            <Field label="Link RSS do Facebook" iconLeft={<Link2 className="h-4 w-4 text-slate-400 dark:text-slate-500" />}>
               <input
                 type="url"
                 name="rssLink"
@@ -239,7 +239,7 @@ export default function SiteContentPage() {
           </div>
 
           <div className="mt-2">
-            <span className="block text-sm font-medium text-slate-700 mb-2">
+            <span className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Imagem de Fundo
             </span>
 
@@ -329,7 +329,7 @@ export default function SiteContentPage() {
               />
             </Field>
 
-            <Field label="Endereço" iconLeft={<MapPin className="h-4 w-4 text-slate-400" />}>
+            <Field label="Endereço" iconLeft={<MapPin className="h-4 w-4 text-slate-400 dark:text-slate-500" />}>
               <textarea
                 name="address"
                 value={form.address}
@@ -340,7 +340,7 @@ export default function SiteContentPage() {
               />
             </Field>
 
-            <Field label="Telefone" iconLeft={<Phone className="h-4 w-4 text-slate-400" />}>
+            <Field label="Telefone" iconLeft={<Phone className="h-4 w-4 text-slate-400 dark:text-slate-500" />}>
               <input
                 name="phone"
                 value={form.phone}
@@ -352,7 +352,7 @@ export default function SiteContentPage() {
 
             <Field
               label="Google Maps API Key"
-              iconLeft={<Globe className="h-4 w-4 text-slate-400" />}
+              iconLeft={<Globe className="h-4 w-4 text-slate-400 dark:text-slate-500" />}
             >
               <input
                 name="mapApiKey"
@@ -365,7 +365,7 @@ export default function SiteContentPage() {
 
             <Field
               label="Link do mapa das congregações (URL de embed, ex.: Google My Maps)"
-              iconLeft={<Link2 className="h-4 w-4 text-slate-400" />}
+              iconLeft={<Link2 className="h-4 w-4 text-slate-400 dark:text-slate-500" />}
             >
               <input
                 name="congregationsMapUrl"
@@ -453,7 +453,7 @@ export default function SiteContentPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Logo clara */}
             <div>
-              <span className="block text-sm font-medium text-slate-700 mb-2">
+              <span className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Logo Clara
               </span>
 
@@ -477,7 +477,7 @@ export default function SiteContentPage() {
 
             {/* Logo escura */}
             <div>
-              <span className="block text-sm font-medium text-slate-700 mb-2">
+              <span className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Logo Escura
               </span>
 
@@ -487,7 +487,7 @@ export default function SiteContentPage() {
                   caption="PNG/SVG com fundo transparente"
                 />
               ) : (
-                <div className="rounded-lg border border-slate-200 bg-slate-800 p-3">
+                <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-800 dark:bg-slate-900 p-3">
                   <ImagePreview
                     url={form.logoDarkURL}
                     ratioClass="h-24"
@@ -522,7 +522,7 @@ export default function SiteContentPage() {
               />
             </Field>
 
-            <Field label="Instagram" iconLeft={<Instagram className="h-4 w-4 text-slate-400" />}>
+            <Field label="Instagram" iconLeft={<Instagram className="h-4 w-4 text-slate-400 dark:text-slate-500" />}>
               <input
                 name="instagramLink"
                 value={form.instagramLink}
@@ -532,7 +532,7 @@ export default function SiteContentPage() {
               />
             </Field>
 
-            <Field label="Facebook" iconLeft={<Globe className="h-4 w-4 text-slate-400" />}>
+            <Field label="Facebook" iconLeft={<Globe className="h-4 w-4 text-slate-400 dark:text-slate-500" />}>
               <input
                 name="facebookLink"
                 value={form.facebookLink}
@@ -577,14 +577,14 @@ export default function SiteContentPage() {
 
 function SectionCard({ icon: Icon, title, desc, children }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <header className="flex items-start gap-3 border-b border-slate-200 px-4 py-3">
+    <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
+      <header className="flex items-start gap-3 border-b border-slate-200 dark:border-slate-700 px-4 py-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-full" style={{ backgroundColor: `${BRAND}15` }}>
           <Icon className="h-5 w-5" style={{ color: BRAND }} />
         </div>
         <div>
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          {desc && <p className="text-sm text-slate-600">{desc}</p>}
+          <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+          {desc && <p className="text-sm text-slate-600 dark:text-slate-300">{desc}</p>}
         </div>
       </header>
       <div className="p-4">{children}</div>
@@ -595,7 +595,7 @@ function SectionCard({ icon: Icon, title, desc, children }) {
 function Field({ label, children, iconLeft, className = "" }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1 block text-sm font-medium text-slate-700">{label}</span>
+      <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{label}</span>
       <div className={`relative ${iconLeft ? "pl-0" : ""}`}>
         {iconLeft && <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">{iconLeft}</div>}
         {iconLeft
@@ -618,10 +618,10 @@ function cloneWithClass(node, extra) {
 
 function UploadBox({ onPick, caption = "Selecione um arquivo" }) {
   return (
-    <div className="rounded-lg border border-dashed border-slate-300 p-4 text-center">
+    <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-600 p-4 text-center">
       <div className="flex flex-col items-center gap-2">
-        <ImageIcon className="h-6 w-6 text-slate-400" />
-        <p className="text-sm text-slate-600">{caption}</p>
+        <ImageIcon className="h-6 w-6 text-slate-400 dark:text-slate-500" />
+        <p className="text-sm text-slate-600 dark:text-slate-300">{caption}</p>
         <label
           className="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white shadow-sm"
           style={{ backgroundColor: BRAND }}
@@ -641,12 +641,12 @@ function UploadBox({ onPick, caption = "Selecione um arquivo" }) {
 
 function ImagePreview({ url, ratioClass = "h-32", onRemove, darkBg = false }) {
   return (
-    <div className={`relative overflow-hidden rounded-lg border border-slate-200 ${darkBg ? "bg-slate-800" : "bg-slate-50"}`}>
+    <div className={`relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 ${darkBg ? "bg-slate-800" : "bg-slate-50 dark:bg-slate-800"}`}>
       <img src={url} alt="preview" className={`${ratioClass} w-full object-contain`} />
       <button
         type="button"
         onClick={onRemove}
-        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/90 px-2 py-1 text-xs font-medium text-slate-700 shadow hover:bg-white"
+        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/90 dark:bg-slate-800/90 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-100 shadow hover:bg-white dark:hover:bg-slate-800"
         title="Remover"
       >
         <X className="h-3.5 w-3.5" />
@@ -658,7 +658,7 @@ function ImagePreview({ url, ratioClass = "h-32", onRemove, darkBg = false }) {
 
 function ProgressBar({ value }) {
   return (
-    <div className="mt-2 h-2 w-full overflow-hidden rounded bg-slate-200">
+    <div className="mt-2 h-2 w-full overflow-hidden rounded bg-slate-200 dark:bg-slate-700">
       <div
         className="h-2"
         style={{ width: `${value}%`, backgroundColor: BRAND, transition: "width .2s" }}
