@@ -14,6 +14,7 @@ import {
     Settings,
     Moon,
     Sun,
+    Link as LinkIcon,
   } from "lucide-react";
 
 import PageContent from "@/components/portal/ui/PageContent";
@@ -174,6 +175,8 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         return <CongregationsPage />;
       case "siteContent":
         return <SiteContentPage />;
+      case "linktree":
+        return <LinktreePage />;
       case "events":
         return (
           <PageContent title="Eventos">
@@ -221,6 +224,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         <>
           <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Ministérios & Conteúdo</div>
           <NavItem icon={<BookText size={20} strokeWidth={2} />} label="Ministérios" active={activePage === "ministries"} onClick={() => handleNavItemClick("ministries")} disabled={isLoggingOut} />
+          <NavItem icon={<LinkIcon size={20} strokeWidth={2} />} label="Linktree" active={activePage === "linktree"} onClick={() => handleNavItemClick("linktree")} disabled={isLoggingOut} />
         </>
       )}
 
