@@ -24,6 +24,7 @@ import MinistriesPage from "@/components/portal/features/MinistriesPage";
 import ConfigurationPage from "@/components/portal/features/ConfigurationPage";
 import CongregationsPage from "@/components/portal/features/CongregationsPage";
 import SiteContentPage from "@/components/portal/features/SiteContentPage";
+import LinktreePage from "@/components/portal/features/LinktreePage";
 
 
 import { useHasRole } from "@/hooks/useClaims";
@@ -226,7 +227,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
       <NavItem icon={<Church size={20} strokeWidth={2} />} label="Congregações" active={activePage === "congregations"} onClick={() => handleNavItemClick("congregations")} disabled={isLoggingOut} />
       <NavItem icon={<LayoutTemplate size={20} strokeWidth={2} />} label="Conteúdo do Site" active={activePage === "siteContent"} onClick={() => handleNavItemClick("siteContent")} disabled={isLoggingOut} />
       <NavItem icon={<Calendar size={20} strokeWidth={2} />} label="Eventos" active={activePage === "events"} onClick={() => handleNavItemClick("events")} disabled={isLoggingOut} />
-
+      
       {!rolesLoading && canSeeSched && (
         <>
           <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Operacional</div>

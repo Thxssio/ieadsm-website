@@ -56,7 +56,7 @@ const autoIcon = (u) => {
 /* shimmer skeleton */
 const Skeleton = ({ className = "" }) => (
   <div className={`overflow-hidden rounded-xl ${className}`}>
-    <div className="h-full w-full animate-pulse bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700" />
+    <div className="h-full w-full animate-pulse bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200" />
   </div>
 );
 
@@ -251,59 +251,59 @@ export default function LinksPage() {
         {/* -------- Form -------- */}
         <motion.form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur p-4 shadow-sm"
+          className="rounded-2xl border border-slate-200 bg-white/70 backdrop-blur p-4 shadow-sm"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="grid gap-3 md:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Texto</label>
+              <label className="mb-1 block text-sm font-medium text-slate-700">Texto</label>
               <input
                 name="text"
                 value={form.text}
                 onChange={handleChange}
                 placeholder="Ex.: Instagram"
-                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
                 required
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">URL</label>
+              <label className="mb-1 block text-sm font-medium text-slate-700">URL</label>
               <input
                 name="href"
                 value={form.href}
                 onChange={handleChange}
                 placeholder="https://seusite.com/perfil"
                 type="url"
-                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
                 required
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Ícone (opcional)</label>
+              <label className="mb-1 block text-sm font-medium text-slate-700">Ícone (opcional)</label>
               <input
                 name="icon"
                 value={form.icon}
                 onChange={handleChange}
                 placeholder="https://.../icone.png"
-                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
               />
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Vazio → usa o favicon do domínio.</p>
+              <p className="mt-1 text-xs text-slate-500">Vazio → usa o favicon do domínio.</p>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Ordem</label>
+              <label className="mb-1 block text-sm font-medium text-slate-700">Ordem</label>
               <input
                 name="order"
                 value={form.order}
                 onChange={handleChange}
                 placeholder="Auto"
                 type="number"
-                className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
               />
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Se vazio, será {maxOrder + 10}.</p>
+              <p className="mt-1 text-xs text-slate-500">Se vazio, será {maxOrder + 10}.</p>
             </div>
           </div>
 
@@ -323,7 +323,7 @@ export default function LinksPage() {
                   setForm(emptyForm);
                   setEditingId(null);
                 }}
-                className="text-sm text-slate-700 dark:text-slate-300 underline"
+                className="text-sm text-slate-700 underline"
               >
                 Cancelar edição
               </button>
@@ -332,7 +332,7 @@ export default function LinksPage() {
             <button
               type="button"
               onClick={normalizeOrders}
-              className="ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+              className="ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
               title="Normalizar ordem (10,20,30,...)"
             >
               <RefreshCw className="h-4 w-4 animate-spin [animation-duration:2.2s]" /> Normalizar
@@ -344,16 +344,16 @@ export default function LinksPage() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-3xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 p-5 shadow-sm"
+          className="relative rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100 p-5 shadow-sm"
         >
           <div className="absolute inset-0 -z-10 rounded-3xl bg-[radial-gradient(60%_60%_at_30%_20%,rgba(56,189,248,0.25),transparent),radial-gradient(40%_40%_at_80%_0%,rgba(99,102,241,0.20),transparent)] blur-3xl" />
           <div className="mx-auto w-full max-w-sm">
             <div className="mb-4 flex items-center gap-3">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/70 dark:bg-slate-800/70 shadow">
-                <Sparkles className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/70 shadow">
+                <Sparkles className="h-6 w-6 text-indigo-600" />
               </div>
               <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Preview</p>
+                <p className="text-sm text-slate-500">Preview</p>
                 <h3 className="font-semibold">Seu cartão de links</h3>
               </div>
             </div>
@@ -366,7 +366,7 @@ export default function LinksPage() {
                   <Skeleton className="h-12" />
                 </>
               ) : links.length === 0 ? (
-                <p className="text-center text-slate-500 dark:text-slate-400">Sem links ainda.</p>
+                <p className="text-center text-slate-500">Sem links ainda.</p>
               ) : (
                 links.map((l) => (
                   <a
@@ -374,13 +374,13 @@ export default function LinksPage() {
                     href={sanitizeUrl(l.href)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/70 px-3 py-2 shadow hover:shadow-md transition-all"
+                    className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow hover:shadow-md transition-all"
                     title={l.href}
                   >
                     {l.icon ? (
                       <img src={l.icon} alt="" className="h-7 w-7 rounded" />
                     ) : (
-                      <div className="grid h-7 w-7 place-items-center rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400">
+                      <div className="grid h-7 w-7 place-items-center rounded bg-slate-200 text-slate-600">
                         <LinkIcon className="h-4 w-4" />
                       </div>
                     )}
@@ -389,7 +389,7 @@ export default function LinksPage() {
                         <span className="truncate font-medium">{l.text}</span>
                         <ExternalLink className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
                       </div>
-                      <p className="truncate text-xs text-slate-500 dark:text-slate-400">{domainFromUrl(l.href)}</p>
+                      <p className="truncate text-xs text-slate-500">{domainFromUrl(l.href)}</p>
                     </div>
                   </a>
                 ))
@@ -408,7 +408,7 @@ export default function LinksPage() {
             <Skeleton className="h-14" />
           </div>
         ) : links.length === 0 ? (
-          <p className="text-center text-slate-500 dark:text-slate-400">Nenhum link cadastrado.</p>
+          <p className="text-center text-slate-500">Nenhum link cadastrado.</p>
         ) : (
           <ul className="space-y-3">
             {links.map((link, idx) => (
@@ -419,7 +419,7 @@ export default function LinksPage() {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ type: "spring", stiffness: 250, damping: 22, mass: 0.5 }}
-                className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/70 p-3 shadow-sm"
+                className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/80 p-3 shadow-sm"
                 draggable
                 onDragStart={(e) => onDragStart(e, link.id)}
                 onDragOver={onDragOver}
@@ -429,13 +429,13 @@ export default function LinksPage() {
                 title="Dica: Alt+↑/↓ reordena; arraste pelo grip."
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="cursor-grab active:cursor-grabbing text-slate-400 dark:text-slate-500">
+                  <div className="cursor-grab active:cursor-grabbing text-slate-400">
                     <GripVertical className="h-5 w-5" />
                   </div>
                   {link.icon ? (
                     <img src={link.icon} alt="" className="h-8 w-8 rounded" />
                   ) : (
-                    <div className="h-8 w-8 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 grid place-items-center text-sm">
+                    <div className="h-8 w-8 rounded bg-slate-200 text-slate-600 grid place-items-center text-sm">
                       {domainFromUrl(link.href)?.[0]?.toUpperCase() || <LinkIcon className="h-4 w-4" />}
                     </div>
                   )}
@@ -444,23 +444,23 @@ export default function LinksPage() {
                       href={sanitizeUrl(link.href)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="truncate font-semibold text-slate-900 dark:text-slate-100 hover:underline"
+                      className="truncate font-semibold text-slate-900 hover:underline"
                     >
                       {link.text}
                     </a>
-                    <p className="truncate text-xs text-slate-500 dark:text-slate-400">{domainFromUrl(link.href)}</p>
+                    <p className="truncate text-xs text-slate-500">{domainFromUrl(link.href)}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-1 text-[11px] font-medium text-slate-700 dark:text-slate-300">
+                  <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-700">
                     #{link.order}
                   </span>
 
                   <button
                     type="button"
                     onClick={() => navigator.clipboard.writeText(sanitizeUrl(link.href)).then(() => showToast("Link copiado!"))}
-                    className="inline-flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+                    className="inline-flex items-center rounded-md border border-slate-200 bg-white p-1 text-slate-700 hover:bg-slate-50"
                     title="Copiar URL"
                   >
                     <Copy className="h-4 w-4" />
@@ -470,7 +470,7 @@ export default function LinksPage() {
                     type="button"
                     onClick={() => move(link.id, -1)}
                     disabled={idx === 0}
-                    className="inline-flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40"
+                    className="inline-flex items-center rounded-md border border-slate-200 bg-white p-1 text-slate-700 hover:bg-slate-50 disabled:opacity-40"
                     title="Mover para cima"
                   >
                     <ArrowUp className="h-4 w-4" />
@@ -479,7 +479,7 @@ export default function LinksPage() {
                     type="button"
                     onClick={() => move(link.id, +1)}
                     disabled={idx === links.length - 1}
-                    className="inline-flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40"
+                    className="inline-flex items-center rounded-md border border-slate-200 bg-white p-1 text-slate-700 hover:bg-slate-50 disabled:opacity-40"
                     title="Mover para baixo"
                   >
                     <ArrowDown className="h-4 w-4" />
@@ -488,7 +488,7 @@ export default function LinksPage() {
                   <button
                     type="button"
                     onClick={() => handleEdit(link)}
-                    className="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-900/40 dark:bg-blue-900/30 dark:text-blue-300"
+                    className="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
                     title="Editar"
                   >
                     <Pencil size={16} className="m-1" />
@@ -497,7 +497,7 @@ export default function LinksPage() {
                   <button
                     type="button"
                     onClick={() => handleDelete(link.id)}
-                    className="inline-flex items-center rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-900/40 dark:bg-red-900/30 dark:text-red-300"
+                    className="inline-flex items-center rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
                     title="Excluir"
                   >
                     <Trash2 size={16} className="m-1" />
@@ -512,18 +512,3 @@ export default function LinksPage() {
   );
 }
 
-/* ===================== Notas rápidas =====================
-
-– Realtime: troquei getDocs → onSnapshot para refletir mudanças na hora.
-– DnD nativo: draggable + onDragStart/Over/Drop → swap de 'order' via writeBatch.
-– Atalhos: Alt+↑/↓ reordena a linha focada.
-– Preview: mostra como ficará o “cartão de links”.
-– Ícone: se não informar, usa favicon do domínio (Google s2, já com sz=128).
-– UX: skeletons, glass/blur, micro‑animações, toasts centrados.
-
-Se quiser ainda mais:
-- adicionar “tags de cor” por link,
-- contador de cliques (subcoleção “clicks”),
-- personalização de gradient/tema no preview.
-
-========================================================= */
