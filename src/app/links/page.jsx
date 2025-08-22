@@ -2,6 +2,8 @@
 
     import { useState, useEffect } from 'react';
     import Image from "next/image";
+    import { collection, getDocs, orderBy, query } from "firebase/firestore";
+    import { db } from "@/lib/firebase/client";
 
     const MoonIcon = () => (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
@@ -34,6 +36,7 @@
         const [showToast, setShowToast] = useState(false);
         // Estado para garantir que o componente só renderiza no lado do cliente
         const [isMounted, setIsMounted] = useState(false);
+        const [links, setLinks] = useState([]);
 
         // Efeito para indicar que o componente está montado
         useEffect(() => {
@@ -56,6 +59,21 @@
             }
         }, [theme, isMounted]);
 
+        // Carrega os links do Firestore
+        useEffect(() => {
+            if (!isMounted) return;
+            const fetchLinks = async () => {
+                try {
+                    const q = query(collection(db, "links"), orderBy("order"));
+                    const snap = await getDocs(q);
+                    setLinks(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                } catch (e) {
+                    console.error("Erro ao buscar links:", e);
+                }
+            };
+            fetchLinks();
+        }, [isMounted]);
+
         // Função para alternar o tema
         const handleThemeToggle = () => {
             setTheme(t => t === 'dark' ? 'light' : 'dark');
@@ -70,19 +88,6 @@
                 console.error('Erro ao copiar link: ', err);
             });
         };
-        
-        // Dados dos links para facilitar a manutenção
-        const links = [
-            { href: "#", text: "CAPACITAÇÃO PARA PROFESSORES DA EBD | 3º TRIMESTRE" },
-            { href: "https://api.whatsapp.com/send?phone=555599999999", text: "IEADSM | WHATSAPP", icon: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" },
-            { href: "#", text: "AGENDA IEADSM | 2025", icon: "https://adsm.org.br/wp-content/uploads/2022/08/logo-adsm-azul.png" },
-            { href: "#", text: "INSCRIÇÃO | ESCOLA DE MÚSICA FLORAVANTE BASTOS.", icon: "https://placehold.co/100x100/1e40af/ffffff?text=EFB" },
-            { href: "#", text: "IEADSM | NOSSAS CONGREGAÇÕES.", icon: "https://adsm.org.br/wp-content/uploads/2022/08/logo-adsm-azul.png" },
-            { href: "#", text: "PIX IEADSM", icon: "https://adsm.org.br/wp-content/uploads/2022/08/logo-adsm-azul.png" },
-            { href: "https://maps.app.goo.gl/r5yF6f7z8a9b10c29", text: "ENDEREÇO DO TEMPLO MATRIZ DA IEADSM", icon: "https://adsm.org.br/wp-content/uploads/2022/08/logo-adsm-azul.png" },
-            { href: "https://www.ciepadergs.com.br/", text: "SITE CIEPADERGS", icon: "https://www.ciepadergs.com.br/img/logo.png" },
-            { href: "https://cgadb.org.br/", text: "SITE CGADB", icon: "https://cgadb.org.br/wp-content/uploads/2021/04/cropped-cgadb-1.png" },
-        ];
         
         // Evita a renderização no servidor para prevenir erros de hidratação
         if (!isMounted) {
@@ -123,9 +128,9 @@
                         {/* Seção de Links */}
                         <div className="w-full flex flex-col space-y-4">
                             {links.map((link, index) => (
-                                <a 
-                                    key={index}
-                                    href={link.href} 
+                                <a
+                                    key={link.id ?? index}
+                                    href={link.href}
                                     target="_blank" 
                                     rel="noopener noreferrer"
                                     className="border-2 border-gray-300/80 dark:border-gray-500/80 font-semibold py-3 px-4 rounded-lg flex items-center w-full transition-all transform hover:scale-[1.02] hover:bg-black/5 dark:hover:bg-white/5"
