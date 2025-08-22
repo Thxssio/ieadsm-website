@@ -24,6 +24,10 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 O endereço do feed RSS utilizado para o fallback das notícias do Facebook está configurado em `src/app/lib/churchInfo.js`, na chave `rssFeeds.facebook`. Atualize esse valor caso o link expire.
 
+## Reabertura do cadastro complementar
+
+Ao reabrir o cadastro complementar no portal, o usuário será desconectado automaticamente e precisará realizar login novamente. Isso garante que os novos dados de perfil sejam carregados corretamente antes de continuar o preenchimento.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

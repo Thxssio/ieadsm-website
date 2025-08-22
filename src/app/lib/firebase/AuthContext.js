@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
 
 const AuthContext = createContext({
@@ -87,7 +87,30 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const value = { user, role, profileComplete, isLoading };
+  // Permite forçar uma atualização manual dos dados do usuário, útil após
+  // operações que alteram o documento em users/{uid} via setDoc/updateDoc.
+  const refreshProfile = async () => {
+    const current = auth.currentUser;
+    if (!current) return;
+    try {
+      const snap = await getDoc(doc(db, "users", current.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        setRole(data.role || null);
+        setProfileComplete(!!data.profileComplete);
+        setUser({
+          uid: current.uid,
+          email: current.email,
+          displayName: data.name || current.email,
+          emailVerified: !!(data.emailVerified || current.emailVerified),
+        });
+      }
+    } catch (e) {
+      console.error("Falha ao atualizar dados do usuário:", e);
+    }
+  };
+
+  const value = { user, role, profileComplete, isLoading, refreshProfile };
 
   return (
     <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

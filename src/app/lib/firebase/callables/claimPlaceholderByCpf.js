@@ -22,8 +22,8 @@ if (
   try {
     connectFunctionsEmulator(functions, host, port);
     _emuConnected = true;
-  } catch (err) {
-    console.error("Emulator connection failed", err);
+  } catch {
+    // Ignora falha ao conectar no emulador
   }
 }
 export async function claimPlaceholderByCpfCallable({ cpf, userPayload }) {
