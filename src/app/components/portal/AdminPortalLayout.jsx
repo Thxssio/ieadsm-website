@@ -3,16 +3,18 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Home,
-  Users,
-  BookText,
-  Church,
-  LayoutTemplate,
-  Calendar,
-  Clock,
-  LogOut,
-  Settings,
-} from "lucide-react";
+    Home,
+    Users,
+    BookText,
+    Church,
+    LayoutTemplate,
+    Calendar,
+    Clock,
+    LogOut,
+    Settings,
+    Moon,
+    Sun,
+  } from "lucide-react";
 
 import PageContent from "@/components/portal/ui/PageContent";
 import DashboardPage from "@/components/portal/features/DashboardPage";
@@ -26,6 +28,9 @@ import SiteContentPage from "@/components/portal/features/SiteContentPage";
 
 import { useHasRole } from "@/hooks/useClaims";
 import { useAuthUser } from "@/hooks/useAuthUser"; // unifica Auth + Firestore
+import { useTheme } from "@/lib/ThemeContext";
+import { db } from "@/lib/firebase/client";
+import { doc, setDoc } from "firebase/firestore";
 
 // --------- helpers
 function cx(...xs) { return xs.filter(Boolean).join(" "); }
@@ -99,6 +104,21 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
   const { allowed: canSeeMin,    loading: rlMin   } = useHasRole(["admin","pastor","supervisor_departamento","supervisor_setor","ministro"]);
   const { allowed: canSeeSched,  loading: rlSched } = useHasRole(["admin","pastor","supervisor_departamento","supervisor_setor"]);
   const rolesLoading = rlUsers || rlMin || rlSched;
+
+  const { theme, toggleTheme } = useTheme();
+
+  const handleThemeToggle = async () => {
+    const uid = userProp?.uid;
+    const next = theme === "dark" ? "light" : "dark";
+    toggleTheme();
+    if (uid) {
+      try {
+        await setDoc(doc(db, "users", uid), { theme: next }, { merge: true });
+      } catch (e) {
+        console.error("Erro ao salvar tema:", e);
+      }
+    }
+  };
 
   const handleNavItemClick = (page) => {
     if (isLoggingOut) return;
@@ -248,13 +268,20 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         {/* Navegação */}
         <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">{navLinksBlock}</nav>
 
-        {/* Sair */}
-        <div className="p-3 border-t border-slate-100">
+        {/* Tema + Sair */}
+        <div className="p-3 border-t border-slate-100 flex items-center gap-2">
+          <button
+            onClick={handleThemeToggle}
+            className="p-2 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50"
+            aria-label="Alternar tema"
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
             className={cx(
-              "w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+              "flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
               "border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50"
             )}
           >
@@ -322,12 +349,19 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
 
                 <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">{navLinksBlock}</nav>
 
-                <div className="p-3 border-t border-slate-100">
+                <div className="p-3 border-t border-slate-100 flex items-center gap-2">
+                  <button
+                    onClick={handleThemeToggle}
+                    className="p-2 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50"
+                    aria-label="Alternar tema"
+                  >
+                    {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                  </button>
                   <button
                     onClick={handleLogout}
                     disabled={isLoggingOut}
                     className={cx(
-                      "w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                      "flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
                       "border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50"
                     )}
                   >
