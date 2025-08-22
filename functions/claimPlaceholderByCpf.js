@@ -52,10 +52,20 @@ exports.claimPlaceholderByCpf = functions
     // 2) decidir familyId
     let familyId = src.familyId || userPayload.familyId || null;
 
-    // fallback: se não há familyId ainda, reutilize o CPF como ID de família
-    // (compatível com sua estratégia de families/<responsibleCpf>)
     if (!familyId) {
-      familyId = cpf;
+      // tenta localizar família onde o CPF seja o responsável
+      const famQuery = await db
+        .collection("families")
+        .where("responsibleCpf", "==", cpf)
+        .limit(1)
+        .get();
+
+      if (!famQuery.empty) {
+        familyId = famQuery.docs[0].id;
+      } else {
+        // gera um novo ID aleatório para a família
+        familyId = db.collection("families").doc().id;
+      }
     }
 
     // 3) montar destino users/{uid}
@@ -82,11 +92,15 @@ exports.claimPlaceholderByCpf = functions
       const famRef = db.doc(`families/${familyId}`);
       const famSnap = await tx.get(famRef);
       if (!famSnap.exists) {
-        tx.set(famRef, {
-          responsibleCpf: familyId,
-          createdAt: now,
-          updatedAt: now,
-        }, { merge: true });
+        tx.set(
+          famRef,
+          {
+            responsibleCpf: cpf,
+            createdAt: now,
+            updatedAt: now,
+          },
+          { merge: true }
+        );
       } else {
         tx.set(famRef, { updatedAt: now }, { merge: true });
       }

@@ -31,50 +31,72 @@ exports.mergeFamiliesOnUserRegister = functions
 
     let familyIdToUse = null;
 
-    // Verifica se algum dos CPFs relacionados já está em uma família
-    for (const cpf of cpfsRelacionados) {
-      // primeiro procura por famílias onde o CPF é o responsável
-      const familiesSnap = await db
-        .collection("families")
-        .where("responsibleCpf", "==", cpf)
-        .limit(1)
-        .get();
+    // 1) tenta encontrar família onde o próprio usuário seja responsável
+    const userFamilySnap = await db
+      .collection("families")
+      .where("responsibleCpf", "==", cpfUsuario)
+      .limit(1)
+      .get();
 
-      if (!familiesSnap.empty) {
-        familyIdToUse = familiesSnap.docs[0].id;
-        break;
-      }
+    if (!userFamilySnap.empty) {
+      familyIdToUse = userFamilySnap.docs[0].id;
+    }
 
-      // se não encontrou pelo responsável, procura em membros existentes
-      const membersSnap = await db
-        .collectionGroup("members")
-        .where("cpf", "==", cpf)
-        .limit(1)
-        .get();
+    // 2) se ainda não encontrou, verifica CPFs relacionados
+    if (!familyIdToUse) {
+      for (const cpf of cpfsRelacionados) {
+        // procura por famílias onde o CPF seja o responsável
+        const familiesSnap = await db
+          .collection("families")
+          .where("responsibleCpf", "==", cpf)
+          .limit(1)
+          .get();
 
-      if (!membersSnap.empty) {
-        familyIdToUse = membersSnap.docs[0].ref.parent.parent.id;
-        break;
+        if (!familiesSnap.empty) {
+          familyIdToUse = familiesSnap.docs[0].id;
+          break;
+        }
+
+        // se não encontrou pelo responsável, procura em membros existentes
+        const membersSnap = await db
+          .collectionGroup("members")
+          .where("cpf", "==", cpf)
+          .limit(1)
+          .get();
+
+        if (!membersSnap.empty) {
+          familyIdToUse = membersSnap.docs[0].ref.parent.parent.id;
+          break;
+        }
       }
     }
 
-    // Se não achou família existente, cria nova usando o CPF do próprio usuário
+    // 3) se ainda não há família, cria uma nova com ID aleatório
     if (!familyIdToUse) {
-      familyIdToUse = cpfUsuario;
-      await db.doc(`families/${familyIdToUse}`).set({
-        responsibleCpf: cpfUsuario,
+      familyIdToUse = db.collection("families").doc().id;
+      await db.doc(`families/${familyIdToUse}`).set(
+        {
+          responsibleCpf: cpfUsuario,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+    }
+
+    // 4) garante que o usuário tenha o familyId
+    await db.doc(`users/${uid}`).set({ familyId: familyIdToUse }, { merge: true });
+
+    // 5) adiciona o membro à família
+    await db.doc(`families/${familyIdToUse}/members/${uid}`).set(
+      {
+        uid,
+        name: user.name || user.email,
+        cpf: cpfUsuario,
+        kinship: "titular", // opcional, pode ajustar conforme quiser
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      }, { merge: true });
-    }
-
-    // Adiciona o membro à família
-    await db.doc(`families/${familyIdToUse}/members/${uid}`).set({
-      uid,
-      name: user.name || user.email,
-      cpf: cpfUsuario,
-      kinship: "titular", // opcional, pode ajustar conforme quiser
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    }, { merge: true });
+      },
+      { merge: true }
+    );
   });
