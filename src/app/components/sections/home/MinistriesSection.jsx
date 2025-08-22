@@ -61,9 +61,8 @@ function MinistryModal({ ministry, onClose }) {
           <Image
             src={ministry.imageURL || "/images/ministries/placeholder.jpg"}
             alt={`Imagem do ${ministry.name}`}
-            layout="fill"
-            objectFit="contain"
-            className="rounded-t-2xl"
+            fill
+            className="rounded-t-2xl object-contain"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
@@ -229,9 +228,8 @@ export default function MinistriesSection({
                           <Image
                             src={ministry.imageURL || "/images/ministries/placeholder.jpg"}
                             alt={`Imagem do ${ministry.name}`}
-                            layout="fill"
-                            objectFit="contain"
-                            className="transition-transform duration-300 group-hover:scale-110"
+                            fill
+                            className="transition-transform duration-300 group-hover:scale-110 object-contain"
                           />
                         </div>
                         <div className="p-5 flex-grow flex flex-col">
