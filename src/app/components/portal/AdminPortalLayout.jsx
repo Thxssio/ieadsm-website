@@ -88,7 +88,7 @@ const NavItem = ({ icon, label, active, onClick, disabled }) => (
         active ? "bg-[#2a3d57]" : "bg-transparent group-hover:bg-slate-300"
       )}
     />
-    <div className={cx("shrink-0", active ? "text-sky-700" : "text-slate-500 group-hover:text-slate-700")}>
+    <div className={cx("shrink-0", active ? "text-sky-700" : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200")}> 
       {icon}
     </div>
     <span className="font-medium">{label}</span>
@@ -141,13 +141,13 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
 
   const LoggingOutPage = () => (
     <PageContent title="Saindo...">
-      <p className="text-slate-700">Finalizando sua sessão, aguarde.</p>
+      <p className="text-slate-700 dark:text-slate-300">Finalizando sua sessão, aguarde.</p>
     </PageContent>
   );
 
   const LoadingPermissionsPage = () => (
     <PageContent title="Carregando permissões">
-      <p className="text-slate-700">Verificando seu acesso…</p>
+      <p className="text-slate-700 dark:text-slate-300">Verificando seu acesso…</p>
     </PageContent>
   );
 
@@ -160,7 +160,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
           <UserManagementPage currentUser={userProp} />
         ) : (
           <PageContent title="Acesso restrito">
-            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+            <p className="text-slate-700 dark:text-slate-300">Você não tem permissão para acessar esta seção.</p>
           </PageContent>
         );
       case "ministries":
@@ -168,7 +168,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
           <MinistriesPage />
         ) : (
           <PageContent title="Acesso restrito">
-            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+            <p className="text-slate-700 dark:text-slate-300">Você não tem permissão para acessar esta seção.</p>
           </PageContent>
         );
       case "congregations":
@@ -186,7 +186,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
       case "events":
         return (
           <PageContent title="Eventos">
-            <p className="text-slate-700">Página para gerenciar eventos (em construção).</p>
+            <p className="text-slate-700 dark:text-slate-300">Página para gerenciar eventos (em construção).</p>
           </PageContent>
         );
       case "schedule":
@@ -194,7 +194,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
           <SchedulePage />
         ) : (
           <PageContent title="Acesso restrito">
-            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+            <p className="text-slate-700 dark:text-slate-300">Você não tem permissão para acessar esta seção.</p>
           </PageContent>
         );
       case "configuration":
@@ -202,7 +202,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
       default:
         return (
           <PageContent title="Dashboard">
-            <p className="text-slate-700">Página não encontrada.</p>
+            <p className="text-slate-700 dark:text-slate-300">Página não encontrada.</p>
           </PageContent>
         );
     }
