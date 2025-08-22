@@ -6,16 +6,43 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "migrate-family-ids": "node scripts/migrate-family-ids.js"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.7",
+    "@react-pdf/renderer": "^4.3.0",
+    "dotenv": "^17.2.1",
+    "firebase": "^12.0.0",
+    "firebase-admin": "^13.4.0",
+    "firebase-functions": "^6.4.0",
+    "framer-motion": "^12.23.12",
+    "jsbarcode": "^3.12.1",
     "lucide-react": "^0.532.0",
     "next": "15.4.4",
+    "pdfjs-dist": "^5.4.54",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-pageflip": "^2.0.3",
+    "react-pdf": "^10.0.1",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.33.0",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "@types/node": "24.1.0",
+    "@types/react": "19.1.9",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.4.4",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "globals": "^15.15.0",
+    "postcss": "^8.5.6",
+    "tailwind-scrollbar": "^4.0.2",
+    "tailwindcss": "^4.1.11",
+    "typescript": "5.8.3"
   }
 }
