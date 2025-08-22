@@ -9,6 +9,7 @@ import {
   orderBy,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import PageContent from "@/components/portal/ui/PageContent";
@@ -27,10 +28,13 @@ import {
 // ---------- Helpers ----------
 const emptyCongForm = () => ({
   name: "",
-  isDefault: false,
-  primary: { husband: "", wife: "" }, // mantemos o schema; só mudam os rótulos na UI
-  secondary: { husband: "", wife: "" },
+  isDefault: false, // mantém para compatibilidade, mas agora o "padrão" é do setor (se quiser, pode remover depois)
   responsibles: [{ husband: "", wife: "" }],
+});
+
+const emptySupForm = () => ({
+  primary: { husband: "", wife: "" },
+  secondary: { husband: "", wife: "" },
 });
 
 function classNames(...s) {
@@ -41,7 +45,8 @@ function classNames(...s) {
 export default function CongregationsPage() {
   const [sectors, setSectors] = useState([]);
   const [expanded, setExpanded] = useState({});
-  const [forms, setForms] = useState({});
+  const [formsCong, setFormsCong] = useState({}); // sectorId -> form de nova congregação
+  const [formsSup, setFormsSup] = useState({});  // sectorId -> form de supervisores do setor
   const [newSector, setNewSector] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -51,14 +56,16 @@ export default function CongregationsPage() {
     const secQ = query(collection(db, "sectors"));
     const secSnap = await getDocs(secQ);
 
+    // Bootstrap
     if (secSnap.empty) {
       const defaultSectorRef = await addDoc(collection(db, "sectors"), {
         name: "Setor 01",
         isDefault: true,
+        supervisors: emptySupForm(), // já cria estrutura
       });
       await addDoc(
         collection(db, "sectors", defaultSectorRef.id, "congregations"),
-        { name: "Matriz", isDefault: true }
+        { name: "Matriz", isDefault: true, responsibles: [] }
       );
       setLoading(false);
       return loadData();
@@ -78,7 +85,7 @@ export default function CongregationsPage() {
       });
     }
 
-    // Padrão primeiro; depois por nome
+    // Ordenação: setor padrão primeiro; depois por nome
     data.sort((a, b) => {
       const da = (a.isDefault ? 0 : 1) - (b.isDefault ? 0 : 1);
       if (da !== 0) return da;
@@ -86,9 +93,26 @@ export default function CongregationsPage() {
     });
 
     setSectors(data);
+
+    // Expande por padrão + inicializa forms de supervisores
     const exp = {};
-    data.forEach((s) => (exp[s.id] = true));
+    const sup = {};
+    data.forEach((s) => {
+      exp[s.id] = true;
+      sup[s.id] = {
+        primary: {
+          husband: s?.supervisors?.primary?.husband || "",
+          wife: s?.supervisors?.primary?.wife || "",
+        },
+        secondary: {
+          husband: s?.supervisors?.secondary?.husband || "",
+          wife: s?.supervisors?.secondary?.wife || "",
+        },
+      };
+    });
     setExpanded(exp);
+    setFormsSup(sup);
+
     setLoading(false);
   };
 
@@ -96,40 +120,61 @@ export default function CongregationsPage() {
     loadData();
   }, []);
 
-  const updateForm = (sectorId, updater) => {
-    setForms((prev) => {
+  // ---- Forms helpers
+  const updateCongForm = (sectorId, updater) => {
+    setFormsCong((prev) => {
       const base = prev[sectorId] || emptyCongForm();
       return { ...prev, [sectorId]: updater(base) };
     });
   };
 
+  const updateSupForm = (sectorId, updater) => {
+    setFormsSup((prev) => {
+      const base = prev[sectorId] || emptySupForm();
+      return { ...prev, [sectorId]: updater(base) };
+    });
+  };
+
+  // ---- Actions
   const handleAddSector = async (e) => {
     e.preventDefault();
     const name = newSector.trim();
     if (!name) return;
-    await addDoc(collection(db, "sectors"), { name, isDefault: false });
+    await addDoc(collection(db, "sectors"), {
+      name,
+      isDefault: false,
+      supervisors: emptySupForm(),
+    });
     setNewSector("");
     await loadData();
   };
 
+  const handleSaveSupervisors = async (sectorId) => {
+    const f = formsSup[sectorId] || emptySupForm();
+    const payload = {
+      supervisors: {
+        primary: {
+          husband: (f.primary?.husband || "").trim(),
+          wife: (f.primary?.wife || "").trim(),
+        },
+        secondary: {
+          husband: (f.secondary?.husband || "").trim(),
+          wife: (f.secondary?.wife || "").trim(),
+        },
+      },
+    };
+    await updateDoc(doc(db, "sectors", sectorId), payload);
+    await loadData();
+  };
+
   const handleAddCongregation = async (sectorId) => {
-    const form = forms[sectorId] || emptyCongForm();
+    const form = formsCong[sectorId] || emptyCongForm();
     const name = (form.name || "").trim();
     if (!name) return;
 
     const payload = {
       name,
-      isDefault: !!form.isDefault,
-      supervisors: {
-        primary: {
-          husband: (form.primary?.husband || "").trim(),
-          wife: (form.primary?.wife || "").trim(),
-        },
-        secondary: {
-          husband: (form.secondary?.husband || "").trim(),
-          wife: (form.secondary?.wife || "").trim(),
-        },
-      },
+      isDefault: !!form.isDefault, // mantém compatibilidade; remova se não quiser mais isso nas congregações
       responsibles: (form.responsibles || [])
         .filter((r) => (r.husband || "").trim() || (r.wife || "").trim())
         .map((r) => ({
@@ -139,7 +184,7 @@ export default function CongregationsPage() {
     };
 
     await addDoc(collection(db, "sectors", sectorId, "congregations"), payload);
-    setForms((prev) => ({ ...prev, [sectorId]: emptyCongForm() }));
+    setFormsCong((prev) => ({ ...prev, [sectorId]: emptyCongForm() }));
     await loadData();
   };
 
@@ -150,27 +195,22 @@ export default function CongregationsPage() {
     await loadData();
   };
 
-  // Excluir setor (apaga as congregações da subcoleção e depois o doc do setor).
-  // OBS: se houver outras subcoleções, implemente deleção recursiva via Cloud Function/Admin.
   const handleDeleteSector = async (sector) => {
     const ok = window.confirm(
       `Excluir o setor “${sector.name}” e todas as suas congregações? Essa ação não pode ser desfeita.`
     );
     if (!ok) return;
 
-    // Apaga todas as congregações conhecidas
     const congSnap = await getDocs(collection(db, "sectors", sector.id, "congregations"));
     const deletions = congSnap.docs.map((d) =>
       deleteDoc(doc(db, "sectors", sector.id, "congregations", d.id))
     );
     await Promise.all(deletions);
-
-    // Apaga o setor
     await deleteDoc(doc(db, "sectors", sector.id));
-
     await loadData();
   };
 
+  // ---- Busca
   const filteredSectors = useMemo(() => {
     const term = search.trim().toLowerCase();
     if (!term) return sectors;
@@ -189,17 +229,15 @@ export default function CongregationsPage() {
 
   return (
     <PageContent title="Congregações">
-      {/* Bloco visível e destacado para ADICIONAR SETOR */}
-      <section className="mb-6 rounded-2xl border border-sky-200 bg-sky-50 p-4 shadow-sm">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+      {/* Bloco: Adicionar Setor */}
+      <section className="mb-6 rounded-2xl border border-[#0f172b]/20 bg-[#0f172b]/5 p-4 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-100">
-              <Layers3 className="h-5 w-5 text-sky-700" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0f172b]/10">
+              <Layers3 className="h-5 w-5 text-[#0f172b]" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-slate-900">
-                Adicionar novo setor
-              </h3>
+              <h3 className="text-base font-semibold text-slate-900">Adicionar novo setor</h3>
               <p className="text-sm text-slate-600">
                 Crie um setor e cadastre suas congregações logo abaixo.
               </p>
@@ -212,14 +250,14 @@ export default function CongregationsPage() {
             </label>
             <input
               id="novo-setor"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 md:w-72"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f172b] md:w-72"
               placeholder="Nome do setor (ex.: Setor 02)"
               value={newSector}
               onChange={(e) => setNewSector(e.target.value)}
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sky-700"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#0f172b] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#1e293b]"
               title="Adicionar setor"
             >
               <Plus className="h-4 w-4" />
@@ -234,7 +272,7 @@ export default function CongregationsPage() {
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
-            className="w-full rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f172b]"
             placeholder="Buscar por setor ou congregação…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -259,6 +297,99 @@ export default function CongregationsPage() {
               }
               onDelete={() => handleDeleteSector(sector)}
             >
+              {/* Supervisores do Setor */}
+              <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <h4 className="mb-3 text-sm font-semibold text-slate-700">Supervisores do setor</h4>
+
+                {/* Supervisor 1 */}
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
+                  <input
+                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    placeholder="Fulano"
+                    value={formsSup[sector.id]?.primary?.husband || ""}
+                    onChange={(e) =>
+                      updateSupForm(sector.id, (f) => ({
+                        ...f,
+                        primary: { ...f.primary, husband: e.target.value },
+                      }))
+                    }
+                  />
+                  <span className="text-sm text-slate-600 select-none">e</span>
+                  <input
+                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    placeholder="Sicrano"
+                    value={formsSup[sector.id]?.primary?.wife || ""}
+                    onChange={(e) =>
+                      updateSupForm(sector.id, (f) => ({
+                        ...f,
+                        primary: { ...f.primary, wife: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+
+                {/* Supervisor 2 */}
+                <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
+                  <input
+                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    placeholder="Fulano"
+                    value={formsSup[sector.id]?.secondary?.husband || ""}
+                    onChange={(e) =>
+                      updateSupForm(sector.id, (f) => ({
+                        ...f,
+                        secondary: { ...f.secondary, husband: e.target.value },
+                      }))
+                    }
+                  />
+                  <span className="text-sm text-slate-600 select-none">e</span>
+                  <input
+                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    placeholder="Sicrano"
+                    value={formsSup[sector.id]?.secondary?.wife || ""}
+                    onChange={(e) =>
+                      updateSupForm(sector.id, (f) => ({
+                        ...f,
+                        secondary: { ...f.secondary, wife: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveSupervisors(sector.id)}
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#0f172b] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1e293b]"
+                    title="Salvar supervisores do setor"
+                  >
+                    <Save className="h-4 w-4" />
+                    Salvar supervisores
+                  </button>
+                </div>
+
+                {/* Resumo compacto abaixo (se quiser mostrar dados salvos) */}
+                {(sector.supervisors?.primary?.husband ||
+                  sector.supervisors?.primary?.wife ||
+                  sector.supervisors?.secondary?.husband ||
+                  sector.supervisors?.secondary?.wife) && (
+                  <div className="mt-3 text-xs text-slate-600">
+                    <div>
+                      <span className="font-medium text-slate-700">Atual:</span>{" "}
+                      {[
+                        [sector.supervisors?.primary?.husband, sector.supervisors?.primary?.wife]
+                          .filter(Boolean)
+                          .join(" e "),
+                        [sector.supervisors?.secondary?.husband, sector.supervisors?.secondary?.wife]
+                          .filter(Boolean)
+                          .join(" e "),
+                      ]
+                        .filter((s) => s)
+                        .join(" • ")}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Lista de congregações */}
               <ul className="space-y-2">
                 {sector.congregations?.length ? (
@@ -278,24 +409,15 @@ export default function CongregationsPage() {
                               </span>
                             )}
                           </div>
-                          <div className="mt-1 space-y-0.5 text-xs text-slate-600">
-                            {c.supervisors?.primary?.husband && (
-                              <div>
-                                Sup. 1: {c.supervisors.primary.husband}
-                                {c.supervisors.primary.wife
-                                  ? ` & ${c.supervisors.primary.wife}`
-                                  : ""}
-                              </div>
-                            )}
-                            {c.supervisors?.secondary?.husband && (
-                              <div>
-                                Sup. 2: {c.supervisors.secondary.husband}
-                                {c.supervisors.secondary.wife
-                                  ? ` & ${c.supervisors.secondary.wife}`
-                                  : ""}
-                              </div>
-                            )}
-                          </div>
+
+                          {/* Responsáveis (apenas contagem; liste se quiser) */}
+                          {Array.isArray(c.responsibles) && c.responsibles.length > 0 && (
+                            <div className="mt-1 text-xs text-slate-600">
+                              {c.responsibles
+                                .map((r) => [r?.husband, r?.wife].filter(Boolean).join(" e "))
+                                .join(" • ")}
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -325,7 +447,7 @@ export default function CongregationsPage() {
                 )}
               </ul>
 
-              {/* Formulário de nova congregação */}
+              {/* Formulário de nova congregação (APENAS responsáveis) */}
               <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <h4 className="mb-3 text-sm font-semibold text-slate-700">
                   Nova congregação em <span className="text-slate-900">{sector.name}</span>
@@ -335,97 +457,46 @@ export default function CongregationsPage() {
                   <input
                     className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
                     placeholder="Nome da congregação"
-                    value={forms[sector.id]?.name || ""}
+                    value={formsCong[sector.id]?.name || ""}
                     onChange={(e) =>
-                      updateForm(sector.id, (f) => ({ ...f, name: e.target.value }))
+                      updateCongForm(sector.id, (f) => ({ ...f, name: e.target.value }))
                     }
                   />
-
                   <label className="inline-flex items-center gap-2 text-sm text-slate-700">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-600"
-                      checked={forms[sector.id]?.isDefault || false}
+                      className="h-4 w-4 rounded border-slate-300 text-[#0f172b] focus:ring-[#0f172b]"
+                      checked={formsCong[sector.id]?.isDefault || false}
                       onChange={(e) =>
-                        updateForm(sector.id, (f) => ({ ...f, isDefault: e.target.checked }))
+                        updateCongForm(sector.id, (f) => ({ ...f, isDefault: e.target.checked }))
                       }
                     />
                     Marcar como padrão do setor
                   </label>
-
-                  {/* Supervisores - rótulos neutros */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                      placeholder="Supervisor 1 — Nome A"
-                      value={forms[sector.id]?.primary?.husband || ""}
-                      onChange={(e) =>
-                        updateForm(sector.id, (f) => ({
-                          ...f,
-                          primary: { ...f.primary, husband: e.target.value },
-                        }))
-                      }
-                    />
-                    <input
-                      className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                      placeholder="Supervisor 1 — Nome B"
-                      value={forms[sector.id]?.primary?.wife || ""}
-                      onChange={(e) =>
-                        updateForm(sector.id, (f) => ({
-                          ...f,
-                          primary: { ...f.primary, wife: e.target.value },
-                        }))
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                      placeholder="Supervisor 2 — Nome A"
-                      value={forms[sector.id]?.secondary?.husband || ""}
-                      onChange={(e) =>
-                        updateForm(sector.id, (f) => ({
-                          ...f,
-                          secondary: { ...f.secondary, husband: e.target.value },
-                        }))
-                      }
-                    />
-                    <input
-                      className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                      placeholder="Supervisor 2 — Nome B"
-                      value={forms[sector.id]?.secondary?.wife || ""}
-                      onChange={(e) =>
-                        updateForm(sector.id, (f) => ({
-                          ...f,
-                          secondary: { ...f.secondary, wife: e.target.value },
-                        }))
-                      }
-                    />
-                  </div>
                 </div>
 
-                {(forms[sector.id]?.responsibles || [{ husband: "", wife: "" }]).map(
+                {(formsCong[sector.id]?.responsibles || [{ husband: "", wife: "" }]).map(
                   (r, idx) => (
-                    <div key={idx} className="mt-2 grid grid-cols-2 gap-2">
+                    <div key={idx} className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
                       <input
                         className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                        placeholder={`Responsável ${idx + 1} — Nome A`}
+                        placeholder={`Responsável ${idx + 1} — Fulano`}
                         value={r.husband}
                         onChange={(e) =>
-                          updateForm(sector.id, (f) => {
+                          updateCongForm(sector.id, (f) => {
                             const rs = [...(f.responsibles || [{ husband: "", wife: "" }])];
                             rs[idx] = { ...rs[idx], husband: e.target.value };
                             return { ...f, responsibles: rs };
                           })
                         }
                       />
+                      <span className="text-sm text-slate-600 select-none">e</span>
                       <input
                         className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                        placeholder={`Responsável ${idx + 1} — Nome B`}
+                        placeholder={`Responsável ${idx + 1} — Sicrano`}
                         value={r.wife}
                         onChange={(e) =>
-                          updateForm(sector.id, (f) => {
+                          updateCongForm(sector.id, (f) => {
                             const rs = [...(f.responsibles || [{ husband: "", wife: "" }])];
                             rs[idx] = { ...rs[idx], wife: e.target.value };
                             return { ...f, responsibles: rs };
@@ -439,9 +510,9 @@ export default function CongregationsPage() {
                 <div className="mt-2 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
-                    className="text-sm font-medium text-sky-700 hover:underline"
+                    className="text-sm font-medium text-[#0f172b] hover:underline"
                     onClick={() =>
-                      updateForm(sector.id, (f) => ({
+                      updateCongForm(sector.id, (f) => ({
                         ...f,
                         responsibles: [...(f.responsibles || []), { husband: "", wife: "" }],
                       }))
@@ -453,7 +524,7 @@ export default function CongregationsPage() {
                   <button
                     type="button"
                     onClick={() => handleAddCongregation(sector.id)}
-                    className="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#0f172b] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1e293b]"
                     title="Salvar congregação"
                   >
                     <Save className="h-4 w-4" />
@@ -510,7 +581,6 @@ function SectorCard({ sector, expanded, onToggle, onDelete, children }) {
         </button>
 
         <div className="flex items-center gap-2">
-          {/* Botão excluir setor: vermelho sutil */}
           <button
             type="button"
             onClick={onDelete}
@@ -537,7 +607,7 @@ function EmptyState({ onReset }) {
       </p>
       <button
         onClick={onReset}
-        className="mt-4 inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
+        className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#0f172b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1e293b]"
       >
         Limpar busca
       </button>
