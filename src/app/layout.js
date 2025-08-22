@@ -4,7 +4,8 @@ import Script from "next/script";                       // ⬅️ novo
 import HideLayoutWrapper from "@/components/HideLayoutWrapper";
 import { churchInfo } from "@/lib/churchInfo";
 import { AuthProvider } from "@/lib/firebase/AuthContext";
-import { ThemeProvider } from "@/lib/ThemeContext";
+import { ThemeProvider } from "next-themes";
+
 import "@/globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -89,7 +90,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-white text-stone-900 dark:bg-stone-900 dark:text-stone-100 transition-colors`}
       >
-        <ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
             <HideLayoutWrapper>{children}</HideLayoutWrapper>
           </AuthProvider>

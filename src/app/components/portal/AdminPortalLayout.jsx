@@ -30,7 +30,7 @@ import LinksPage from "@/components/portal/features/LinksPage";
 
 import { useHasRole } from "@/hooks/useClaims";
 import { useAuthUser } from "@/hooks/useAuthUser"; // unifica Auth + Firestore
-import { useTheme } from "@/lib/ThemeContext";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { db } from "@/lib/firebase/client";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -107,12 +107,12 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
   const { allowed: canSeeSched,  loading: rlSched } = useHasRole(["admin","pastor","supervisor_departamento","supervisor_setor"]);
   const rolesLoading = rlUsers || rlMin || rlSched;
 
-  const { theme, toggleTheme } = useTheme();
+  const { isDark, toggle } = useDarkMode();
 
   const handleThemeToggle = async () => {
     const uid = userProp?.uid;
-    const next = theme === "dark" ? "light" : "dark";
-    toggleTheme();
+    const next = isDark ? "light" : "dark";
+    toggle();
     if (uid) {
       try {
         await setDoc(doc(db, "users", uid), { theme: next }, { merge: true });
@@ -286,7 +286,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
             className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
             aria-label="Alternar tema"
           >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <button
             onClick={handleLogout}
@@ -366,7 +366,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
                     className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                     aria-label="Alternar tema"
                   >
-                    {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                    {isDark ? <Sun size={18} /> : <Moon size={18} />}
                   </button>
                   <button
                     onClick={handleLogout}
