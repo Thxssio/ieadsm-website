@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { churchInfo } from "@/lib/churchInfo";
 
 /* ===================== Helpers ===================== */
 
@@ -170,7 +171,7 @@ export default function MemberCard({
   rg = "",
   signerName = "Pr. Moisés Adriano Lamberty",
   signerRole = "Pastor Presidente",
-  addressLine = "Rua Venâncio Aires, 1504, Centro - CEP 97010-002",
+  addressLine = churchInfo.address,
   // Barcode
   barcodeMode = "visual", // "visual" | "code128"
   barcodeSalt = "IEADSM-2025",
@@ -230,7 +231,7 @@ export default function MemberCard({
         .text-card-label { color: #1f2937; font-size: 0.78rem; font-weight: 600; }
         .text-card-data { color: #0f172a; font-size: 1.08rem; font-weight: 700; }
         .text-card-header { color: #36435a; font-weight: 700; }
-        .logo-container { width: 80px; height: 80px; }
+        .logo-container { width: 60px; height: 60px; }
         .photo-placeholder { width: 105px; height: 130px; border: 1px solid #36435a; background-color: #f9fafb; overflow: hidden; }
         .cards-wrapper { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; padding: 2rem; }
         @media print {

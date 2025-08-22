@@ -398,14 +398,7 @@ function MemberCardModal({ open, onClose, userId }) {
                 maritalStatus={data.estadoCivil}
                 cpf={data.cpf ? maskCPF(data.cpf) : ""}
                 rg={data.rg}
-                addressLine={{
-                  street: data.endereco,
-                  number: data.numero,
-                  neighborhood: data.bairro,
-                  city: data.cidade,
-                  state: data.uf,
-                  zip: data.cep,
-                }}
+                addressLine={churchInfo.address}
               />
             )}
           </div>
