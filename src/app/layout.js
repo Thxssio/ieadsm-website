@@ -68,7 +68,7 @@ const siteJsonLd = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-BR" className="h-full">
+    <html lang="pt-BR" className="h-full" suppressHydrationWarning>
       {/* HEAD personalizado — qualquer conteúdo aqui será renderizado no <head> */}
       <head>
         {/* Script injetando os dados estruturados */}
