@@ -23,12 +23,14 @@ import {
   Layers3,
   Save,
   Trash2,
+  PencilLine,   // <-- novo
+  X as XIcon,    // <-- novo
 } from "lucide-react";
 
 // ---------- Helpers ----------
 const emptyCongForm = () => ({
   name: "",
-  isDefault: false, // mantém para compatibilidade, mas agora o "padrão" é do setor (se quiser, pode remover depois)
+  isDefault: false, // compatibilidade
   responsibles: [{ husband: "", wife: "" }],
 });
 
@@ -45,11 +47,16 @@ function classNames(...s) {
 export default function CongregationsPage() {
   const [sectors, setSectors] = useState([]);
   const [expanded, setExpanded] = useState({});
-  const [formsCong, setFormsCong] = useState({}); // sectorId -> form de nova congregação
-  const [formsSup, setFormsSup] = useState({});  // sectorId -> form de supervisores do setor
+  const [formsCong, setFormsCong] = useState({}); // sectorId -> form nova congregação
+  const [formsSup, setFormsSup] = useState({});  // sectorId -> form supervisores
   const [newSector, setNewSector] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // --- estado de edição de congregações existentes
+  // chave = `${sectorId}:${congId}` -> { name, isDefault, responsibles[] }
+  const [editMap, setEditMap] = useState({});
+  const keyFromIds = (sectorId, congId) => `${sectorId}:${congId}`;
 
   const loadData = async () => {
     setLoading(true);
@@ -61,7 +68,7 @@ export default function CongregationsPage() {
       const defaultSectorRef = await addDoc(collection(db, "sectors"), {
         name: "Setor 01",
         isDefault: true,
-        supervisors: emptySupForm(), // já cria estrutura
+        supervisors: emptySupForm(),
       });
       await addDoc(
         collection(db, "sectors", defaultSectorRef.id, "congregations"),
@@ -85,7 +92,7 @@ export default function CongregationsPage() {
       });
     }
 
-    // Ordenação: setor padrão primeiro; depois por nome
+    // Ordena: setor padrão primeiro; depois por nome
     data.sort((a, b) => {
       const da = (a.isDefault ? 0 : 1) - (b.isDefault ? 0 : 1);
       if (da !== 0) return da;
@@ -94,7 +101,7 @@ export default function CongregationsPage() {
 
     setSectors(data);
 
-    // Expande por padrão + inicializa forms de supervisores
+    // Expande e inicializa forms de supervisores
     const exp = {};
     const sup = {};
     data.forEach((s) => {
@@ -120,7 +127,7 @@ export default function CongregationsPage() {
     loadData();
   }, []);
 
-  // ---- Forms helpers
+  // ---- Forms helpers (novo & supervisores)
   const updateCongForm = (sectorId, updater) => {
     setFormsCong((prev) => {
       const base = prev[sectorId] || emptyCongForm();
@@ -133,6 +140,63 @@ export default function CongregationsPage() {
       const base = prev[sectorId] || emptySupForm();
       return { ...prev, [sectorId]: updater(base) };
     });
+  };
+
+  // ---- Edição inline de congregações (NOVO)
+  const startEditCong = (sectorId, cong) => {
+    const k = keyFromIds(sectorId, cong.id);
+    setEditMap((prev) => ({
+      ...prev,
+      [k]: {
+        name: cong.name || "",
+        isDefault: !!cong.isDefault,
+        responsibles:
+          Array.isArray(cong.responsibles) && cong.responsibles.length > 0
+            ? cong.responsibles.map((r) => ({
+                husband: r?.husband || "",
+                wife: r?.wife || "",
+              }))
+            : [{ husband: "", wife: "" }],
+      },
+    }));
+  };
+
+  const cancelEditCong = (sectorId, congId) => {
+    const k = keyFromIds(sectorId, congId);
+    setEditMap((prev) => {
+      const copy = { ...prev };
+      delete copy[k];
+      return copy;
+    });
+  };
+
+  const updateEditCong = (sectorId, congId, updater) => {
+    const k = keyFromIds(sectorId, congId);
+    setEditMap((prev) => {
+      const base = prev[k] || emptyCongForm();
+      return { ...prev, [k]: updater(base) };
+    });
+  };
+
+  const saveEditCong = async (sectorId, congId) => {
+    const k = keyFromIds(sectorId, congId);
+    const form = editMap[k];
+    if (!form) return;
+
+    const payload = {
+      name: (form.name || "").trim(),
+      isDefault: !!form.isDefault,
+      responsibles: (form.responsibles || [])
+        .filter((r) => (r.husband || "").trim() || (r.wife || "").trim())
+        .map((r) => ({
+          husband: (r.husband || "").trim(),
+          wife: (r.wife || "").trim(),
+        })),
+    };
+
+    await updateDoc(doc(db, "sectors", sectorId, "congregations", congId), payload);
+    cancelEditCong(sectorId, congId);
+    await loadData();
   };
 
   // ---- Actions
@@ -174,7 +238,7 @@ export default function CongregationsPage() {
 
     const payload = {
       name,
-      isDefault: !!form.isDefault, // mantém compatibilidade; remova se não quiser mais isso nas congregações
+      isDefault: !!form.isDefault,
       responsibles: (form.responsibles || [])
         .filter((r) => (r.husband || "").trim() || (r.wife || "").trim())
         .map((r) => ({
@@ -317,7 +381,7 @@ export default function CongregationsPage() {
                   <span className="text-sm text-slate-600 select-none">e</span>
                   <input
                     className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                    placeholder="Sicrana"
+                    placeholder="Sicrano"
                     value={formsSup[sector.id]?.primary?.wife || ""}
                     onChange={(e) =>
                       updateSupForm(sector.id, (f) => ({
@@ -344,7 +408,7 @@ export default function CongregationsPage() {
                   <span className="text-sm text-slate-600 select-none">e</span>
                   <input
                     className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                    placeholder="Sicrana"
+                    placeholder="Sicrano"
                     value={formsSup[sector.id]?.secondary?.wife || ""}
                     onChange={(e) =>
                       updateSupForm(sector.id, (f) => ({
@@ -367,7 +431,6 @@ export default function CongregationsPage() {
                   </button>
                 </div>
 
-                {/* Resumo compacto abaixo (se quiser mostrar dados salvos) */}
                 {(sector.supervisors?.primary?.husband ||
                   sector.supervisors?.primary?.wife ||
                   sector.supervisors?.secondary?.husband ||
@@ -393,55 +456,192 @@ export default function CongregationsPage() {
               {/* Lista de congregações */}
               <ul className="space-y-2">
                 {sector.congregations?.length ? (
-                  sector.congregations.map((c) => (
-                    <li
-                      key={c.id}
-                      className="rounded-lg border border-slate-200 bg-white px-3 py-2 hover:border-slate-300"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="truncate font-medium">{c.name}</span>
-                            {c.isDefault && (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
-                                <Star className="h-3 w-3" />
-                                Padrão
-                              </span>
-                            )}
+                  sector.congregations.map((c) => {
+                    const k = keyFromIds(sector.id, c.id);
+                    const isEditing = !!editMap[k];
+
+                    return (
+                      <li
+                        key={c.id}
+                        className="rounded-lg border border-slate-200 bg-white px-3 py-2 hover:border-slate-300"
+                      >
+                        {!isEditing ? (
+                          // --------- VISUALIZAÇÃO ----------
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="truncate font-medium">{c.name}</span>
+                                {c.isDefault && (
+                                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+                                    <Star className="h-3 w-3" />
+                                    Padrão
+                                  </span>
+                                )}
+                              </div>
+
+                              {Array.isArray(c.responsibles) && c.responsibles.length > 0 && (
+                                <div className="mt-1 text-xs text-slate-600">
+                                  {c.responsibles
+                                    .map((r) => [r?.husband, r?.wife].filter(Boolean).join(" e "))
+                                    .join(" • ")}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              {Array.isArray(c.responsibles) && c.responsibles.length > 0 && (
+                                <div className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-700 whitespace-nowrap">
+                                  <Users className="h-3.5 w-3.5" />
+                                  {c.responsibles.length} responsáveis
+                                </div>
+                              )}
+
+                              {/* editar */}
+                              <button
+                                type="button"
+                                onClick={() => startEditCong(sector.id, c)}
+                                className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                                title="Editar congregação"
+                              >
+                                <PencilLine className="h-4 w-4" />
+                              </button>
+
+                              {/* excluir */}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleDeleteCongregation(sector.id, c.id, c.name)
+                                }
+                                className="inline-flex items-center justify-center rounded-md border border-transparent bg-red-50 px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-100"
+                                title="Excluir congregação"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </div>
-
-                          {/* Responsáveis (apenas contagem; liste se quiser) */}
-                          {Array.isArray(c.responsibles) && c.responsibles.length > 0 && (
-                            <div className="mt-1 text-xs text-slate-600">
-                              {c.responsibles
-                                .map((r) => [r?.husband, r?.wife].filter(Boolean).join(" e "))
-                                .join(" • ")}
+                        ) : (
+                          // --------- EDIÇÃO ----------
+                          <div className="space-y-3">
+                            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                              <input
+                                className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                placeholder="Nome da congregação"
+                                value={editMap[k].name}
+                                onChange={(e) =>
+                                  updateEditCong(sector.id, c.id, (f) => ({
+                                    ...f,
+                                    name: e.target.value,
+                                  }))
+                                }
+                              />
+                              <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+                                <input
+                                  type="checkbox"
+                                  className="h-4 w-4 rounded border-slate-300 text-[#0f172b] focus:ring-[#0f172b]"
+                                  checked={!!editMap[k].isDefault}
+                                  onChange={(e) =>
+                                    updateEditCong(sector.id, c.id, (f) => ({
+                                      ...f,
+                                      isDefault: e.target.checked,
+                                    }))
+                                  }
+                                />
+                                Marcar como padrão do setor
+                              </label>
                             </div>
-                          )}
-                        </div>
 
-                        <div className="flex items-center gap-2">
-                          {Array.isArray(c.responsibles) && c.responsibles.length > 0 && (
-                            <div className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-700 whitespace-nowrap">
-                              <Users className="h-3.5 w-3.5" />
-                              {c.responsibles.length} responsáveis
+                            {editMap[k].responsibles.map((r, idx) => (
+                              <div
+                                key={idx}
+                                className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 md:max-w-3xl"
+                              >
+                                <input
+                                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                  placeholder={`Responsável ${idx + 1} — Fulano`}
+                                  value={r.husband}
+                                  onChange={(e) =>
+                                    updateEditCong(sector.id, c.id, (f) => {
+                                      const rs = [...f.responsibles];
+                                      rs[idx] = { ...rs[idx], husband: e.target.value };
+                                      return { ...f, responsibles: rs };
+                                    })
+                                  }
+                                />
+                                <span className="text-sm text-slate-600 select-none">e</span>
+                                <input
+                                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                  placeholder={`Responsável ${idx + 1} — Sicrano`}
+                                  value={r.wife}
+                                  onChange={(e) =>
+                                    updateEditCong(sector.id, c.id, (f) => {
+                                      const rs = [...f.responsibles];
+                                      rs[idx] = { ...rs[idx], wife: e.target.value };
+                                      return { ...f, responsibles: rs };
+                                    })
+                                  }
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateEditCong(sector.id, c.id, (f) => {
+                                      const rs = [...f.responsibles];
+                                      rs.splice(idx, 1);
+                                      return {
+                                        ...f,
+                                        responsibles: rs.length ? rs : [{ husband: "", wife: "" }],
+                                      };
+                                    })
+                                  }
+                                  className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-600 hover:bg-slate-50"
+                                  title="Remover responsável"
+                                >
+                                  <XIcon className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ))}
+
+                            <div className="flex flex-wrap items-center gap-3">
+                              <button
+                                type="button"
+                                className="text-sm font-medium text-[#0f172b] hover:underline"
+                                onClick={() =>
+                                  updateEditCong(sector.id, c.id, (f) => ({
+                                    ...f,
+                                    responsibles: [
+                                      ...(f.responsibles || []),
+                                      { husband: "", wife: "" },
+                                    ],
+                                  }))
+                                }
+                              >
+                                + Adicionar responsável
+                              </button>
+
+                              <div className="ml-auto flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => cancelEditCong(sector.id, c.id)}
+                                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                                  title="Cancelar"
+                                >
+                                  Cancelar
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => saveEditCong(sector.id, c.id)}
+                                  className="inline-flex items-center gap-2 rounded-lg bg-[#0f172b] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1e293b]"
+                                  title="Salvar alterações"
+                                >
+                                  <Save className="h-4 w-4" />
+                                  Salvar alterações
+                                </button>
+                              </div>
                             </div>
-                          )}
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleDeleteCongregation(sector.id, c.id, c.name)
-                            }
-                            className="inline-flex items-center justify-center rounded-md border border-transparent bg-red-50 px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-100"
-                            title="Excluir congregação"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  ))
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })
                 ) : (
                   <li className="text-sm text-slate-500">Nenhuma congregação cadastrada.</li>
                 )}
