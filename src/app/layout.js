@@ -86,7 +86,7 @@ export default function RootLayout({ children }) {
       </head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-white text-stone-900`}
+        className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-white text-stone-900 dark:bg-stone-900 dark:text-stone-100 transition-colors`}
       >
         <AuthProvider>
           <HideLayoutWrapper>{children}</HideLayoutWrapper>
