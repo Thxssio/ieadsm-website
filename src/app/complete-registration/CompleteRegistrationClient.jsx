@@ -153,6 +153,21 @@ async function getNextInternalId() {
   return String(newId).padStart(6, "0"); // garantir string com 6 dígitos
 }
 
+/** Atualiza o contador de idInterno para, no mínimo, o valor informado. */
+async function ensureInternalIdCounterAtLeast(id) {
+  const target = Number(id);
+  if (!Number.isFinite(target)) return;
+  const ctrRef = doc(db, "counters", "idInterno");
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ctrRef);
+    let current = snap.exists() ? Number(snap.data().current || 0) : 0;
+    if (!Number.isFinite(current)) current = 0;
+    if (current < target) {
+      tx.set(ctrRef, { current: target, updatedAt: new Date() }, { merge: true });
+    }
+  });
+}
+
 /* Tenta incluir o usuário como "filho" em families/{id}/members/{uid}.
    Se passar, retorna { ok: true, familyId }. Se falhar, { ok: false }. */
 async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
@@ -348,6 +363,11 @@ export default function CompleteRegistrationClient() {
         setSaving(false);
         return setErr(`O ID interno ${idInterno} já existe no sistema. Por favor, escolha outro.`);
       }
+
+      // garante avanço do contador para evitar repetições
+      await step("Atualizar contador do idInterno", () =>
+        ensureInternalIdCounterAtLeast(idInterno)
+      );
 
       // valida CPFs
       const invalids = [];
