@@ -3,8 +3,9 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 // 1. Importar a biblioteca de ícones completa
-import * as Icons from "lucide-react"; 
-import { Menu, X, ChevronDown, LogIn, User } from "lucide-react";
+import * as Icons from "lucide-react";
+import { Menu, X, ChevronDown, LogIn, User, Sun, Moon } from "lucide-react";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { useAuth } from "@/lib/firebase/AuthContext";
 import { auth } from "@/lib/firebase/client";
 
@@ -15,6 +16,7 @@ function getIconComponent(name) {
 
 export default function Header({ churchName, logoUrl, ministries = [] }) {
   const { user } = useAuth();
+  const { isDark, toggle } = useDarkMode();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMinistriesOpen, setIsMinistriesOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -61,9 +63,10 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
               </Link>
             ))}
 
-            {/* Dropdown Ministérios */}
-            <div className="relative" onMouseEnter={openMinistries} onMouseLeave={closeMinistries}>
-              <button className="text-stone-600 dark:text-stone-300 hover:text-[#2a3d57] dark:hover:text-[#abcedd] font-medium flex items-center gap-1 px-2 py-1 transition-colors" aria-haspopup="true" aria-expanded={isMinistriesOpen}>
+              {/* Dropdown Ministérios */}
+              <div className="relative" onMouseEnter={openMinistries} onMouseLeave={closeMinistries}>
+              <button className="text-stone-600 hover:text-[#2a3d57] font-medium flex items-center gap-1 px-2 py-1 transition-colors" aria-haspopup="true" aria-expanded={isMinistriesOpen}>
+
                 Ministérios <ChevronDown size={16} />
               </button>
               {isMinistriesOpen && (
@@ -91,8 +94,16 @@ export default function Header({ churchName, logoUrl, ministries = [] }) {
               )}
             </div>
 
-            {/* Lógica Condicional: Botão de Login OU Menu do Usuário */}
-            {user ? (
+              <button
+                onClick={toggle}
+                className="text-stone-600 dark:text-stone-300 hover:text-[#2a3d57] dark:hover:text-stone-100 transition-colors"
+                aria-label="Alternar modo escuro"
+              >
+                {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+
+              {/* Lógica Condicional: Botão de Login OU Menu do Usuário */}
+              {user ? (
               <div className="relative ml-4" onMouseEnter={openUserMenu} onMouseLeave={closeUserMenu}>
                 <button className="flex items-center gap-2 text-stone-600 dark:text-stone-300 hover:text-[#2a3d57] dark:hover:text-[#abcedd] font-medium px-2 py-1 transition-colors">
                   <User size={18} />
