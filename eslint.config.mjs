@@ -5,7 +5,7 @@ import nextPlugin from '@next/eslint-plugin-next';
 import globals from 'globals';
 
 export default [
-  { ignores: ["public/**", "functions/**"] },
+  { ignores: ["public/**", "functions/**", ".next/**"] },
   js.configs.recommended,
   ...tsPlugin.configs['flat/recommended'],
   nextPlugin.flatConfig.coreWebVitals,

@@ -224,23 +224,22 @@ export default function LinksPage() {
 
   /* ===================== UI ===================== */
   return (
-    <PageContent
-      title={
-        <div className="flex items-center gap-2">
-          <span>Gerenciar Links</span>
-          <motion.span
-            initial={{ rotate: -8, scale: 0.9 }}
-            animate={{ rotate: [0, -8, 0], scale: [1, 0.95, 1] }}
-            transition={{ repeat: Infinity, duration: 4 }}
-            className="inline-flex"
-            title="deixe brilhante ✨"
-          >
-            <Sparkles className="h-5 w-5 text-amber-500" />
-          </motion.span>
-        </div>
-      }
-      subtitle="CRUD com preview, animações e reordenação por arrastar & soltar."
-    >
+      <PageContent
+        title={
+          <div className="flex items-center gap-2">
+            <span>Gerenciar Links</span>
+            <motion.span
+              initial={{ rotate: -8, scale: 0.9 }}
+              animate={{ rotate: [0, -8, 0], scale: [1, 0.95, 1] }}
+              transition={{ repeat: Infinity, duration: 4 }}
+              className="inline-flex"
+              title="deixe brilhante ✨"
+            >
+              <Sparkles className="h-5 w-5 text-amber-500" />
+            </motion.span>
+          </div>
+        }
+      >
       {/* ======= Toasts ======= */}
       <div className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2">
         <AnimatePresence>{toast && <Toast {...toast} onDone={() => setToast(null)} />}</AnimatePresence>
