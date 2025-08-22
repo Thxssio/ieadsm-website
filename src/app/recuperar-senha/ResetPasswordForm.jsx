@@ -30,7 +30,7 @@ export default function ResetPasswordForm() {
         <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">E‑mail</label>
         <input
           type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card text-foreground px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="usuario@mail.com"
         />
       </div>
