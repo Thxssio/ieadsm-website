@@ -55,7 +55,7 @@ function Labeled({ label, children }) {
   return (
     <div className="print-avoid-break">
       <div className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
-      <div className="text-slate-900 dark:text-slate-100">{children || "—"}</div>
+      <div className="text-slate-700 dark:text-slate-300">{children || "—"}</div>
     </div>
   );
 }
@@ -66,7 +66,7 @@ function Section({ icon, title, children }) {
         <div className="h-8 w-8 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
           {icon}
         </div>
-        <h4 className="text-base font-semibold text-slate-800 dark:text-slate-200">{title}</h4>
+        <h4 className="text-base font-semibold text-slate-700 dark:text-slate-300">{title}</h4>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{children}</div>
     </section>
@@ -146,7 +146,7 @@ function UserFormModal({ open, onClose, userId }) {
                 <Eye size={18} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Ficha do Usuário</h3>
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Ficha do Usuário</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   Visualização somente leitura do cadastro complementar
                 </p>
@@ -185,7 +185,7 @@ function UserFormModal({ open, onClose, userId }) {
                 {/* Top card */}
                 <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 md:p-5 print-avoid-break">
                   <div className="grid grid-cols-[72px_1fr] gap-4 items-center">
-                    <div className="h-18 w-18 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 grid place-items-center">
+                    <div className="h-18 w-18 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-background grid place-items-center">
                       {data.photoURL ? (
                         <img
                           src={data.photoURL}
@@ -198,10 +198,10 @@ function UserFormModal({ open, onClose, userId }) {
                       )}
                     </div>
                     <div className="grid gap-1">
-                      <div className="text-lg font-semibold text-slate-900 dark:text-slate-100 leading-tight">
+                      <div className="text-lg font-semibold text-slate-700 dark:text-slate-300 leading-tight">
                         {data.name || "—"}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">{data.email || "—"}</div>
+                      <div className="text-sm text-slate-700 dark:text-slate-300">{data.email || "—"}</div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">
                         ID Interno: <span className="font-medium">{data.idInterno || "—"}</span>
                       </div>
@@ -265,13 +265,13 @@ function UserFormModal({ open, onClose, userId }) {
                     <div className="h-8 w-8 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                       <Baby size={16} />
                     </div>
-                    <h4 className="text-base font-semibold text-slate-800 dark:text-slate-200">Filhos</h4>
+                    <h4 className="text-base font-semibold text-slate-700 dark:text-slate-300">Filhos</h4>
                   </div>
                   {children.length ? (
                     <div className="grid gap-2">
                       {children.map((f, i) => (
                         <div key={i} className="flex items-center justify-between rounded-md border border-slate-200 dark:border-slate-700 px-3 py-2">
-                          <div className="font-medium text-slate-800 dark:text-slate-200">{f.name || "—"}</div>
+                          <div className="font-medium text-slate-700 dark:text-slate-300">{f.name || "—"}</div>
                           <div className="text-sm text-slate-600 dark:text-slate-400">{f.cpf ? maskCPF(f.cpf) : "—"}</div>
                         </div>
                       ))}
@@ -357,7 +357,7 @@ function MemberCardModal({ open, onClose, userId }) {
               <div className="h-10 w-10 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                 <IdCard size={18} />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Carteirinha do Membro</h3>
+              <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Carteirinha do Membro</h3>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -588,7 +588,7 @@ export default function UserManagementPage({ currentUser }) {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Pesquisar por nome, e-mail ou CPF..."
-          className="w-full max-w-lg px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+          className="w-full max-w-lg px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg placeholder-slate-400 dark:placeholder-slate-500 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
         />
       </div>
 
@@ -600,7 +600,7 @@ export default function UserManagementPage({ currentUser }) {
           animate="visible"
           className="min-w-full hidden md:table"
         >
-          <thead className="bg-slate-50 dark:bg-slate-800">
+          <thead className="bg-background">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nome</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Contato</th>
@@ -614,7 +614,7 @@ export default function UserManagementPage({ currentUser }) {
               filteredUsers.map((u) => (
                 <motion.tr key={u.id} variants={itemVariants}>
                   <td className="px-4 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">{u.name || "—"}</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300">{u.name || "—"}</div>
                     <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">ID Interno: {u.idInterno || "—"}</div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
@@ -638,7 +638,7 @@ export default function UserManagementPage({ currentUser }) {
                       value={u.role ?? ""}
                       onChange={(e) => handleRoleChange(u.id, e.target.value)}
                       disabled={!canManageRoles || currentUser?.uid === u.id}
-                      className="block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 dark:text-slate-200 disabled:bg-slate-200 dark:bg-slate-700 disabled:cursor-not-allowed"
+                      className="block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-700 dark:text-slate-300 disabled:bg-slate-200 dark:bg-slate-700 disabled:cursor-not-allowed"
                       title={
                         currentUser?.uid === u.id
                           ? "Sua própria função não pode ser alterada."
@@ -718,7 +718,7 @@ export default function UserManagementPage({ currentUser }) {
               <motion.div key={u.id} variants={itemVariants} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-slate-900 dark:text-slate-100 font-semibold">{u.name || "—"}</div>
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold">{u.name || "—"}</div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ID Interno: {u.idInterno || "—"}</div>
                     <div className="mt-2 text-sm text-slate-700 dark:text-slate-300 flex items-center gap-2">
                       <MailCheck size={14} className="text-slate-400 dark:text-slate-500" /> {u.email || "—"}
@@ -734,7 +734,7 @@ export default function UserManagementPage({ currentUser }) {
                     value={u.role ?? ""}
                     onChange={(e) => handleRoleChange(u.id, e.target.value)}
                     disabled={!canManageRoles || currentUser?.uid === u.id}
-                    className="block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 dark:text-slate-200 disabled:bg-slate-200 dark:bg-slate-700 disabled:cursor-not-allowed"
+                    className="block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-700 dark:text-slate-300 disabled:bg-slate-200 dark:bg-slate-700 disabled:cursor-not-allowed"
                   >
                     <option value="">Sem Função</option>
                     {["admin","pastor","supervisor_departamento","supervisor_setor","membro"].map((role) => (
