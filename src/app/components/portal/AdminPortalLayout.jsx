@@ -86,7 +86,7 @@ const NavItem = ({ icon, label, active, onClick, disabled }) => (
         active ? "bg-[#2a3d57]" : "bg-transparent group-hover:bg-slate-300"
       )}
     />
-    <div className={cx("shrink-0", active ? "text-sky-700" : "text-slate-500 group-hover:text-slate-700")}>
+    <div className={cx("shrink-0", active ? "text-sky-700" : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200")}> 
       {icon}
     </div>
     <span className="font-medium">{label}</span>
@@ -139,13 +139,13 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
 
   const LoggingOutPage = () => (
     <PageContent title="Saindo...">
-      <p className="text-slate-700">Finalizando sua sessão, aguarde.</p>
+      <p className="text-slate-700 dark:text-slate-300">Finalizando sua sessão, aguarde.</p>
     </PageContent>
   );
 
   const LoadingPermissionsPage = () => (
     <PageContent title="Carregando permissões">
-      <p className="text-slate-700">Verificando seu acesso…</p>
+      <p className="text-slate-700 dark:text-slate-300">Verificando seu acesso…</p>
     </PageContent>
   );
 
@@ -158,7 +158,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
           <UserManagementPage currentUser={userProp} />
         ) : (
           <PageContent title="Acesso restrito">
-            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+            <p className="text-slate-700 dark:text-slate-300">Você não tem permissão para acessar esta seção.</p>
           </PageContent>
         );
       case "ministries":
@@ -166,7 +166,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
           <MinistriesPage />
         ) : (
           <PageContent title="Acesso restrito">
-            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+            <p className="text-slate-700 dark:text-slate-300">Você não tem permissão para acessar esta seção.</p>
           </PageContent>
         );
       case "congregations":
@@ -176,7 +176,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
       case "events":
         return (
           <PageContent title="Eventos">
-            <p className="text-slate-700">Página para gerenciar eventos (em construção).</p>
+            <p className="text-slate-700 dark:text-slate-300">Página para gerenciar eventos (em construção).</p>
           </PageContent>
         );
       case "schedule":
@@ -184,7 +184,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
           <SchedulePage />
         ) : (
           <PageContent title="Acesso restrito">
-            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+            <p className="text-slate-700 dark:text-slate-300">Você não tem permissão para acessar esta seção.</p>
           </PageContent>
         );
       case "configuration":
@@ -192,7 +192,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
       default:
         return (
           <PageContent title="Dashboard">
-            <p className="text-slate-700">Página não encontrada.</p>
+            <p className="text-slate-700 dark:text-slate-300">Página não encontrada.</p>
           </PageContent>
         );
     }
@@ -242,11 +242,11 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
   const menuVariants = { visible: { x: 0, transition: { type: "spring", stiffness: 400, damping: 40 } }, hidden: { x: "-100%" } };
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       {/* Sidebar */}
-      <aside className="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col">
+      <aside className="w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 hidden lg:flex flex-col">
         {/* Header da sidebar — branco, com destaque suave no avatar */}
-        <div className="px-4 pt-6 pb-5 border-b border-slate-100">
+        <div className="px-4 pt-6 pb-5 border-b border-slate-100 dark:border-slate-700">
           <div className="flex items-center gap-3">
             <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={56} />
             <div className="min-w-0">
@@ -254,13 +254,13 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
                 {logoUrl ? (
                   <img src={logoUrl} alt="Logo" className="h-4 opacity-90" />
                 ) : (
-                  <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
                     IEADSM
                   </span>
                 )}
               </div>
-              <div className="font-semibold text-slate-900 truncate">{userProp?.displayName || "Usuário"}</div>
-              <div className="text-xs text-slate-500 truncate">{userProp?.email || "sem e-mail"}</div>
+              <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">{userProp?.displayName || "Usuário"}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{userProp?.email || "sem e-mail"}</div>
             </div>
           </div>
         </div>
@@ -269,10 +269,10 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">{navLinksBlock}</nav>
 
         {/* Tema + Sair */}
-        <div className="p-3 border-t border-slate-100 flex items-center gap-2">
+        <div className="p-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-2">
           <button
             onClick={handleThemeToggle}
-            className="p-2 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50"
+            className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
             aria-label="Alternar tema"
           >
             {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
@@ -282,7 +282,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
             disabled={isLoggingOut}
             className={cx(
               "flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-              "border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50"
+              "border border-red-200 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/30 disabled:opacity-50"
             )}
           >
             <LogOut size={18} />
@@ -294,17 +294,17 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
       {/* Área principal */}
       <div className="flex-1 flex flex-col">
         {/* Topbar (mobile) */}
-        <header className="lg:hidden flex items-center justify-between bg-white border-b border-slate-200 p-3 sticky top-0 z-30">
+        <header className="lg:hidden flex items-center justify-between bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-3 sticky top-0 z-30">
           <div className="flex items-center gap-2">
             <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={34} />
             <div className="leading-tight">
-              <div className="text-[13px] font-semibold text-slate-800">Portal IEADSM</div>
-              <div className="text-[11px] text-slate-500 truncate">{userProp?.displayName || "Usuário"}</div>
+              <div className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">Portal IEADSM</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{userProp?.displayName || "Usuário"}</div>
             </div>
           </div>
           <button
             onClick={() => !isLoggingOut && setIsMenuOpen(true)}
-            className="p-2 rounded-md hover:bg-slate-100 text-slate-700"
+            className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
             disabled={isLoggingOut}
             aria-label="Abrir menu"
           >
@@ -331,28 +331,28 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
               />
               <motion.div
                 key="menu"
-                className="fixed top-0 left-0 h-full w-72 bg-white shadow-xl z-50 flex flex-col"
+                className="fixed top-0 left-0 h-full w-72 bg-white dark:bg-slate-800 shadow-xl z-50 flex flex-col"
                 variants={menuVariants}
                 initial="hidden"
                 animate="visible"
                 exit="hidden"
               >
-                <div className="px-4 pt-6 pb-5 border-b border-slate-100">
+                <div className="px-4 pt-6 pb-5 border-b border-slate-100 dark:border-slate-700">
                   <div className="flex items-center gap-3">
                     <UserAvatar name={userProp?.displayName} photoURL={photoURL} size={52} />
                     <div className="min-w-0">
-                      <div className="font-semibold text-slate-900 truncate">{userProp?.displayName || "Usuário"}</div>
-                      <div className="text-xs text-slate-500 truncate">{userProp?.email || "sem e-mail"}</div>
+                      <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">{userProp?.displayName || "Usuário"}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{userProp?.email || "sem e-mail"}</div>
                     </div>
                   </div>
                 </div>
 
                 <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">{navLinksBlock}</nav>
 
-                <div className="p-3 border-t border-slate-100 flex items-center gap-2">
+                <div className="p-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-2">
                   <button
                     onClick={handleThemeToggle}
-                    className="p-2 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50"
+                    className="p-2 rounded-md border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                     aria-label="Alternar tema"
                   >
                     {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
@@ -362,7 +362,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
                     disabled={isLoggingOut}
                     className={cx(
                       "flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                      "border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50"
+                      "border border-red-200 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/30 disabled:opacity-50"
                     )}
                   >
                     <LogOut size={18} />
