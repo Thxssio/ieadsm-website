@@ -67,6 +67,7 @@ export default function HomeClient({ ministries = [] }) {
       <CongregationsSection
         title={content.congregationsTitle}
         subtitle={content.congregationsSubtitle}
+        mapUrl={content.congregationsMapUrl}
       />
     </>
   );

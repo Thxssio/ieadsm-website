@@ -20,6 +20,7 @@ const defaultContent = {
   address: churchInfo.address,
   phone: churchInfo.phone,
   mapApiKey: "",
+  congregationsMapUrl: churchInfo.mapUrl,
   ministriesPreTitle: "Envolva-se",
   ministriesTitle: "Nossos Ministérios",
   ministriesSubtitle:
