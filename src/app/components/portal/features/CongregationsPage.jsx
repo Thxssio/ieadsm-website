@@ -317,7 +317,7 @@ export default function CongregationsPage() {
                   <span className="text-sm text-slate-600 select-none">e</span>
                   <input
                     className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                    placeholder="Sicrano"
+                    placeholder="Sicrana"
                     value={formsSup[sector.id]?.primary?.wife || ""}
                     onChange={(e) =>
                       updateSupForm(sector.id, (f) => ({
@@ -344,7 +344,7 @@ export default function CongregationsPage() {
                   <span className="text-sm text-slate-600 select-none">e</span>
                   <input
                     className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                    placeholder="Sicrano"
+                    placeholder="Sicrana"
                     value={formsSup[sector.id]?.secondary?.wife || ""}
                     onChange={(e) =>
                       updateSupForm(sector.id, (f) => ({
