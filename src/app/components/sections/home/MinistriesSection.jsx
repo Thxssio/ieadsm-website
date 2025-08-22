@@ -47,17 +47,17 @@ function MinistryModal({ ministry, onClose }) {
       role="dialog"
     >
       <div
-        className="bg-stone-50 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative animate-slide-up"
+        className="bg-stone-50 dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-stone-500 hover:text-stone-900 transition-colors z-10"
+          className="absolute top-4 right-4 text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors z-10"
           aria-label="Fechar modal"
         >
           <X size={28} />
         </button>
-        <div className="relative w-full h-56 sm:h-72 bg-stone-100">
+        <div className="relative w-full h-56 sm:h-72 bg-stone-100 dark:bg-slate-700">
           <Image
             src={ministry.imageURL || "/images/ministries/placeholder.jpg"}
             alt={`Imagem do ${ministry.name}`}
@@ -68,15 +68,15 @@ function MinistryModal({ ministry, onClose }) {
         </div>
         <div className="p-6 sm:p-8 md:p-10">
           <h3 className="text-3xl sm:text-4xl font-bold text-[#2a3d57]">{ministry.name}</h3>
-          <p className="mt-4 text-base md:text-lg text-stone-600">{ministry.description}</p>
+          <p className="mt-4 text-base md:text-lg text-stone-600 dark:text-stone-300">{ministry.description}</p>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             {ministry.team && Object.keys(ministry.team).length > 0 && (
               <div className="space-y-4">
-                <h4 className="text-xl font-bold text-stone-800 border-b-2 border-[#2a3d57] pb-2">Nossa Equipe</h4>
+                <h4 className="text-xl font-bold text-stone-800 dark:text-stone-100 border-b-2 border-[#2a3d57] pb-2">Nossa Equipe</h4>
                 {Object.entries(ministry.team).map(([role, names]) => (
                   <div key={role}>
-                    <p className="font-semibold text-stone-700">{role}</p>
-                    <ul className="list-disc list-inside pl-2 text-stone-600">
+                    <p className="font-semibold text-stone-700 dark:text-stone-200">{role}</p>
+                    <ul className="list-disc list-inside pl-2 text-stone-600 dark:text-stone-300">
                       {/* CORREÇÃO APLICADA AQUI: Adicionado 'index' para criar uma chave única */}
                       {(names || []).map((name, index) => <li key={`${role}-${name}-${index}`}>{name}</li>)}
                     </ul>
@@ -86,8 +86,8 @@ function MinistryModal({ ministry, onClose }) {
             )}
             {ministry.schedule && (
               <div className="space-y-2">
-                <h4 className="text-xl font-bold text-stone-800 border-b-2 border-[#2a3d57] pb-2">Encontros</h4>
-                <p className="text-stone-600">{ministry.schedule}</p>
+                <h4 className="text-xl font-bold text-stone-800 dark:text-stone-100 border-b-2 border-[#2a3d57] pb-2">Encontros</h4>
+                <p className="text-stone-600 dark:text-stone-300">{ministry.schedule}</p>
               </div>
             )}
           </div>
@@ -206,12 +206,12 @@ export default function MinistriesSection({
 
   return (
     <>
-      <section id="ministries" className="py-20 sm:py-28 bg-stone-50">
+      <section id="ministries" className="py-20 sm:py-28 bg-stone-50 dark:bg-slate-800">
         <div className="container mx-auto">
           <div className="text-center max-w-3xl mx-auto px-4">
             <h2 className="text-base font-semibold text-[#2a3d57] tracking-wider uppercase">{preTitle}</h2>
-            <p className="mt-2 text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">{title}</p>
-            <p className="mt-4 text-lg text-stone-600">{subtitle}</p>
+            <p className="mt-2 text-3xl font-bold text-stone-900 dark:text-stone-100 tracking-tight sm:text-4xl">{title}</p>
+            <p className="mt-4 text-lg text-stone-600 dark:text-stone-300">{subtitle}</p>
           </div>
 
           <div className="mt-16 relative">
@@ -222,9 +222,9 @@ export default function MinistriesSection({
                     <div className="h-full pb-6">
                       <button
                         onClick={() => setSelectedMinistry(ministry)}
-                        className="bg-white rounded-xl shadow-lg overflow-hidden text-left group transition-all duration-300 w-full h-[450px] flex flex-col"
+                        className="bg-white dark:bg-slate-700 rounded-xl shadow-lg overflow-hidden text-left group transition-all duration-300 w-full h-[450px] flex flex-col"
                       >
-                        <div className="relative h-48 w-full flex-shrink-0 bg-stone-100">
+                        <div className="relative h-48 w-full flex-shrink-0 bg-stone-100 dark:bg-slate-600">
                           <Image
                             src={ministry.imageURL || "/images/ministries/placeholder.jpg"}
                             alt={`Imagem do ${ministry.name}`}
@@ -237,9 +237,9 @@ export default function MinistriesSection({
                             <div className="text-[#2a3d57] pt-1 flex-shrink-0">
                               <MinistryIcon iconName={ministry.icon} size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-stone-800">{ministry.name}</h3>
+                            <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100">{ministry.name}</h3>
                           </div>
-                          <p className="mt-2 text-sm text-stone-600 line-clamp-3 flex-grow">
+                          <p className="mt-2 text-sm text-stone-600 dark:text-stone-300 line-clamp-3 flex-grow">
                             {ministry.description}
                           </p>
                         </div>

@@ -5,12 +5,12 @@ export default function CongregationsSection({
   subtitle = "Explore o mapa de nossas congregações e encontre uma igreja perto de você.",
 }) {
   return (
-    <section id="congregacoes" className="py-20 sm:py-28 bg-white">
+    <section id="congregacoes" className="py-20 sm:py-28 bg-white dark:bg-slate-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">
+        <h2 className="text-3xl font-bold text-stone-900 dark:text-stone-100 tracking-tight sm:text-4xl">
           {title}
         </h2>
-        <p className="mt-4 max-w-2xl mx-auto text-xl text-stone-600">
+        <p className="mt-4 max-w-2xl mx-auto text-xl text-stone-600 dark:text-stone-300">
           {subtitle}
         </p>
 
@@ -30,7 +30,7 @@ export default function CongregationsSection({
             </div>
 
             <noscript>
-              <p className="mt-4 text-sm text-stone-500">
+              <p className="mt-4 text-sm text-stone-500 dark:text-stone-400">
                 Para ver o mapa, habilite JavaScript ou{" "}
                 <a href={mapUrl} className="underline">abra o mapa diretamente</a>.
               </p>

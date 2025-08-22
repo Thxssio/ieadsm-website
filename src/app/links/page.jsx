@@ -1,6 +1,7 @@
     "use client";
 
-    import { useState, useEffect } from 'react';
+      import { useState, useEffect } from 'react';
+      import { useDarkMode } from "@/hooks/useDarkMode";
     import Image from "next/image";
 
     const MoonIcon = () => (
@@ -30,36 +31,15 @@
 
     // --- Componente Principal da Página ---
     export default function LinktreePage() {
-        const [theme, setTheme] = useState('dark');
-        const [showToast, setShowToast] = useState(false);
-        // Estado para garantir que o componente só renderiza no lado do cliente
-        const [isMounted, setIsMounted] = useState(false);
+          const { isDark, toggle } = useDarkMode();
+          const [showToast, setShowToast] = useState(false);
+          // Estado para garantir que o componente só renderiza no lado do cliente
+          const [isMounted, setIsMounted] = useState(false);
 
-        // Efeito para indicar que o componente está montado
-        useEffect(() => {
-            setIsMounted(true);
-        }, []);
-
-        // Efeito para carregar o tema salvo do localStorage
-        useEffect(() => {
-            if (isMounted) {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                setTheme(savedTheme);
-            }
-        }, [isMounted]);
-
-        // Efeito para aplicar a classe 'dark' à tag <html> e guardar a preferência
-        useEffect(() => {
-            if (isMounted) {
-                document.documentElement.classList.toggle('dark', theme === 'dark');
-                localStorage.setItem('theme', theme);
-            }
-        }, [theme, isMounted]);
-
-        // Função para alternar o tema
-        const handleThemeToggle = () => {
-            setTheme(t => t === 'dark' ? 'light' : 'dark');
-        };
+          // Efeito para indicar que o componente está montado
+          useEffect(() => {
+              setIsMounted(true);
+          }, []);
 
         // Função para o botão de compartilhar
         const handleShare = () => {
@@ -95,9 +75,9 @@
                     
                     {/* Botões de Ação Superiores */}
                     <div className="w-full flex justify-between items-center px-2 mb-6">
-                        <button onClick={handleThemeToggle} className="p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 transition-colors">
-                            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-                        </button>
+                      <button onClick={toggle} className="p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 transition-colors">
+                              {isDark ? <SunIcon /> : <MoonIcon />}
+                          </button>
                         <button onClick={handleShare} className="p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 transition-colors">
                             <ShareIcon />
                         </button>

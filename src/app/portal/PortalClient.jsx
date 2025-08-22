@@ -7,7 +7,6 @@ import { useAuth } from "@/lib/firebase/AuthContext";
 import { auth } from "@/lib/firebase/client";
 import AdminPortalLayout from "@/components/portal/AdminPortalLayout";
 import AccessDeniedPage from "@/components/portal/ui/AccessDeniedPage";
-import { ThemeProvider } from "@/lib/ThemeContext";
 
 export default function PortalClient() {
   const { user, role, profileComplete, isLoading } = useAuth();
@@ -56,12 +55,8 @@ export default function PortalClient() {
     "supervisor_setor"
   ].includes(role);
 
-    return (
-      <ThemeProvider>
-        {hasAccess
-          ? <AdminPortalLayout key={user.uid} user={user} onLogout={handleLogout} />
-          : <AccessDeniedPage />}
-      </ThemeProvider>
-    );
+    return hasAccess
+      ? <AdminPortalLayout key={user.uid} user={user} onLogout={handleLogout} />
+      : <AccessDeniedPage />;
   }
 
