@@ -7,6 +7,10 @@ import {
   doc,
   getDoc,
   setDoc,
+  collection,
+  query,
+  where,
+  getDocs,
   runTransaction,
 } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase/client";
@@ -149,24 +153,34 @@ async function getNextInternalId() {
   return String(newId).padStart(6, "0"); // garantir string com 6 dígitos
 }
 
-/* Tenta incluir o usuário como "filho" em families/{CPF}/members/{uid}.
+/* Tenta incluir o usuário como "filho" em families/{id}/members/{uid}.
    Se passar, retorna { ok: true, familyId }. Se falhar, { ok: false }. */
 async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
-  const familyId = onlyDigits(cpfToJoin || "");
-  if (!familyId || !validateCPF(familyId)) return { ok: false };
+  const cpfDigits = onlyDigits(cpfToJoin || "");
+  if (!cpfDigits || !validateCPF(cpfDigits)) return { ok: false };
   try {
+    const familiesCol = collection(db, "families");
+    const q = query(familiesCol, where("responsibleCpf", "==", cpfDigits));
+    const snap = await getDocs(q);
+    let familyRef;
+    if (snap.empty) {
+      familyRef = doc(familiesCol);
+      await setDoc(familyRef, { responsibleCpf: cpfDigits });
+    } else {
+      familyRef = snap.docs[0].ref;
+    }
     await setDoc(
-      doc(db, "families", familyId, "members", uid),
+      doc(familyRef, "members", uid),
       {
         uid,
         name: userName,
-        cpf: userCpfDigits,   // CPF do usuário que está entrando
+        cpf: userCpfDigits, // CPF do usuário que está entrando
         kinship: "filho",
         updatedAt: new Date(),
       },
       { merge: true }
     );
-    return { ok: true, familyId };
+    return { ok: true, familyId: familyRef.id };
   } catch (e) {
     console.error(e);
     return { ok: false };
@@ -344,7 +358,7 @@ export default function CompleteRegistrationClient() {
       filhos.forEach((f, i) => { if (f.cpf && !validateCPF(f.cpf)) invalids.push(`Filho #${i+1}`); });
       if (invalids.length) { setSaving(false); return setErr(`CPF inválido: ${invalids.join(", ")}.`); }
 
-      // 1) Vincular família existente (sem leitura) → write-probe pai, depois mãe
+      // 1) Vincular família existente (por CPF) → consulta pai, depois mãe
       let familyId = null;
       let kinship  = "titular";
 
@@ -374,6 +388,9 @@ export default function CompleteRegistrationClient() {
         );
       }
 
+      const formData = { ...form, familyId };
+      setForm(formData);
+
       // 2) Upload foto (opcional)
       const photoURL = await step("Upload de foto (se houver)", () => uploadProfileIfNeeded(uid));
       if (photoURL) setPreviewImage(photoURL + "?t=" + Date.now());
@@ -381,15 +398,14 @@ export default function CompleteRegistrationClient() {
       // 3) Salvar/atualizar usuário
       await step("Salvar usuário (users/{uid})", () =>
         setDoc(doc(db, "users", uid), {
-          ...form,
+          ...formData,
           idInterno,            // já normalizado
           cpf,
           cpfConjuge: cpfConj,
           cpfPai, cpfMae,
           filhos,
-          familyId,
-          photoURL: photoURL || form.photoURL || "",
-          cep: onlyDigits(form.cep),
+          photoURL: photoURL || formData.photoURL || "",
+          cep: onlyDigits(formData.cep),
           updatedAt: new Date(),
           profileComplete: true,
         }, { merge: true })
@@ -400,9 +416,9 @@ export default function CompleteRegistrationClient() {
       // 4) Placeholders (agora você já é membro)
       await step("Adicionar placeholders (familiares)", async () => {
         const placeholders = [
-          { name: form.nomeConjuge, cpf: cpfConj, kinship: "cônjuge" },
-          { name: form.pai,         cpf: cpfPai,  kinship: "pai" },
-          { name: form.mae,         cpf: cpfMae,  kinship: "mãe" },
+          { name: formData.nomeConjuge, cpf: cpfConj, kinship: "cônjuge" },
+          { name: formData.pai,         cpf: cpfPai,  kinship: "pai" },
+          { name: formData.mae,         cpf: cpfMae,  kinship: "mãe" },
           ...filhos.map((f) => ({ name: f.name, cpf: f.cpf, kinship: "filho" })),
         ].filter(p => p.cpf);
 
