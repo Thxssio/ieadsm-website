@@ -16,14 +16,16 @@ export default function Footer({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo e slogan */}
           <div className="md:col-span-1 flex flex-col items-center md:items-start">
-            <img
-              src={logoUrl}
-              alt="Logo"
-              className="h-20 md:h-24 lg:h-28 w-auto mb-4 object-contain"
-              onError={(e) => {
-                e.currentTarget.src = "https://placehold.co/160x80/ffffff/1e293b?text=Logo";
-              }}
-            />
+            {logoUrl && (
+              <img
+                src={logoUrl}
+                alt="Logo"
+                className="h-20 md:h-24 lg:h-28 w-auto mb-4 object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = "https://placehold.co/160x80/ffffff/1e293b?text=Logo";
+                }}
+              />
+            )}
             <p className="text-sm text-center md:text-left text-stone-400">
               {tagline}
             </p>

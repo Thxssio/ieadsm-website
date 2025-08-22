@@ -14,24 +14,28 @@ export default function CongregationsSection({
           {subtitle}
         </p>
 
-        <div className="mt-12 rounded-2xl shadow-xl overflow-hidden">
-          <iframe
-            title="Mapa de Congregações IEADSM"
-            src={mapUrl || ""}
-            className={`w-full ${heightClass}`}
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
+        {mapUrl && (
+          <>
+            <div className="mt-12 rounded-2xl shadow-xl overflow-hidden">
+              <iframe
+                title="Mapa de Congregações IEADSM"
+                src={mapUrl}
+                className={`w-full ${heightClass}`}
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
 
-        <noscript>
-          <p className="mt-4 text-sm text-stone-500">
-            Para ver o mapa, habilite JavaScript ou{" "}
-            <a href={mapUrl} className="underline">abra o mapa diretamente</a>.
-          </p>
-        </noscript>
+            <noscript>
+              <p className="mt-4 text-sm text-stone-500">
+                Para ver o mapa, habilite JavaScript ou{" "}
+                <a href={mapUrl} className="underline">abra o mapa diretamente</a>.
+              </p>
+            </noscript>
+          </>
+        )}
       </div>
     </section>
   );
