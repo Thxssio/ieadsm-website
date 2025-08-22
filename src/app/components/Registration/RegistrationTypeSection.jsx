@@ -21,16 +21,22 @@ export default function RegistrationTypeSection({ form, setForm, inputCls }) {
         setCongregations([defaultCong]);
         setForm((f) => ({ ...f, setor: defaultSector.name, congregacao: defaultCong.name }));
       } else {
-        setSectors(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        setSectors(list);
+        // pré-carrega a primeira congregação
+        const first = list[0];
+        if (first) {
+          await handleSectorChange({ target: { value: first.name } }, list);
+        }
       }
     };
     loadSectors();
   }, [setForm]);
 
-  const handleSectorChange = async (e) => {
+  const handleSectorChange = async (e, sectorsList = sectors) => {
     const name = e.target.value;
     setForm((f) => ({ ...f, setor: name, congregacao: "" }));
-    const sector = sectors.find((s) => s.name === name);
+    const sector = sectorsList.find((s) => s.name === name);
     if (sector) {
       const congSnap = await getDocs(collection(db, "sectors", sector.id, "congregations"));
       setCongregations(congSnap.docs.map((c) => ({ id: c.id, ...c.data() })));
@@ -89,8 +95,11 @@ export default function RegistrationTypeSection({ form, setForm, inputCls }) {
             className={inputCls}
             value={form.setor || ""}
             onChange={handleSectorChange}
+            disabled={!sectors.length}
           >
-            <option value="">Selecione...</option>
+            <option value="">
+              {sectors.length ? "Selecione..." : "Nenhum setor encontrado"}
+            </option>
             {sectors.map((s) => (
               <option key={s.id} value={s.name}>
                 {s.name}
@@ -107,7 +116,9 @@ export default function RegistrationTypeSection({ form, setForm, inputCls }) {
             onChange={handleCongregationChange}
             disabled={!congregations.length}
           >
-            <option value="">Selecione...</option>
+            <option value="">
+              {congregations.length ? "Selecione..." : "Nenhuma congregação encontrada"}
+            </option>
             {congregations.map((c) => (
               <option key={c.id} value={c.name}>
                 {c.name}
