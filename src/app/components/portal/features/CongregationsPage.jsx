@@ -366,7 +366,7 @@ export default function CongregationsPage() {
                 <h4 className="mb-3 text-sm font-semibold text-slate-700">Supervisores do setor</h4>
 
                 {/* Supervisor 1 */}
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
                   <input
                     className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
                     placeholder="Fulano"
@@ -393,7 +393,7 @@ export default function CongregationsPage() {
                 </div>
 
                 {/* Supervisor 2 */}
-                <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
+                <div className="mt-2 grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
                   <input
                     className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
                     placeholder="Fulano"
@@ -553,7 +553,7 @@ export default function CongregationsPage() {
                             {editMap[k].responsibles.map((r, idx) => (
                               <div
                                 key={idx}
-                                className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 md:max-w-3xl"
+                                className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr_auto] items-center gap-2 md:max-w-3xl"
                               >
                                 <input
                                   className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
@@ -677,7 +677,7 @@ export default function CongregationsPage() {
 
                 {(formsCong[sector.id]?.responsibles || [{ husband: "", wife: "" }]).map(
                   (r, idx) => (
-                    <div key={idx} className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
+                    <div key={idx} className="mt-2 grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
                       <input
                         className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
                         placeholder={`Responsável ${idx + 1} — Fulano`}
