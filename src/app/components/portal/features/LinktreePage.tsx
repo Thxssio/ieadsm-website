@@ -332,10 +332,11 @@ export default function LinksPage() {
             <button
               type="button"
               onClick={normalizeOrders}
-              className="ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              disabled={links.length === 0}
+              className={`ml-auto inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 ${links.length === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
               title="Normalizar ordem (10,20,30,...)"
             >
-              <RefreshCw className="h-4 w-4 animate-spin [animation-duration:2.2s]" /> Normalizar
+              <RefreshCw className={`h-4 w-4 ${links.length === 0 ? "" : "animate-spin [animation-duration:2.2s]"}`} /> Normalizar
             </button>
           </div>
         </motion.form>
