@@ -66,8 +66,12 @@ export default function FacebookFeed() {
 
         setPosts(normalized);
       } catch {
-        const rssUrl = content.rssLink;
-        if (!rssUrl) throw new Error("RSS feed URL not configured");
+        const rssUrl = content.rssLink?.trim();
+        if (!rssUrl) {
+          console.warn("RSS feed URL not configured");
+          setPosts([]);
+          return;
+        }
         const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(
           rssUrl
         )}`;
@@ -137,12 +141,13 @@ export default function FacebookFeed() {
                       style={{ aspectRatio: "4 / 5" }}
                     >
                       <img
-                        src={post.imageUrl || "/placeholder-image.png"}
+                        src={post.imageUrl || "/default-img.png"}
                         alt={post.title || "Post sem título"}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                         loading="lazy"
                         onError={(e) => {
-                          e.currentTarget.src = "/placeholder-image.png";
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "/default-img.png";
                         }}
                       />
                     </a>
