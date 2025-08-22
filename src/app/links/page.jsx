@@ -86,12 +86,12 @@ export default function LinktreePage() {
       .catch(console.error);
   };
 
-  if (!isMounted) return null;
-
   const safeLinks = useMemo(
     () => links.map((l) => ({ ...l, href: sanitizeUrl(l.href), icon: l.icon || autoIcon(l.href) })),
     [links]
   );
+
+  if (!isMounted) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 text-slate-800 font-sans relative overflow-hidden">
