@@ -301,8 +301,8 @@ export default function CongregationsPage() {
               <Layers3 className="h-5 w-5 text-[#0f172b]" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-slate-900">Adicionar novo setor</h3>
-              <p className="text-sm text-slate-600">
+              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Adicionar novo setor</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Crie um setor e cadastre suas congregações logo abaixo.
               </p>
             </div>
@@ -314,7 +314,7 @@ export default function CongregationsPage() {
             </label>
             <input
               id="novo-setor"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f172b] md:w-72"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f172b] md:w-72"
               placeholder="Nome do setor (ex.: Setor 02)"
               value={newSector}
               onChange={(e) => setNewSector(e.target.value)}
@@ -334,9 +334,9 @@ export default function CongregationsPage() {
       {/* Barra de busca */}
       <div className="mb-6">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
           <input
-            className="w-full rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f172b]"
+            className="w-full rounded-lg border border-slate-300 dark:border-slate-600 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f172b]"
             placeholder="Buscar por setor ou congregação…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -362,13 +362,13 @@ export default function CongregationsPage() {
               onDelete={() => handleDeleteSector(sector)}
             >
               {/* Supervisores do Setor */}
-              <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <h4 className="mb-3 text-sm font-semibold text-slate-700">Supervisores do setor</h4>
+              <div className="mb-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-4">
+                <h4 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">Supervisores do setor</h4>
 
                 {/* Supervisor 1 */}
                 <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
                   <input
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                     placeholder="Fulano"
                     value={formsSup[sector.id]?.primary?.husband || ""}
                     onChange={(e) =>
@@ -378,9 +378,9 @@ export default function CongregationsPage() {
                       }))
                     }
                   />
-                  <span className="text-sm text-slate-600 select-none">e</span>
+                  <span className="text-sm text-slate-600 dark:text-slate-400 select-none">e</span>
                   <input
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                     placeholder="Sicrano"
                     value={formsSup[sector.id]?.primary?.wife || ""}
                     onChange={(e) =>
@@ -395,7 +395,7 @@ export default function CongregationsPage() {
                 {/* Supervisor 2 */}
                 <div className="mt-2 grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
                   <input
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                     placeholder="Fulano"
                     value={formsSup[sector.id]?.secondary?.husband || ""}
                     onChange={(e) =>
@@ -405,9 +405,9 @@ export default function CongregationsPage() {
                       }))
                     }
                   />
-                  <span className="text-sm text-slate-600 select-none">e</span>
+                  <span className="text-sm text-slate-600 dark:text-slate-400 select-none">e</span>
                   <input
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                     placeholder="Sicrano"
                     value={formsSup[sector.id]?.secondary?.wife || ""}
                     onChange={(e) =>
@@ -435,9 +435,9 @@ export default function CongregationsPage() {
                   sector.supervisors?.primary?.wife ||
                   sector.supervisors?.secondary?.husband ||
                   sector.supervisors?.secondary?.wife) && (
-                  <div className="mt-3 text-xs text-slate-600">
+                  <div className="mt-3 text-xs text-slate-600 dark:text-slate-400">
                     <div>
-                      <span className="font-medium text-slate-700">Atual:</span>{" "}
+                      <span className="font-medium text-slate-700 dark:text-slate-300">Atual:</span>{" "}
                       {[
                         [sector.supervisors?.primary?.husband, sector.supervisors?.primary?.wife]
                           .filter(Boolean)
@@ -463,7 +463,7 @@ export default function CongregationsPage() {
                     return (
                       <li
                         key={c.id}
-                        className="rounded-lg border border-slate-200 bg-white px-3 py-2 hover:border-slate-300"
+                        className="rounded-lg border border-slate-200 bg-white dark:bg-slate-800 px-3 py-2 hover:border-slate-300 dark:border-slate-600"
                       >
                         {!isEditing ? (
                           // --------- VISUALIZAÇÃO ----------
@@ -480,7 +480,7 @@ export default function CongregationsPage() {
                               </div>
 
                               {Array.isArray(c.responsibles) && c.responsibles.length > 0 && (
-                                <div className="mt-1 text-xs text-slate-600">
+                                <div className="mt-1 text-xs text-slate-600 dark:text-slate-400">
                                   {c.responsibles
                                     .map((r) => [r?.husband, r?.wife].filter(Boolean).join(" e "))
                                     .join(" • ")}
@@ -490,7 +490,7 @@ export default function CongregationsPage() {
 
                             <div className="flex items-center gap-2">
                               {Array.isArray(c.responsibles) && c.responsibles.length > 0 && (
-                                <div className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-700 whitespace-nowrap">
+                                <div className="flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-1 text-xs text-slate-700 dark:text-slate-300 whitespace-nowrap">
                                   <Users className="h-3.5 w-3.5" />
                                   {c.responsibles.length} responsáveis
                                 </div>
@@ -500,7 +500,7 @@ export default function CongregationsPage() {
                               <button
                                 type="button"
                                 onClick={() => startEditCong(sector.id, c)}
-                                className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                                className="inline-flex items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                                 title="Editar congregação"
                               >
                                 <PencilLine className="h-4 w-4" />
@@ -524,7 +524,7 @@ export default function CongregationsPage() {
                           <div className="space-y-3">
                             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                               <input
-                                className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                                 placeholder="Nome da congregação"
                                 value={editMap[k].name}
                                 onChange={(e) =>
@@ -534,10 +534,10 @@ export default function CongregationsPage() {
                                   }))
                                 }
                               />
-                              <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+                              <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                                 <input
                                   type="checkbox"
-                                  className="h-4 w-4 rounded border-slate-300 text-[#0f172b] focus:ring-[#0f172b]"
+                                  className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-[#0f172b] focus:ring-[#0f172b]"
                                   checked={!!editMap[k].isDefault}
                                   onChange={(e) =>
                                     updateEditCong(sector.id, c.id, (f) => ({
@@ -556,7 +556,7 @@ export default function CongregationsPage() {
                                 className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr_auto] items-center gap-2 md:max-w-3xl"
                               >
                                 <input
-                                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                  className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                                   placeholder={`Responsável ${idx + 1} — Fulano`}
                                   value={r.husband}
                                   onChange={(e) =>
@@ -567,9 +567,9 @@ export default function CongregationsPage() {
                                     })
                                   }
                                 />
-                                <span className="text-sm text-slate-600 select-none">e</span>
+                                <span className="text-sm text-slate-600 dark:text-slate-400 select-none">e</span>
                                 <input
-                                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                  className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                                   placeholder={`Responsável ${idx + 1} — Sicrano`}
                                   value={r.wife}
                                   onChange={(e) =>
@@ -592,7 +592,7 @@ export default function CongregationsPage() {
                                       };
                                     })
                                   }
-                                  className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-600 hover:bg-slate-50"
+                                  className="inline-flex items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-2 text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                                   title="Remover responsável"
                                 >
                                   <XIcon className="h-4 w-4" />
@@ -621,7 +621,7 @@ export default function CongregationsPage() {
                                 <button
                                   type="button"
                                   onClick={() => cancelEditCong(sector.id, c.id)}
-                                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                                   title="Cancelar"
                                 >
                                   Cancelar
@@ -643,29 +643,29 @@ export default function CongregationsPage() {
                     );
                   })
                 ) : (
-                  <li className="text-sm text-slate-500">Nenhuma congregação cadastrada.</li>
+                  <li className="text-sm text-slate-500 dark:text-slate-400">Nenhuma congregação cadastrada.</li>
                 )}
               </ul>
 
               {/* Formulário de nova congregação (APENAS responsáveis) */}
-              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <h4 className="mb-3 text-sm font-semibold text-slate-700">
-                  Nova congregação em <span className="text-slate-900">{sector.name}</span>
+              <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-4">
+                <h4 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Nova congregação em <span className="text-slate-900 dark:text-slate-100">{sector.name}</span>
                 </h4>
 
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <input
-                    className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                     placeholder="Nome da congregação"
                     value={formsCong[sector.id]?.name || ""}
                     onChange={(e) =>
                       updateCongForm(sector.id, (f) => ({ ...f, name: e.target.value }))
                     }
                   />
-                  <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+                  <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 rounded border-slate-300 text-[#0f172b] focus:ring-[#0f172b]"
+                      className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-[#0f172b] focus:ring-[#0f172b]"
                       checked={formsCong[sector.id]?.isDefault || false}
                       onChange={(e) =>
                         updateCongForm(sector.id, (f) => ({ ...f, isDefault: e.target.checked }))
@@ -679,7 +679,7 @@ export default function CongregationsPage() {
                   (r, idx) => (
                     <div key={idx} className="mt-2 grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2 md:max-w-xl">
                       <input
-                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                        className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                         placeholder={`Responsável ${idx + 1} — Fulano`}
                         value={r.husband}
                         onChange={(e) =>
@@ -690,9 +690,9 @@ export default function CongregationsPage() {
                           })
                         }
                       />
-                      <span className="text-sm text-slate-600 select-none">e</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400 select-none">e</span>
                       <input
-                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                        className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
                         placeholder={`Responsável ${idx + 1} — Sicrano`}
                         value={r.wife}
                         onChange={(e) =>
@@ -745,11 +745,11 @@ function SectorCard({ sector, expanded, onToggle, onDelete, children }) {
   const count = sector.congregations?.length || 0;
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
       <header
         className={classNames(
           "flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3",
-          expanded ? "bg-slate-50" : "bg-white"
+          expanded ? "bg-slate-50 dark:bg-slate-800" : "bg-white dark:bg-slate-800"
         )}
       >
         <button
@@ -758,13 +758,13 @@ function SectorCard({ sector, expanded, onToggle, onDelete, children }) {
           title={expanded ? "Recolher setor" : "Expandir setor"}
         >
           {expanded ? (
-            <ChevronDown className="h-5 w-5 text-slate-500" />
+            <ChevronDown className="h-5 w-5 text-slate-500 dark:text-slate-400" />
           ) : (
-            <ChevronRight className="h-5 w-5 text-slate-500" />
+            <ChevronRight className="h-5 w-5 text-slate-500 dark:text-slate-400" />
           )}
           <div className="min-w-0 text-left">
             <div className="flex items-center gap-2">
-              <h3 className="truncate text-base font-semibold text-slate-900">
+              <h3 className="truncate text-base font-semibold text-slate-900 dark:text-slate-100">
                 {sector.name}
               </h3>
               {sector.isDefault && (
@@ -774,7 +774,7 @@ function SectorCard({ sector, expanded, onToggle, onDelete, children }) {
                 </span>
               )}
             </div>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
               {count} {count === 1 ? "congregação" : "congregações"}
             </p>
           </div>
@@ -800,9 +800,9 @@ function SectorCard({ sector, expanded, onToggle, onDelete, children }) {
 
 function EmptyState({ onReset }) {
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-      <h3 className="text-base font-semibold text-slate-800">Nada encontrado</h3>
-      <p className="mt-1 text-sm text-slate-600">
+    <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 p-10 text-center">
+      <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">Nada encontrado</h3>
+      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
         Tente limpar o filtro de busca ou adicionar um novo setor/congregação.
       </p>
       <button
@@ -819,12 +819,12 @@ function SkeletonSectors() {
   return (
     <div className="space-y-4">
       {[0, 1].map((i) => (
-        <div key={i} className="animate-pulse rounded-2xl border border-slate-200 bg-white p-4">
-          <div className="mb-3 h-5 w-1/3 rounded bg-slate-200" />
+        <div key={i} className="animate-pulse rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+          <div className="mb-3 h-5 w-1/3 rounded bg-slate-200 dark:bg-slate-700" />
           <div className="space-y-2">
-            <div className="h-10 rounded bg-slate-100" />
-            <div className="h-10 rounded bg-slate-100" />
-            <div className="h-10 rounded bg-slate-100" />
+            <div className="h-10 rounded bg-slate-100 dark:bg-slate-700" />
+            <div className="h-10 rounded bg-slate-100 dark:bg-slate-700" />
+            <div className="h-10 rounded bg-slate-100 dark:bg-slate-700" />
           </div>
         </div>
       ))}

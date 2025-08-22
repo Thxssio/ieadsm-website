@@ -54,19 +54,19 @@ function cx(...xs) { return xs.filter(Boolean).join(" "); }
 function Labeled({ label, children }) {
   return (
     <div className="print-avoid-break">
-      <div className="text-[11px] uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="text-slate-900">{children || "—"}</div>
+      <div className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
+      <div className="text-slate-900 dark:text-slate-100">{children || "—"}</div>
     </div>
   );
 }
 function Section({ icon, title, children }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 md:p-5 print-avoid-break">
+    <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 md:p-5 print-avoid-break">
       <div className="flex items-center gap-2 mb-3">
         <div className="h-8 w-8 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
           {icon}
         </div>
-        <h4 className="text-base font-semibold text-slate-800">{title}</h4>
+        <h4 className="text-base font-semibold text-slate-800 dark:text-slate-200">{title}</h4>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{children}</div>
     </section>
@@ -138,16 +138,16 @@ function UserFormModal({ open, onClose, userId }) {
       {/* Overlay só na tela */}
       <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm no-print" onClick={onClose} />
       <div className="absolute inset-x-0 top-6 md:top-12 mx-auto max-w-5xl px-3">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden print-root">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden print-root">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200 no-print">
+          <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200 dark:border-slate-700 no-print">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                 <Eye size={18} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-slate-900">Ficha do Usuário</h3>
-                <p className="text-xs text-slate-500">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Ficha do Usuário</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Visualização somente leitura do cadastro complementar
                 </p>
               </div>
@@ -155,7 +155,7 @@ function UserFormModal({ open, onClose, userId }) {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownload}
-                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 rounded-md border border-slate-300 bg-white hover:bg-slate-50"
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                 title="Baixar PDF da ficha"
               >
                 <Printer size={16} />
@@ -163,7 +163,7 @@ function UserFormModal({ open, onClose, userId }) {
               </button>
               <button
                 onClick={onClose}
-                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 rounded-md border border-slate-300 bg-white hover:bg-slate-50"
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
               >
                 Fechar
               </button>
@@ -173,19 +173,19 @@ function UserFormModal({ open, onClose, userId }) {
           {/* Body */}
           <div className="p-4 md:p-6 max-h-[80vh] overflow-y-auto print-body">
             {loading ? (
-              <div className="flex items-center justify-center py-16 text-slate-600 no-print">
+              <div className="flex items-center justify-center py-16 text-slate-600 dark:text-slate-400 no-print">
                 <Loader2 className="animate-spin mr-2" /> Carregando ficha…
               </div>
             ) : !data ? (
-              <div className="text-center py-12 text-slate-600">
+              <div className="text-center py-12 text-slate-600 dark:text-slate-400">
                 Não encontramos dados para este usuário.
               </div>
             ) : (
               <div className="space-y-5 print:space-y-3">
                 {/* Top card */}
-                <section className="rounded-xl border border-slate-200 bg-white p-4 md:p-5 print-avoid-break">
+                <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 md:p-5 print-avoid-break">
                   <div className="grid grid-cols-[72px_1fr] gap-4 items-center">
-                    <div className="h-18 w-18 rounded-lg overflow-hidden border border-slate-200 bg-slate-50 grid place-items-center">
+                    <div className="h-18 w-18 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 grid place-items-center">
                       {data.photoURL ? (
                         <img
                           src={data.photoURL}
@@ -194,15 +194,15 @@ function UserFormModal({ open, onClose, userId }) {
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <ImageIcon className="text-slate-400" />
+                        <ImageIcon className="text-slate-400 dark:text-slate-500" />
                       )}
                     </div>
                     <div className="grid gap-1">
-                      <div className="text-lg font-semibold text-slate-900 leading-tight">
+                      <div className="text-lg font-semibold text-slate-900 dark:text-slate-100 leading-tight">
                         {data.name || "—"}
                       </div>
-                      <div className="text-sm text-slate-600">{data.email || "—"}</div>
-                      <div className="text-xs text-slate-500">
+                      <div className="text-sm text-slate-600 dark:text-slate-400">{data.email || "—"}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
                         ID Interno: <span className="font-medium">{data.idInterno || "—"}</span>
                       </div>
                     </div>
@@ -260,24 +260,24 @@ function UserFormModal({ open, onClose, userId }) {
                   <Labeled label="Nascimento cônjuge">{data.dataNascimentoConjuge}</Labeled>
                 </Section>
 
-                <section className="rounded-xl border border-slate-200 bg-white p-4 md:p-5 print-avoid-break">
+                <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 md:p-5 print-avoid-break">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="h-8 w-8 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                       <Baby size={16} />
                     </div>
-                    <h4 className="text-base font-semibold text-slate-800">Filhos</h4>
+                    <h4 className="text-base font-semibold text-slate-800 dark:text-slate-200">Filhos</h4>
                   </div>
                   {children.length ? (
                     <div className="grid gap-2">
                       {children.map((f, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2">
-                          <div className="font-medium text-slate-800">{f.name || "—"}</div>
-                          <div className="text-sm text-slate-600">{f.cpf ? maskCPF(f.cpf) : "—"}</div>
+                        <div key={i} className="flex items-center justify-between rounded-md border border-slate-200 dark:border-slate-700 px-3 py-2">
+                          <div className="font-medium text-slate-800 dark:text-slate-200">{f.name || "—"}</div>
+                          <div className="text-sm text-slate-600 dark:text-slate-400">{f.cpf ? maskCPF(f.cpf) : "—"}</div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-slate-600">Sem filhos cadastrados.</div>
+                    <div className="text-slate-600 dark:text-slate-400">Sem filhos cadastrados.</div>
                   )}
                 </section>
 
@@ -351,18 +351,18 @@ function MemberCardModal({ open, onClose, userId }) {
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onClick={onClose} />
       <div className="absolute inset-x-0 top-6 md:top-12 mx-auto max-w-3xl px-3">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
-          <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                 <IdCard size={18} />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900">Carteirinha do Membro</h3>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Carteirinha do Membro</h3>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleDownload}
-                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 rounded-md border border-slate-300 bg-white hover:bg-slate-50"
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                 title="Baixar PDF da carteirinha"
               >
                 <Printer size={16} />
@@ -370,7 +370,7 @@ function MemberCardModal({ open, onClose, userId }) {
               </button>
               <button
                 onClick={onClose}
-                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 rounded-md border border-slate-300 bg-white hover:bg-slate-50"
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
               >
                 Fechar
               </button>
@@ -378,11 +378,11 @@ function MemberCardModal({ open, onClose, userId }) {
           </div>
           <div className="p-4 md:p-6 max-h-[80vh] overflow-y-auto">
             {loading ? (
-              <div className="flex items-center justify-center py-16 text-slate-600">
+              <div className="flex items-center justify-center py-16 text-slate-600 dark:text-slate-400">
                 <Loader2 className="animate-spin mr-2" /> Carregando…
               </div>
             ) : !data ? (
-              <div className="text-center py-12 text-slate-600">Não encontramos dados para este usuário.</div>
+              <div className="text-center py-12 text-slate-600 dark:text-slate-400">Não encontramos dados para este usuário.</div>
             ) : (
               <MemberCard
                 side="both"
@@ -558,7 +558,7 @@ export default function UserManagementPage({ currentUser }) {
   if (loading || rolesLoading) {
     return (
       <PageContent title="Gerenciar Usuários">
-        <p className="text-slate-700">Carregando usuários e verificando permissões...</p>
+        <p className="text-slate-700 dark:text-slate-300">Carregando usuários e verificando permissões...</p>
       </PageContent>
     );
   }
@@ -588,7 +588,7 @@ export default function UserManagementPage({ currentUser }) {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Pesquisar por nome, e-mail ou CPF..."
-          className="w-full max-w-lg px-3 py-2 bg-white border border-slate-300 rounded-lg placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+          className="w-full max-w-lg px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
         />
       </div>
 
@@ -600,45 +600,45 @@ export default function UserManagementPage({ currentUser }) {
           animate="visible"
           className="min-w-full hidden md:table"
         >
-          <thead className="bg-slate-50">
+          <thead className="bg-slate-50 dark:bg-slate-800">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Nome</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Contato</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Verificado</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Função</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Ações</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nome</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Contato</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Verificado</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Função</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Ações</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-slate-200">
+          <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200">
             {filteredUsers.length ? (
               filteredUsers.map((u) => (
                 <motion.tr key={u.id} variants={itemVariants}>
                   <td className="px-4 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-slate-900">{u.name || "—"}</div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">ID Interno: {u.idInterno || "—"}</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">{u.name || "—"}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">ID Interno: {u.idInterno || "—"}</div>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-700">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
                     <div className="flex items-center gap-2">
-                      <MailCheck size={14} className="text-slate-400" />
+                      <MailCheck size={14} className="text-slate-400 dark:text-slate-500" />
                       {u.email || "—"}
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
-                      <Phone size={14} className="text-slate-400" />
+                    <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <Phone size={14} className="text-slate-400 dark:text-slate-500" />
                       {u.celular || u.telefone || "—"}
                     </div>
-                    <div className="text-xs text-slate-500 mt-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {u.cpf ? maskCPF(u.cpf) : "CPF não informado"}
                     </div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <StatusBadge verified={!!u.emailVerified} />
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-700">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
                     <select
                       value={u.role ?? ""}
                       onChange={(e) => handleRoleChange(u.id, e.target.value)}
                       disabled={!canManageRoles || currentUser?.uid === u.id}
-                      className="block w-full rounded-md border-slate-300 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 disabled:bg-slate-200 disabled:cursor-not-allowed"
+                      className="block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 dark:text-slate-200 disabled:bg-slate-200 dark:bg-slate-700 disabled:cursor-not-allowed"
                       title={
                         currentUser?.uid === u.id
                           ? "Sua própria função não pode ser alterada."
@@ -659,14 +659,14 @@ export default function UserManagementPage({ currentUser }) {
                     <div className="inline-flex items-center gap-1.5">
                       <button
                         onClick={() => { setCardViewerUserId(u.id); setCardViewerOpen(true); }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                         title="Ver carteirinha"
                       >
                         <IdCard size={14} /> Carteirinha
                       </button>
                       <button
                         onClick={() => { setViewerUserId(u.id); setViewerOpen(true); }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                         title="Ver ficha de cadastro"
                       >
                         <Eye size={14} /> Ver ficha
@@ -681,7 +681,7 @@ export default function UserManagementPage({ currentUser }) {
                       <button
                         onClick={() => setUserToDelete(u)}
                         disabled={!canManageRoles || currentUser?.uid === u.id}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-red-200 text-red-700 hover:bg-red-50 disabled:text-slate-400 disabled:border-slate-200"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-red-200 text-red-700 hover:bg-red-50 disabled:text-slate-400 dark:text-slate-500 disabled:border-slate-200 dark:border-slate-700"
                         title={
                           currentUser?.uid === u.id
                             ? "Você não pode se excluir."
@@ -698,7 +698,7 @@ export default function UserManagementPage({ currentUser }) {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center py-10 text-slate-500">
+                <td colSpan="5" className="text-center py-10 text-slate-500 dark:text-slate-400">
                   Nenhum usuário encontrado.
                 </td>
               </tr>
@@ -715,26 +715,26 @@ export default function UserManagementPage({ currentUser }) {
         >
           {filteredUsers.length ? (
             filteredUsers.map((u) => (
-              <motion.div key={u.id} variants={itemVariants} className="bg-white rounded-xl border border-slate-200 p-4">
+              <motion.div key={u.id} variants={itemVariants} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-slate-900 font-semibold">{u.name || "—"}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">ID Interno: {u.idInterno || "—"}</div>
-                    <div className="mt-2 text-sm text-slate-700 flex items-center gap-2">
-                      <MailCheck size={14} className="text-slate-400" /> {u.email || "—"}
+                    <div className="text-slate-900 dark:text-slate-100 font-semibold">{u.name || "—"}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ID Interno: {u.idInterno || "—"}</div>
+                    <div className="mt-2 text-sm text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                      <MailCheck size={14} className="text-slate-400 dark:text-slate-500" /> {u.email || "—"}
                     </div>
-                    <div className="text-xs text-slate-500">{u.cpf ? maskCPF(u.cpf) : "CPF não informado"}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{u.cpf ? maskCPF(u.cpf) : "CPF não informado"}</div>
                   </div>
                   <StatusBadge verified={!!u.emailVerified} />
                 </div>
 
                 <div className="mt-3">
-                  <label className="block text-xs font-medium text-slate-500 mb-1">Função</label>
+                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Função</label>
                   <select
                     value={u.role ?? ""}
                     onChange={(e) => handleRoleChange(u.id, e.target.value)}
                     disabled={!canManageRoles || currentUser?.uid === u.id}
-                    className="block w-full rounded-md border-slate-300 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 disabled:bg-slate-200 disabled:cursor-not-allowed"
+                    className="block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-[#2a3d57] focus:ring-[#2a3d57] sm:text-sm text-slate-800 dark:text-slate-200 disabled:bg-slate-200 dark:bg-slate-700 disabled:cursor-not-allowed"
                   >
                     <option value="">Sem Função</option>
                     {["admin","pastor","supervisor_departamento","supervisor_setor","membro"].map((role) => (
@@ -748,13 +748,13 @@ export default function UserManagementPage({ currentUser }) {
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={() => { setCardViewerUserId(u.id); setCardViewerOpen(true); }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                   >
                     <IdCard size={14} /> Carteirinha
                   </button>
                   <button
                     onClick={() => { setViewerUserId(u.id); setViewerOpen(true); }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-800"
                   >
                     <Eye size={14} /> Ver ficha
                   </button>
@@ -767,7 +767,7 @@ export default function UserManagementPage({ currentUser }) {
                   <button
                     onClick={() => setUserToDelete(u)}
                     disabled={!canManageRoles || currentUser?.uid === u.id}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-red-200 text-red-700 hover:bg-red-50 disabled:text-slate-400 disabled:border-slate-200"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-red-200 text-red-700 hover:bg-red-50 disabled:text-slate-400 dark:text-slate-500 disabled:border-slate-200 dark:border-slate-700"
                   >
                     <TrashIcon size={14} /> Excluir
                   </button>
@@ -775,7 +775,7 @@ export default function UserManagementPage({ currentUser }) {
               </motion.div>
             ))
           ) : (
-            <p className="text-center py-10 text-slate-500">Nenhum usuário encontrado.</p>
+            <p className="text-center py-10 text-slate-500 dark:text-slate-400">Nenhum usuário encontrado.</p>
           )}
         </motion.div>
       </div>
