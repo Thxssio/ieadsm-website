@@ -22,16 +22,10 @@ if (
   try {
     connectFunctionsEmulator(functions, host, port);
     _emuConnected = true;
-  } catch {}
+  } catch (err) {
+    console.error("Emulator connection failed", err);
+  }
 }
-
-const FRIENDLY = {
-  "functions/unauthenticated": "Você precisa estar autenticado.",
-  "functions/invalid-argument": "Parâmetros inválidos.",
-  "functions/not-found": "Placeholder não encontrado.",
-  "functions/failed-precondition": "CPF já está em uso por usuário real.",
-  "functions/internal": "Erro interno.",
-};
 export async function claimPlaceholderByCpfCallable({ cpf, userPayload }) {
   if (!cpf) throw new Error("CPF é obrigatório.");
   if (!userPayload?.uid) throw new Error("UID é obrigatório em userPayload.");
