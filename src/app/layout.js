@@ -5,6 +5,7 @@ import HideLayoutWrapper from "@/components/HideLayoutWrapper";
 import { churchInfo } from "@/lib/churchInfo";
 import { AuthProvider } from "@/lib/firebase/AuthContext";
 import { ThemeProvider } from "next-themes";
+
 import "@/globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
