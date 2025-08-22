@@ -33,6 +33,7 @@ import { useAuthUser } from "@/hooks/useAuthUser"; // unifica Auth + Firestore
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { db } from "@/lib/firebase/client";
 import { doc, setDoc } from "firebase/firestore";
+import { ThemeProvider } from "next-themes";
 
 // --------- helpers
 function cx(...xs) { return xs.filter(Boolean).join(" "); }
@@ -106,7 +107,7 @@ const NavItem = ({ icon, label, active, onClick, disabled }) => (
   </button>
 );
 
-export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl }) {
+function AdminPortalLayoutInner({ user: userProp, onLogout, logoUrl }) {
   const { photoURL } = useAuthUser(userProp?.uid);
   const [activePage, setActivePage] = useState("dashboard");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -413,6 +414,14 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminPortalLayout(props) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light" storageKey="portal-theme">
+      <AdminPortalLayoutInner {...props} />
+    </ThemeProvider>
   );
 }
 
