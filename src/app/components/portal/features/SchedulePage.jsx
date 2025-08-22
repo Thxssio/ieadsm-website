@@ -47,33 +47,33 @@ const ScheduleFormModal = ({ isOpen, onClose, onSave, currentItem }) => {
   const weekDays = [ { label: 'Domingo', value: '1' }, { label: 'Segunda-feira', value: '2' }, { label: 'Terça-feira', value: '3' }, { label: 'Quarta-feira', value: '4' }, { label: 'Quinta-feira', value: '5' }, { label: 'Sexta-feira', value: '6' }, { label: 'Sábado', value: '7' }];
 
   return (
-    <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full">
-        <h3 className="text-xl font-bold text-slate-800 mb-4">{currentItem?.id ? 'Editar Horário' : 'Adicionar Horário'}</h3>
+      <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl max-w-lg w-full">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4">{currentItem?.id ? 'Editar Horário' : 'Adicionar Horário'}</h3>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <select name="dayOfWeek" value={formData.dayOfWeek} onChange={handleChange} className="w-full p-2 border border-slate-300 rounded-lg text-gray-900" required>
-              {weekDays.map(day => <option key={day.value} value={day.value}>{day.label}</option>)}
-            </select>
-            
-            <select name="icon" value={formData.icon} onChange={handleChange} className="w-full p-2 border border-slate-300 rounded-lg text-gray-900" required>
-                <option value="" disabled>Selecione um Tipo (para o Ícone)</option>
-                {iconOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-            </select>
-            
-            <input type="text" name="time" value={formData.time} onChange={handleChange} placeholder="Horário (ex: 19:45)" maxLength="5" pattern="\d{2}:\d{2}" title="Digite a hora no formato HH:MM (24 horas)" className="w-full p-2 border border-slate-300 rounded-lg text-gray-900" required />
-            
-            <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Nome do Culto/Evento" className="w-full p-2 border border-slate-300 rounded-lg text-gray-900" required />
-            
-            <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Descrição curta (opcional)" className="w-full p-2 border border-slate-300 rounded-lg text-gray-900" rows="3"></textarea>
-          </div>
-          <div className="mt-6 flex justify-end space-x-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-200 text-slate-800 font-semibold rounded-lg hover:bg-slate-300">Cancelar</button>
-            <button type="submit" className="px-4 py-2 bg-[#2a3d57] text-white font-semibold rounded-lg hover:bg-opacity-90">Salvar</button>
-          </div>
-        </form>
+            <div className="space-y-4">
+              <select name="dayOfWeek" value={formData.dayOfWeek} onChange={handleChange} className="w-full p-2 border border-slate-300 rounded-lg text-gray-900 dark:bg-slate-700 dark:text-gray-100 dark:border-slate-600" required>
+                {weekDays.map(day => <option key={day.value} value={day.value}>{day.label}</option>)}
+              </select>
+
+              <select name="icon" value={formData.icon} onChange={handleChange} className="w-full p-2 border border-slate-300 rounded-lg text-gray-900 dark:bg-slate-700 dark:text-gray-100 dark:border-slate-600" required>
+                  <option value="" disabled>Selecione um Tipo (para o Ícone)</option>
+                  {iconOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+              </select>
+
+              <input type="text" name="time" value={formData.time} onChange={handleChange} placeholder="Horário (ex: 19:45)" maxLength="5" pattern="\d{2}:\d{2}" title="Digite a hora no formato HH:MM (24 horas)" className="w-full p-2 border border-slate-300 rounded-lg text-gray-900 dark:bg-slate-700 dark:text-gray-100 dark:border-slate-600" required />
+
+              <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Nome do Culto/Evento" className="w-full p-2 border border-slate-300 rounded-lg text-gray-900 dark:bg-slate-700 dark:text-gray-100 dark:border-slate-600" required />
+
+              <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Descrição curta (opcional)" className="w-full p-2 border border-slate-300 rounded-lg text-gray-900 dark:bg-slate-700 dark:text-gray-100 dark:border-slate-600" rows="3"></textarea>
+            </div>
+            <div className="mt-6 flex justify-end space-x-3">
+              <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-200 text-slate-800 font-semibold rounded-lg hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600">Cancelar</button>
+              <button type="submit" className="px-4 py-2 bg-[#2a3d57] text-white font-semibold rounded-lg hover:bg-opacity-90">Salvar</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
   );
 };
 
@@ -140,26 +140,26 @@ export default function SchedulePage() {
 
   return (
     <PageContent title="Gerenciar Programação Semanal">
-      {message && <p className="mb-4 text-sm text-green-600 bg-green-100 p-2 rounded-md">{message}</p>}
+        {message && <p className="mb-4 text-sm text-green-600 bg-green-100 dark:text-green-200 dark:bg-green-800 p-2 rounded-md">{message}</p>}
       <div className="mb-6 flex justify-end"><button onClick={() => handleOpenModal()} className="px-4 py-2 bg-[#2a3d57] text-white font-semibold rounded-lg hover:bg-opacity-90">Adicionar Horário</button></div>
       {loading ? <p>Carregando...</p> : (
         <div className="space-y-4">
           <AnimatePresence>
-            {scheduleItems.length > 0 ? scheduleItems.map(item => (
-              <motion.div key={item.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-white p-4 rounded-lg border border-slate-200 flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <div className="text-slate-500">{iconMap[item.icon] || <CalendarDays size={24} />}</div>
-                  <div>
-                    <p className="font-bold text-slate-800">{item.title}</p>
-                    <p className="text-sm text-slate-600">{getDayLabel(item.dayOfWeek)} às {item.time}</p>
+              {scheduleItems.length > 0 ? scheduleItems.map(item => (
+                <motion.div key={item.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                  <div className="flex items-center gap-4">
+                    <div className="text-slate-500 dark:text-slate-400">{iconMap[item.icon] || <CalendarDays size={24} />}</div>
+                    <div>
+                      <p className="font-bold text-slate-800 dark:text-slate-100">{item.title}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">{getDayLabel(item.dayOfWeek)} às {item.time}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex space-x-2"><button onClick={() => handleOpenModal(item)} className="text-sm font-medium text-blue-600 hover:text-blue-800">Editar</button><button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800"><TrashIcon size={16} /></button></div>
-              </motion.div>
-            )) : <p className="text-center text-slate-500 py-8">Nenhum horário cadastrado.</p>}
-          </AnimatePresence>
-        </div>
-      )}
+                  <div className="flex space-x-2"><button onClick={() => handleOpenModal(item)} className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Editar</button><button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800"><TrashIcon size={16} /></button></div>
+                </motion.div>
+              )) : <p className="text-center text-slate-500 dark:text-slate-400 py-8">Nenhum horário cadastrado.</p>}
+            </AnimatePresence>
+          </div>
+        )}
       <ScheduleFormModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSave} currentItem={currentItem} />
     </PageContent>
   );

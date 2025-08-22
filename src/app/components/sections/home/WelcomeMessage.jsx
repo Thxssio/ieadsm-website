@@ -5,17 +5,17 @@ export default function WelcomeMessage({
   className = "",
 }) {
   return (
-    <section className={`bg-white py-20 ${className}`}>
+    <section className={`bg-white dark:bg-slate-800 py-20 ${className}`}>
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-stone-900">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-stone-900 dark:text-stone-100">
           {title}
         </h1>
 
         <blockquote className="mt-6">
-          <p className="text-lg md:text-xl leading-relaxed text-stone-600">
+          <p className="text-lg md:text-xl leading-relaxed text-stone-600 dark:text-stone-300">
             {verse}
           </p>
-          <footer className="mt-4 text-sm text-stone-500">— {reference}</footer>
+          <footer className="mt-4 text-sm text-stone-500 dark:text-stone-400">— {reference}</footer>
         </blockquote>
       </div>
     </section>

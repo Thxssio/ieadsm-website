@@ -5,6 +5,11 @@
   --foreground: #171717;
 }
 
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -50,7 +55,8 @@ html {
   scroll-behavior: smooth;
 }
 
-input, 
+input,
 textarea {
-  color: initial; 
+  color: var(--foreground);
+  background: var(--background);
 }

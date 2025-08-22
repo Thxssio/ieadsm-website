@@ -359,7 +359,7 @@ export default function MemberCard({
               {/* Endereço */}
               {addressText ? (
                 <section className="mb-4">
-                  <p className="text-xs text-gray-800">{addressText}</p>
+                    <p className="text-xs text-gray-800 dark:text-gray-200">{addressText}</p>
                 </section>
               ) : null}
 

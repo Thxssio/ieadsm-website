@@ -64,31 +64,31 @@ export default function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-stone-700">E-mail</label>
+        <label htmlFor="email" className="block text-sm font-medium text-stone-700 dark:text-stone-300">E-mail</label>
         <input
           id="email" type="email" autoComplete="email" required
           value={email} onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
           placeholder="seu@email.com"
         />
       </div>
 
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="password" className="block text-sm font-medium text-stone-700">Senha</label>
-          <button type="button" onClick={() => setShowPwd(v => !v)} className="text-xs text-stone-500 hover:text-stone-700">
+          <label htmlFor="password" className="block text-sm font-medium text-stone-700 dark:text-stone-300">Senha</label>
+          <button type="button" onClick={() => setShowPwd(v => !v)} className="text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300">
             {showPwd ? "Ocultar" : "Mostrar"}
           </button>
         </div>
         <input
           id="password" type={showPwd ? "text" : "password"} autoComplete="current-password" required
           value={password} onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57]"
           placeholder="••••••••"
         />
       </div>
 
-      {err && <p className="text-sm text-red-600">{err}</p>}
+      {err && <p className="text-sm text-red-600 dark:text-red-400">{err}</p>}
 
       <button
         type="submit"
@@ -98,9 +98,9 @@ export default function LoginForm() {
         {loading ? "Entrando..." : "Entrar"}
       </button>
 
-      <div className="mt-3 text-sm text-stone-600 flex items-center justify-between">
-        <Link href="/recuperar-senha" className="hover:text-[#2a3d57]">Esqueceu a senha?</Link>
-        <Link href="/registrar" className="hover:text-[#2a3d57]">Criar conta</Link>
+      <div className="mt-3 text-sm text-stone-600 dark:text-stone-400 flex items-center justify-between">
+        <Link href="/recuperar-senha" className="hover:text-[#2a3d57] dark:hover:text-slate-200">Esqueceu a senha?</Link>
+        <Link href="/registrar" className="hover:text-[#2a3d57] dark:hover:text-slate-200">Criar conta</Link>
       </div>
     </form>
   );

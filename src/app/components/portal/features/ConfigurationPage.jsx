@@ -36,7 +36,7 @@ import {
   Moon,
   Sun,
 } from "lucide-react";
-import { useTheme } from "@/lib/ThemeContext";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/firebase/AuthContext";
 
@@ -108,10 +108,10 @@ function UserAvatar({ name, photoURL, size = 84 }) {
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <div className="absolute inset-0 rounded-full ring-2 ring-[#2a3d57]/15" />
-      <div className="relative rounded-full overflow-hidden border border-slate-200 bg-white shadow-sm" style={{ width: size, height: size }}>
+      <div className="relative rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm" style={{ width: size, height: size }}>
         {!photoURL || err ? (
-          <div className="w-full h-full grid place-items-center bg-slate-50">
-            <span className="text-base font-semibold text-slate-600">{ini}</span>
+          <div className="w-full h-full grid place-items-center bg-slate-50 dark:bg-slate-800">
+            <span className="text-base font-semibold text-slate-600 dark:text-slate-300">{ini}</span>
           </div>
         ) : (
           <img
@@ -156,12 +156,12 @@ export default function ConfigurationPage() {
 
   const [message, setMessage] = useState(null);
 
-  const { theme, toggleTheme } = useTheme();
+  const { isDark, toggle } = useDarkMode();
 
   const handleThemeToggle = async () => {
     const uid = currentUser?.uid;
-    const next = theme === "dark" ? "light" : "dark";
-    toggleTheme();
+    const next = isDark ? "light" : "dark";
+    toggle();
     if (uid) {
       try {
         await setDoc(doc(db, "users", uid), { theme: next }, { merge: true });
@@ -344,9 +344,9 @@ export default function ConfigurationPage() {
   }
 
   const inputBase =
-    "block w-full px-3 py-2 bg-white border border-slate-300 rounded-lg " +
+    "block w-full px-3 py-2 bg-white border border-slate-300 dark:border-slate-600 rounded-lg " +
     "placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] " +
-    "sm:text-sm";
+    "sm:text-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100";
 
   return (
     <PageContent
@@ -364,8 +364,8 @@ export default function ConfigurationPage() {
             className={cx(
               "mb-4 rounded-md px-3 py-2 text-sm border",
               message.type === "success"
-                ? "bg-green-50 text-green-800 border-green-200"
-                : "bg-red-50 text-red-800 border-red-200"
+                ? "bg-green-50 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-200 dark:border-green-700"
+                : "bg-red-50 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-200 dark:border-red-700"
             )}
           >
             {message.text}
@@ -378,14 +378,14 @@ export default function ConfigurationPage() {
         {/* Coluna esquerda (foto + dados pessoais) */}
         <div className="lg:col-span-1 space-y-6">
           {/* FOTO */}
-          <section className="bg-white rounded-xl border border-slate-200 p-5">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-2 mb-4">
               <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                 <ImageIcon size={18} />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-slate-800 leading-tight">Foto 3x4</h3>
-                <p className="text-xs text-slate-500">Formato retrato, até 800×800.</p>
+                <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200 leading-tight">Foto 3x4</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Formato retrato, até 800×800.</p>
               </div>
             </div>
 
@@ -394,20 +394,20 @@ export default function ConfigurationPage() {
               <div>
                 <label className="inline-flex items-center gap-2 cursor-pointer">
                   <input type="file" accept="image/*" className="hidden" onChange={handleSelectPhoto} />
-                  <span className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 active:scale-[.99]">
+                  <span className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[.99]">
                     <Upload size={16} /> Escolher arquivo
                   </span>
                 </label>
 
                 {uploading && (
                   <div className="mt-3 w-64 max-w-full">
-                    <div className="h-2 w-full rounded bg-slate-200 overflow-hidden">
+                    <div className="h-2 w-full rounded bg-slate-200 dark:bg-slate-700 overflow-hidden">
                       <div
                         className="h-2 rounded bg-[#2a3d57] transition-[width]"
                         style={{ width: `${uploadPct}%` }}
                       />
                     </div>
-                    <p className="mt-1 text-xs text-slate-500">Enviando… {uploadPct}%</p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Enviando… {uploadPct}%</p>
                   </div>
                 )}
               </div>
@@ -415,21 +415,21 @@ export default function ConfigurationPage() {
           </section>
 
           {/* DADOS PESSOAIS */}
-          <section className="bg-white rounded-xl border border-slate-200 p-5">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-2 mb-4">
               <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                 <UserCircle2 size={18} />
               </div>
-              <h3 className="text-base font-semibold text-slate-800 leading-tight">Dados pessoais</h3>
+              <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200 leading-tight">Dados pessoais</h3>
             </div>
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Nome completo</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nome completo</label>
                 <input className={inputBase} value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Telefone (opcional)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Telefone (opcional)</label>
                 <input className={inputBase} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(00) 00000-0000" />
               </div>
 
@@ -447,21 +447,21 @@ export default function ConfigurationPage() {
           </section>
 
           {/* TEMA */}
-          <section className="bg-white rounded-xl border border-slate-200 p-5">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
-                  {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+                  {isDark ? <Moon size={18} /> : <Sun size={18} />}
                 </div>
-                <h3 className="text-base font-semibold text-slate-800 leading-tight">Tema</h3>
+                <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200 leading-tight">Tema</h3>
               </div>
               <button
                 type="button"
                 onClick={handleThemeToggle}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
-                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-                {theme === "dark" ? "Modo claro" : "Modo escuro"}
+                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                {isDark ? "Modo claro" : "Modo escuro"}
               </button>
             </div>
           </section>
@@ -470,21 +470,21 @@ export default function ConfigurationPage() {
         {/* Coluna direita (credenciais) */}
         <div className="lg:col-span-2 space-y-6">
           {/* E-MAIL */}
-          <section className="bg-white rounded-xl border border-slate-200 p-5">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-2 mb-4">
               <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                 <Mail size={18} />
               </div>
-              <h3 className="text-base font-semibold text-slate-800 leading-tight">Alterar e-mail</h3>
+              <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200 leading-tight">Alterar e-mail</h3>
             </div>
 
             <form onSubmit={handleChangeEmail} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Novo e-mail</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Novo e-mail</label>
                 <input className={inputBase} type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Senha atual</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Senha atual</label>
                 <input className={inputBase} type="password" value={emailPwd} onChange={(e) => setEmailPwd(e.target.value)} required />
               </div>
 
@@ -502,25 +502,25 @@ export default function ConfigurationPage() {
           </section>
 
           {/* SENHA */}
-          <section className="bg-white rounded-xl border border-slate-200 p-5">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-2 mb-4">
               <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                 <Lock size={18} />
               </div>
-              <h3 className="text-base font-semibold text-slate-800 leading-tight">Alterar senha</h3>
+              <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200 leading-tight">Alterar senha</h3>
             </div>
 
             <form onSubmit={handleChangePassword} className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Senha atual</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Senha atual</label>
                 <input className={inputBase} type="password" value={pwdCurrent} onChange={(e) => setPwdCurrent(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Nova senha</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nova senha</label>
                 <input className={inputBase} type="password" value={pwdNew} onChange={(e) => setPwdNew(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Confirmar nova senha</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirmar nova senha</label>
                 <input className={inputBase} type="password" value={pwdConfirm} onChange={(e) => setPwdConfirm(e.target.value)} required />
               </div>
 
@@ -538,15 +538,15 @@ export default function ConfigurationPage() {
           </section>
 
           {/* REABRIR CADASTRO COMPLEMENTAR */}
-          <section className="bg-white rounded-xl border border-slate-200 p-5">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <div className="h-9 w-9 grid place-items-center rounded-lg bg-[#2a3d57]/10 text-[#2a3d57]">
                   <RotateCcw size={18} />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-slate-800 leading-tight">Cadastro complementar</h3>
-                  <p className="text-xs text-slate-500">Refaça o passo-a-passo de cadastro quando quiser.</p>
+                  <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200 leading-tight">Cadastro complementar</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Refaça o passo-a-passo de cadastro quando quiser.</p>
                 </div>
               </div>
 

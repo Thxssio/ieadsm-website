@@ -7,12 +7,12 @@ import "slick-carousel/slick/slick-theme.css";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const SkeletonCard = () => (
-  <div className="bg-white p-4 rounded-lg shadow-md animate-pulse">
-    <div className="bg-gray-200 aspect-[4/5] w-full rounded-md mb-4" />
-    <div className="bg-gray-200 h-6 rounded w-3/4 mb-2" />
-    <div className="bg-gray-200 h-4 rounded w-full mb-1" />
-    <div className="bg-gray-200 h-4 rounded w-5/6 mb-4" />
-    <div className="bg-gray-200 h-5 rounded w-1/3" />
+  <div className="bg-white dark:bg-slate-700 p-4 rounded-lg shadow-md animate-pulse">
+    <div className="bg-gray-200 dark:bg-gray-600 aspect-[4/5] w-full rounded-md mb-4" />
+    <div className="bg-gray-200 dark:bg-gray-600 h-6 rounded w-3/4 mb-2" />
+    <div className="bg-gray-200 dark:bg-gray-600 h-4 rounded w-full mb-1" />
+    <div className="bg-gray-200 dark:bg-gray-600 h-4 rounded w-5/6 mb-4" />
+    <div className="bg-gray-200 dark:bg-gray-600 h-5 rounded w-1/3" />
   </div>
 );
 
@@ -117,9 +117,9 @@ export default function FacebookFeed() {
     });
 
   return (
-    <section id="facebook-feed" className="bg-gray-50 px-4 py-12">
+    <section id="facebook-feed" className="bg-gray-50 dark:bg-slate-800 px-4 py-12">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-gray-100">
           Nossas Últimas Notícias
         </h2>
 
@@ -132,12 +132,12 @@ export default function FacebookFeed() {
               ))
             : posts.map((post) => (
                 <div key={post.guid} className="p-3 h-full">
-                  <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full group transition-transform duration-300 hover:scale-105">
+                  <div className="bg-white dark:bg-slate-700 rounded-lg shadow-lg overflow-hidden flex flex-col h-full group transition-transform duration-300 hover:scale-105">
                     <a
                       href={post.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full bg-gray-100 overflow-hidden"
+                      className="block w-full bg-gray-100 dark:bg-gray-700 overflow-hidden"
                       style={{ aspectRatio: "4 / 5" }}
                     >
                       <img
@@ -153,17 +153,17 @@ export default function FacebookFeed() {
                     </a>
 
                     <div className="p-5 flex flex-col flex-grow">
-                      <p className="text-xs text-gray-500 mb-2">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                         {formatDate(post.pubDate)}
                       </p>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex-grow">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 flex-grow">
                         {post.title || "Post sem título"}
                       </h3>
                       <a
                         href={post.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 font-semibold text-sm mt-auto"
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold text-sm mt-auto"
                       >
                         Ver no Facebook →
                       </a>
@@ -174,7 +174,7 @@ export default function FacebookFeed() {
         </Slider>
 
         {!loading && posts.length === 0 && (
-          <p className="text-center text-gray-600 mt-8">
+          <p className="text-center text-gray-600 dark:text-gray-400 mt-8">
             Nenhuma notícia encontrada no momento.
           </p>
         )}
