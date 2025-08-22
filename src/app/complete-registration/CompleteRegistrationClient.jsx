@@ -328,13 +328,11 @@ export default function CompleteRegistrationClient() {
       const cpfMae    = onlyDigits(form.cpfMae);
       const filhos    = (form.filhos || []).map((f) => ({ name: (f.name||"").trim(), cpf: onlyDigits(f.cpf) }));
 
-      let idInterno = onlyDigits(form.idInterno);
-      if (!idInterno) {
-        idInterno = await step("Gerar idInterno", () => getNextInternalId());
-        setForm((old) => ({ ...old, idInterno }));
-      }
+      // Sempre gera e reserva um novo idInterno sequencial para evitar reutilizações.
+      const idInterno = await step("Gerar idInterno", () => getNextInternalId());
+      setForm((old) => ({ ...old, idInterno }));
 
-      // valida idInterno: só dígitos e não vazio
+      // valida idInterno: só dígitos e não vazio (por segurança)
       if (!idInterno || !/^\d+$/.test(idInterno)) {
         setSaving(false);
         return setErr("ID interno inválido. Use apenas números.");

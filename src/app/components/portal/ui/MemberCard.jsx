@@ -207,9 +207,8 @@ export default function MemberCard({
       {/* estilos auxiliares para fidelidade visual e forçar texto escuro */}
       <style jsx global>{`
         .card-container {
-          width: 100%;
-          max-width: 550px; /* 85.6mm aprox */
-          min-height: 345px;
+          width: 550px; /* 85.6mm aprox */
+          height: 345px;
           aspect-ratio: 85.6 / 53.98;
           box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
           border-radius: 0.5rem;
