@@ -77,18 +77,29 @@ const NavItem = ({ icon, label, active, onClick, disabled }) => (
     disabled={disabled}
     className={cx(
       "w-full relative group flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors",
-      disabled && "text-slate-400 cursor-not-allowed",
-      !disabled && !active && "text-slate-600 hover:text-slate-900 hover:bg-slate-100",
-      active && "text-sky-900 bg-sky-50 ring-1 ring-sky-200"
+      disabled && "text-slate-400 dark:text-slate-600 cursor-not-allowed",
+      !disabled && !active &&
+        "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700",
+      active &&
+        "text-sky-900 dark:text-slate-100 bg-sky-50 dark:bg-slate-800 ring-1 ring-sky-200 dark:ring-slate-600"
     )}
   >
     <span
       className={cx(
         "absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r",
-        active ? "bg-[#2a3d57]" : "bg-transparent group-hover:bg-slate-300"
+        active
+          ? "bg-[#2a3d57]"
+          : "bg-transparent group-hover:bg-slate-300 dark:group-hover:bg-slate-600"
       )}
     />
-    <div className={cx("shrink-0", active ? "text-sky-700" : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200")}> 
+    <div
+      className={cx(
+        "shrink-0",
+        active
+          ? "text-sky-700 dark:text-slate-200"
+          : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
+      )}
+    >
       {icon}
     </div>
     <span className="font-medium">{label}</span>
@@ -216,19 +227,19 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
 
   const navLinksBlock = (
     <>
-      <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-2 mb-1">Principal</div>
+      <div className="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500 px-3 mt-2 mb-1">Principal</div>
       <NavItem icon={<Home size={20} strokeWidth={2} />} label="Dashboard" active={activePage === "dashboard"} onClick={() => handleNavItemClick("dashboard")} disabled={isLoggingOut} />
 
       {!rolesLoading && canSeeUsers && (
         <>
-          <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Pessoas</div>
+          <div className="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500 px-3 mt-4 mb-1">Pessoas</div>
           <NavItem icon={<Users size={20} strokeWidth={2} />} label="Usuários" active={activePage === "users"} onClick={() => handleNavItemClick("users")} disabled={isLoggingOut} />
         </>
       )}
 
       {!rolesLoading && canSeeMin && (
         <>
-          <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Ministérios & Conteúdo</div>
+          <div className="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500 px-3 mt-4 mb-1">Ministérios & Conteúdo</div>
           <NavItem icon={<BookText size={20} strokeWidth={2} />} label="Ministérios" active={activePage === "ministries"} onClick={() => handleNavItemClick("ministries")} disabled={isLoggingOut} />
           <NavItem icon={<Link2 size={20} strokeWidth={2} />} label="Links" active={activePage === "links"} onClick={() => handleNavItemClick("links")} disabled={isLoggingOut} />
         </>
@@ -240,7 +251,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
 
       {!rolesLoading && canSeeSched && (
         <>
-          <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Operacional</div>
+          <div className="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500 px-3 mt-4 mb-1">Operacional</div>
           <NavItem icon={<Clock size={20} strokeWidth={2} />} label="Programação" active={activePage === "schedule"} onClick={() => handleNavItemClick("schedule")} disabled={isLoggingOut} />
           <NavItem icon={<Settings size={20} strokeWidth={2} />} label="Configurações"active={activePage === "configuration"} onClick={() => handleNavItemClick("configuration")} disabled={isLoggingOut}/>
 

@@ -74,7 +74,7 @@ export default function EmailPasswordForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={disabled}
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] disabled:opacity-60"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] disabled:opacity-60"
           placeholder="usuario@mail.com"
         />
       </div>
@@ -99,7 +99,7 @@ export default function EmailPasswordForm() {
           value={pwd}
           onChange={(e) => setPwd(e.target.value)}
           disabled={disabled}
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] disabled:opacity-60"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] disabled:opacity-60"
           placeholder="••••••••"
         />
       </div>

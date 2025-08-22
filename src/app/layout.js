@@ -85,7 +85,7 @@ export default function RootLayout({ children }) {
       </head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-white text-stone-900 dark:bg-stone-900 dark:text-stone-100 transition-colors`}
+        className={`${geistSans.variable} ${geistMono.variable} h-full min-h-screen flex flex-col font-sans antialiased bg-background text-foreground transition-colors`}
       >
         <Providers>{children}</Providers>
       </body>

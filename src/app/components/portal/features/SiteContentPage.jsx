@@ -647,6 +647,7 @@ function ImagePreview({ url, ratioClass = "h-32", onRemove, darkBg = false }) {
         type="button"
         onClick={onRemove}
         className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/90 dark:bg-slate-800/90 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 shadow hover:bg-white dark:bg-slate-800 dark:hover:bg-slate-700"
+
         title="Remover"
       >
         <X className="h-3.5 w-3.5" />

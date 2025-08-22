@@ -150,7 +150,7 @@ export default function RegisterForm() {
           onChange={(e) => setName(e.target.value)}
           required
           autoComplete="name"
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card text-foreground px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="Seu nome completo"
         />
       </div>
@@ -165,7 +165,7 @@ export default function RegisterForm() {
           required
           inputMode="numeric"
           autoComplete="off"
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card text-foreground px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="000.000.000-00"
         />
       </div>
@@ -180,7 +180,7 @@ export default function RegisterForm() {
           autoComplete="email"
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card text-foreground px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="usuario@mail.com"
         />
       </div>
@@ -195,7 +195,7 @@ export default function RegisterForm() {
           onChange={(e) => setPwd(e.target.value)}
           required
           autoComplete="new-password"
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card text-foreground px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="Mínimo 6 caracteres"
         />
       </div>
@@ -210,7 +210,7 @@ export default function RegisterForm() {
           onChange={(e) => setPwd2(e.target.value)}
           required
           autoComplete="new-password"
-          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
+          className="mt-1 w-full rounded-lg border border-stone-300 dark:border-slate-600 bg-card text-foreground px-3 py-2 focus:ring-2 focus:ring-[#2a3d57] placeholder-stone-400 dark:placeholder-slate-400"
           placeholder="Repita a senha"
         />
       </div>

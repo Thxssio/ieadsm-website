@@ -348,6 +348,7 @@ export default function ConfigurationPage() {
     "placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] " +
     "sm:text-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100";
 
+
   return (
     <PageContent
       title="Configurações da Conta"
