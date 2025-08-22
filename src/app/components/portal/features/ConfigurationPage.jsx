@@ -513,7 +513,9 @@ export default function ConfigurationPage() {
                     },
                     { merge: true }
                   );
-                  window.location.assign("/complete-registration");
+                  alert("Cadastro reaberto. Faça login novamente para prosseguir.");
+                  await auth.signOut();
+                  window.location.assign("/login");
                 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-[#2a3d57] hover:bg-[#264254] active:scale-[.99]"
               >

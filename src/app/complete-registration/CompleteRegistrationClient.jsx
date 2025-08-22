@@ -1,7 +1,7 @@
 // src/app/complete-registration/CompleteRegistrationClient.jsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   doc,
@@ -174,8 +174,11 @@ async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
 }
 
 export default function CompleteRegistrationClient() {
-  const { user, isLoading, profileComplete } = useAuth();
+  const { user, isLoading, profileComplete, refreshProfile } = useAuth();
   const router = useRouter();
+
+  // Guardamos o valor anterior para detectar transições de true -> false.
+  const prevProfileComplete = useRef(profileComplete);
 
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
@@ -185,6 +188,19 @@ export default function CompleteRegistrationClient() {
   const [profileFile, setProfileFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Se o perfil voltar a ficar incompleto (ex: reabertura do cadastro),
+  // limpamos estados locais para evitar que dados antigos bloqueiem o formulário.
+  useEffect(() => {
+    if (prevProfileComplete.current && !profileComplete) {
+      setForm(initialForm);
+      setProfileFile(null);
+      setPreviewImage("");
+      setUploadProgress(0);
+      setErr("");
+    }
+    prevProfileComplete.current = profileComplete;
+  }, [profileComplete]);
 
   /* Guards */
   useEffect(() => {
@@ -223,7 +239,7 @@ export default function CompleteRegistrationClient() {
       setForm(next);
       setPreviewImage(next.photoURL || user.photoURL || "");
     })();
-  }, [user]);
+  }, [user, profileComplete]);
 
   // manter idInterno sempre só dígitos, mesmo se editar manualmente no form
   useEffect(() => {
@@ -378,6 +394,8 @@ export default function CompleteRegistrationClient() {
           profileComplete: true,
         }, { merge: true })
       );
+      // Garante que o AuthContext enxergue o novo estado de profileComplete
+      await refreshProfile();
 
       // 4) Placeholders (agora você já é membro)
       await step("Adicionar placeholders (familiares)", async () => {
