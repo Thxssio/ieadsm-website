@@ -14,6 +14,7 @@ import {
     Settings,
     Moon,
     Sun,
+    Link2,
   } from "lucide-react";
 
 import PageContent from "@/components/portal/ui/PageContent";
@@ -24,6 +25,7 @@ import MinistriesPage from "@/components/portal/features/MinistriesPage";
 import ConfigurationPage from "@/components/portal/features/ConfigurationPage";
 import CongregationsPage from "@/components/portal/features/CongregationsPage";
 import SiteContentPage from "@/components/portal/features/SiteContentPage";
+import LinksPage from "@/components/portal/features/LinksPage";
 
 
 import { useHasRole } from "@/hooks/useClaims";
@@ -173,6 +175,14 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         return <CongregationsPage />;
       case "siteContent":
         return <SiteContentPage />;
+      case "links":
+        return canSeeMin ? (
+          <LinksPage />
+        ) : (
+          <PageContent title="Acesso restrito">
+            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+          </PageContent>
+        );
       case "events":
         return (
           <PageContent title="Eventos">
@@ -220,6 +230,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         <>
           <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Ministérios & Conteúdo</div>
           <NavItem icon={<BookText size={20} strokeWidth={2} />} label="Ministérios" active={activePage === "ministries"} onClick={() => handleNavItemClick("ministries")} disabled={isLoggingOut} />
+          <NavItem icon={<Link2 size={20} strokeWidth={2} />} label="Links" active={activePage === "links"} onClick={() => handleNavItemClick("links")} disabled={isLoggingOut} />
         </>
       )}
 
