@@ -3,30 +3,42 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PageContent from "@/components/portal/ui/PageContent";
 import {
-    getAuth,
-    updateProfile,
+  getAuth,
+  updateProfile,
   updateEmail,
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
   sendEmailVerification,
 } from "firebase/auth";
-  import { db, storage } from "@/lib/firebase/client";
+import { db, storage } from "@/lib/firebase/client";
 import {
   doc,
   getDoc,
   setDoc,
   serverTimestamp,
 } from "firebase/firestore";
-  import {
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-    deleteObject,
-  } from "firebase/storage";
-  import { AnimatePresence, motion } from "framer-motion";
-  import { Upload, Loader2, Image as ImageIcon, UserCircle2, Mail, Lock, RotateCcw, Moon, Sun } from "lucide-react";
-  import { useTheme } from "@/lib/ThemeContext";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Upload,
+  Loader2,
+  Image as ImageIcon,
+  UserCircle2,
+  Mail,
+  Lock,
+  RotateCcw,
+  Moon,
+  Sun,
+} from "lucide-react";
+import { useTheme } from "@/lib/ThemeContext";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/firebase/AuthContext";
 
 /* Helpers */
 function cx(...xs) { return xs.filter(Boolean).join(" "); }
@@ -119,6 +131,8 @@ function UserAvatar({ name, photoURL, size = 84 }) {
 export default function ConfigurationPage() {
   const auth = getAuth();
   const currentUser = auth.currentUser;
+  const router = useRouter();
+  const { refreshProfile } = useAuth();
 
   /* Estado */
   const [displayName, setDisplayName] = useState(currentUser?.displayName || "");
@@ -549,9 +563,8 @@ export default function ConfigurationPage() {
                     },
                     { merge: true }
                   );
-                  alert("Cadastro reaberto. Faça login novamente para prosseguir.");
-                  await auth.signOut();
-                  window.location.assign("/login");
+                  await refreshProfile();
+                  router.replace("/complete-registration");
                 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-[#2a3d57] hover:bg-[#264254] active:scale-[.99]"
               >
