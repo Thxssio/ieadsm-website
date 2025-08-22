@@ -86,6 +86,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+
     match /idInterno_index/{idInterno} {
       allow create: if request.auth != null
         && !exists(/databases/$(database)/documents/idInterno_index/$(idInterno));
@@ -114,11 +115,13 @@ service cloud.firestore {
         allow read, update, delete: if isAdmin() || isFamilyMember(familyId);
       }
 
+
       // Demais subcoleções ou documentos dentro de uma família são bloqueados
       // explicitamente.
       match /{document=**} {
         allow read, write: if false;
       }
+
     }
   }
 }
