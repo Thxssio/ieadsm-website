@@ -155,7 +155,7 @@ function CardFront({
     ? "CREDENCIAL DE MINISTRO"
     : "CREDENCIAL DE MEMBRO";
   return (
-    <View style={styles.card}>
+    <View style={styles.card} wrap={false}>
       <View style={styles.header}>
         <Text style={styles.headerText}>{title}</Text>
       </View>
@@ -216,7 +216,7 @@ function CardBack({
 }) {
   const addressText = stringifyAddressLine(addressLine);
   return (
-    <View style={styles.card}>
+    <View style={styles.card} wrap={false}>
       <View style={styles.backHeader}>
         <View style={styles.row}>
           <View>
@@ -267,10 +267,10 @@ function CardBack({
 export function MemberCardPDF(props) {
   return (
     <Document title={`Carteirinha - ${props.name || "Membro"}`}>
-      <Page size={{ width: CARD_W, height: CARD_H }} style={styles.page} wrap={false}>
+      <Page size={{ width: CARD_W, height: CARD_H }} style={styles.page}>
         <CardFront {...props} />
       </Page>
-      <Page size={{ width: CARD_W, height: CARD_H }} style={styles.page} wrap={false}>
+      <Page size={{ width: CARD_W, height: CARD_H }} style={styles.page}>
         <CardBack {...props} />
       </Page>
     </Document>
