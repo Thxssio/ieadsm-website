@@ -31,6 +31,10 @@ export default function RegisterPage() {
         <p className="mt-2 text-stone-600">
           Use seu e-mail e defina uma senha para se cadastrar.
         </p>
+        <p className="mt-1 text-sm text-stone-600">
+          Após o cadastro, verifique seu e-mail e confirme sua conta clicando no
+          link enviado.
+        </p>
         <div className="mt-6 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
           <RegisterForm />
         </div>

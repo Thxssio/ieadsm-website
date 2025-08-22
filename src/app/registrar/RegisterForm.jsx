@@ -109,7 +109,9 @@ export default function RegisterForm() {
       await signOut(auth);
 
       // 9) Feedback e redireciona pro login
-      setOk("Conta criada! Verifique seu e-mail para confirmar.");
+      setOk(
+        "Conta criada! Verifique seu e-mail e confirme sua conta no link enviado."
+      );
       setTimeout(() => router.push("/login"), 2500);
     } catch (error) {
       console.error("Erro no cadastro de usuário:", error);
