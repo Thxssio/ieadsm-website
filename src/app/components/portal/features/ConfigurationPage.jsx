@@ -344,9 +344,8 @@ export default function ConfigurationPage() {
   }
 
   const inputBase =
-    "block w-full px-3 py-2 bg-white border border-slate-300 dark:border-slate-600 rounded-lg " +
-    "placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] " +
-    "sm:text-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100";
+    "block w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg " +
+    "placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2a3d57] sm:text-sm";
 
   return (
     <PageContent
