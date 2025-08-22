@@ -13,6 +13,7 @@ import {
   pdf,
 } from "@react-pdf/renderer";
 import { maskCPF } from "@/lib/utils/cpf";
+import { churchInfo } from "@/lib/churchInfo";
 
 /* Helpers */
 function fmtDateish(value) {
@@ -118,8 +119,9 @@ function BarcodeVisualPDF({ value, height = 50, width = 220 }) {
   );
 }
 
-const CARD_W = 242; // 85.6mm -> 242pt
-const CARD_H = 153; // 53.98mm -> 153pt
+const MM = 72 / 25.4;
+const CARD_W = 85.6 * MM; // largura real em mm
+const CARD_H = 53.98 * MM; // altura real em mm
 
 const styles = StyleSheet.create({
   page: { width: CARD_W, height: CARD_H, fontFamily: "Helvetica", color: "#0f172a" },
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
   dividerThick: { borderTop: "4 solid #36435a", marginHorizontal: -12 },
   dividerThin: { borderTop: "1 solid #d1d5db", marginHorizontal: -12 },
   photo: { width: 105, height: 130, border: "1 solid #36435a" },
-  logo: { width: 80, height: 80 },
+  logo: { width: 60, height: 60 },
   backHeader: { backgroundColor: "#afd0de", padding: 8 },
   smallText: { fontSize: 8 },
   sign: { marginTop: 40, borderTop: "1 solid #0f172a", alignItems: "center", paddingTop: 4 },
@@ -317,14 +319,7 @@ export async function downloadMemberCardPDF({ data, logoUrl, barcodeSalt = "IEAD
       rg={data?.rg}
       signerName="Pr. Moisés Adriano Lamberty"
       signerRole="Pastor Presidente"
-      addressLine={{
-        street: data?.endereco,
-        number: data?.numero,
-        neighborhood: data?.bairro,
-        city: data?.cidade,
-        state: data?.uf,
-        zip: data?.cep,
-      }}
+      addressLine={churchInfo.address}
       codePayload={codePayload}
     />
   ).toBlob();
