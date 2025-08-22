@@ -113,7 +113,7 @@
                         <header className="flex flex-col items-center mb-6">
                             <Image
                                 className="w-24 h-24 rounded-full object-contain shadow-lg mb-4 bg-white p-1"
-                                src="https://adsm.org.br/wp-content/uploads/2022/08/logo-adsm-azul.png"
+                                src="/icon.svg"
                                 alt="Logo AD Santa Maria"
                                 width={96}
                                 height={96}
