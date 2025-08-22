@@ -1,6 +1,6 @@
 
 export const metadata = {
-  title: "Links Sociais - IEADSM",
+  title: "Linktree - IEADSM",
   description: "Acesse os canais oficiais da Assembleia de Deus de Santa Maria/RS.",
 };
 
