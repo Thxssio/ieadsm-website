@@ -60,13 +60,11 @@ const Skeleton = ({ className = "" }) => (
 
 /* ---------- Página ---------- */
 export default function LinktreePage() {
-  const [isMounted, setIsMounted] = useState(false);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
     const q = query(collection(db, "links"), orderBy("order"));
     const unsub = onSnapshot(
       q,
@@ -85,8 +83,6 @@ export default function LinktreePage() {
       .then(() => { setShowToast(true); setTimeout(() => setShowToast(false), 2500); })
       .catch(console.error);
   };
-
-  if (!isMounted) return null;
 
   const safeLinks = useMemo(
     () => links.map((l) => ({ ...l, href: sanitizeUrl(l.href), icon: l.icon || autoIcon(l.href) })),
