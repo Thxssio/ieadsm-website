@@ -23,6 +23,12 @@ service firebase.storage {
       allow write: if canWriteMinistry();
     }
 
+    // imagens de perfil dos usuários
+    match /profileImages/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
     // demais caminhos: só leitura pública, escrita bloqueada
     match /{allPaths=**} {
       allow read: if true;

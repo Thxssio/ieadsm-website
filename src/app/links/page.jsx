@@ -39,13 +39,13 @@ const SocialIcons = () => (
     <a href="https://www.instagram.com/adsantamariars/" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition">
       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919C2.174 15.584 2.163 15.204 2.163 12s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zM12 7.231a4.769 4.769 0 100 9.538 4.769 4.769 0 000-9.538zm6.448-.398a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0z"/></svg>
     </a>
-    <a href="mailto:contato@adsm.org.br" className="opacity-80 hover:opacity-100 transition">
+    <a href="mailto:contato@adsantamaria.com.br" className="opacity-80 hover:opacity-100 transition">
       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18a2 2 0 002 2h16a2 2 0 002-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
     </a>
     <a href="https://www.facebook.com/ADSantaMariaRS/" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition">
       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
     </a>
-    <a href="https://www.youtube.com/c/ADSMcomunica" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition">
+    <a href="https://www.youtube.com/@adsantamariars" target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100 transition">
       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M21.582 7.243c-.24-.88-.9-1.54-1.78-1.78C18.25 5 12 5 12 5s-6.25 0-7.802.463c-.88.24-1.54.9-1.78 1.78C2 8.793 2 12 2 12s0 3.207.418 4.757c.24.88.9 1.54 1.78 1.78C5.75 19 12 19 12 19s6.25 0 7.802-.463c.88-.24 1.54-.9 1.78-1.78C22 15.207 22 12 22 12s0-3.207-.418-4.757zM9.75 15.5V8.5l6 3.5-6 3.5z"/></svg>
     </a>
   </div>
@@ -60,11 +60,13 @@ const Skeleton = ({ className = "" }) => (
 
 /* ---------- Página ---------- */
 export default function LinktreePage() {
+  const [isMounted, setIsMounted] = useState(false);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const q = query(collection(db, "links"), orderBy("order"));
     const unsub = onSnapshot(
       q,
@@ -77,19 +79,25 @@ export default function LinktreePage() {
     return () => unsub();
   }, []);
 
-  const handleShare = () => {
-    navigator.clipboard
-      .writeText(window.location.href)
-      .then(() => { setShowToast(true); setTimeout(() => setShowToast(false), 2500); })
-      .catch(console.error);
-  };
-
+  // >>> Mantido antes de qualquer early return para não quebrar a ordem dos hooks
   const safeLinks = useMemo(
     () => links.map((l) => ({ ...l, href: sanitizeUrl(l.href), icon: l.icon || autoIcon(l.href) })),
     [links]
   );
 
   if (!isMounted) return null;
+
+  const handleShare = () => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href)
+          .then(() => { setShowToast(true); setTimeout(() => setShowToast(false), 2500); });
+      }
+    } catch (e) {
+      // Silencia falhas não críticas (ex.: HTTP não seguro)
+      console.error(e);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 text-slate-800 font-sans relative overflow-hidden">
