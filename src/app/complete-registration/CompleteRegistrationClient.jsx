@@ -17,6 +17,7 @@ import { db, storage } from "@/lib/firebase/client";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useAuth } from "@/lib/firebase/AuthContext";
 import { onlyDigits, validateCPF } from "@/lib/utils/cpf";
+import { generateFamilyId } from "@/lib/firebase/generateFamilyId";
 
 /* Seções do formulário */
 import RegistrationTypeSection from "@/components/Registration/RegistrationTypeSection";
@@ -166,26 +167,6 @@ async function ensureInternalIdCounterAtLeast(id) {
       tx.set(ctrRef, { current: target, updatedAt: new Date() }, { merge: true });
     }
   });
-}
-
-const FAMILY_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-async function generateFamilyId() {
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    let id = "";
-    for (let i = 0; i < 6; i += 1) {
-      id += FAMILY_CHARS.charAt(Math.floor(Math.random() * FAMILY_CHARS.length));
-    }
-    const famRef = doc(db, "families", id);
-    const famSnap = await getDoc(famRef);
-    if (famSnap.exists()) continue;
-    try {
-      await setDoc(doc(db, "familyId_index", id), { createdAt: new Date() });
-      return id;
-    } catch (e) {
-      if (e.code !== "permission-denied") throw e;
-    }
-  }
 }
 
 /* Tenta incluir o usuário como "filho" em families/{id}/members/{uid}.
