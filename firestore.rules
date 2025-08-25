@@ -100,6 +100,15 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    match /familyId_index/{familyId} {
+      allow create: if request.auth != null
+        && !exists(/databases/$(database)/documents/familyId_index/$(familyId));
+
+      allow read: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
     match /families/{familyId} {
       // Qualquer usuário autenticado pode criar sua própria família. Leitura
       // e demais operações ficam restritas aos administradores ou membros

@@ -168,6 +168,26 @@ async function ensureInternalIdCounterAtLeast(id) {
   });
 }
 
+const FAMILY_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+async function generateFamilyId() {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    let id = "";
+    for (let i = 0; i < 6; i += 1) {
+      id += FAMILY_CHARS.charAt(Math.floor(Math.random() * FAMILY_CHARS.length));
+    }
+    const famRef = doc(db, "families", id);
+    const famSnap = await getDoc(famRef);
+    if (famSnap.exists()) continue;
+    try {
+      await setDoc(doc(db, "familyId_index", id), { createdAt: new Date() });
+      return id;
+    } catch (e) {
+      if (e.code !== "permission-denied") throw e;
+    }
+  }
+}
+
 /* Tenta incluir o usuário como "filho" em families/{id}/members/{uid}.
    Se passar, retorna { ok: true, familyId }. Se falhar, { ok: false }. */
 async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
@@ -179,7 +199,8 @@ async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
     const snap = await getDocs(q);
     let familyRef;
     if (snap.empty) {
-      familyRef = doc(familiesCol, crypto.randomUUID());
+      const newId = await generateFamilyId();
+      familyRef = doc(familiesCol, newId);
       await setDoc(familyRef, { responsibleCpf: cpfDigits });
     } else {
       familyRef = snap.docs[0].ref;
@@ -395,15 +416,19 @@ export default function CompleteRegistrationClient() {
         kinship  = "filho";
       } else {
         // cria própria família (titular)
-        familyId = cpf;
+        familyId = await generateFamilyId();
         await step("Criar/atualizar família (se titular)", () =>
-          setDoc(doc(db, "families", familyId), { responsibleCpf: familyId, updatedAt: new Date() }, { merge: true })
+          setDoc(
+            doc(db, "families", familyId),
+            { responsibleCpf: cpf, updatedAt: new Date() },
+            { merge: true }
+          )
         );
         await step("Adicionar titular na família", () =>
           setDoc(
             doc(db, "families", familyId, "members", uid),
             { uid, name: form.name, cpf, kinship, updatedAt: new Date() },
-            { merge: true },
+            { merge: true }
           )
         );
       }
