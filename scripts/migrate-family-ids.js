@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const admin = require('firebase-admin');
+const { randomUUID } = require('crypto');
 require('dotenv').config();
 
 if (!admin.apps.length) {
@@ -40,8 +41,8 @@ async function migrate() {
   for (const snap of cpfFamilies) {
     const oldId = snap.id;
     const data = snap.data();
-    const newRef = db.collection('families').doc();
-    const newId = newRef.id;
+    const newId = randomUUID();
+    const newRef = db.collection('families').doc(newId);
     console.log(`Migrando família ${oldId} -> ${newId}`);
 
     const membersSnap = await snap.ref.collection('members').get();

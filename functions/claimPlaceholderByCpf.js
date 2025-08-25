@@ -1,6 +1,7 @@
 // functions/claimPlaceholderByCpf.js
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
+const { randomUUID } = require("crypto");
 
 try { admin.app(); } catch { admin.initializeApp(); }
 
@@ -63,8 +64,8 @@ exports.claimPlaceholderByCpf = functions
       if (!famQuery.empty) {
         familyId = famQuery.docs[0].id;
       } else {
-        // gera um novo ID aleatório para a família
-        familyId = db.collection("families").doc().id;
+        // gera um novo ID para a família usando UUID
+        familyId = randomUUID();
       }
     }
 

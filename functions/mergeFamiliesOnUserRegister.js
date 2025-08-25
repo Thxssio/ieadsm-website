@@ -1,5 +1,6 @@
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
+const { randomUUID } = require("crypto");
 
 try {
   admin.app();
@@ -71,9 +72,9 @@ exports.mergeFamiliesOnUserRegister = functions
       }
     }
 
-    // 3) se ainda não há família, cria uma nova com ID aleatório
+    // 3) se ainda não há família, cria uma nova com UUID
     if (!familyIdToUse) {
-      familyIdToUse = db.collection("families").doc().id;
+      familyIdToUse = randomUUID();
       await db.doc(`families/${familyIdToUse}`).set(
         {
           responsibleCpf: cpfUsuario,
