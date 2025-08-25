@@ -77,7 +77,7 @@ const initialForm = {
   grauInstrucao: "",
   sexo: "",
   dataNascimento: "",
-  localNascimento: "",
+  naturalidade: "",
 
   // estado civil / família
   estadoCivil: "",

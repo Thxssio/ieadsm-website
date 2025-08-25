@@ -235,7 +235,7 @@ function UserFormModal({ open, onClose, userId }) {
                   <Labeled label="Nacionalidade">{data.nacionalidade}</Labeled>
                   <Labeled label="Profissão">{data.profissao}</Labeled>
                   <Labeled label="Grau de Instrução">{data.grauInstrucao}</Labeled>
-                  <Labeled label="Local de Nascimento">{data.localNascimento}</Labeled>
+                  <Labeled label="Naturalidade">{data.naturalidade}</Labeled>
                 </Section>
 
                 <Section icon={<UsersIcon size={16} />} title="Filiação">

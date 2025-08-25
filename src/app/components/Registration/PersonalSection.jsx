@@ -122,11 +122,11 @@ export default function PersonalSection({ form, setForm, inputCls }) {
           />
         </Field>
 
-        <Field label="Local de Nascimento" required>
+        <Field label="Naturalidade" required>
           <input
-            name="localNascimento"
+            name="naturalidade"
             className={inputCls}
-            value={form.localNascimento || ""}
+            value={form.naturalidade || ""}
             onChange={onChange}
           />
         </Field>

@@ -185,7 +185,7 @@ export function UserFichaPDF({ data, maskCPF, photoSrc, logoSrc, logoWidth = 56 
             <Field label="Nacionalidade">{data?.nacionalidade}</Field>
             <Field label="Profissão" last>{data?.profissao}</Field>
             <Field label="Grau de Instrução">{data?.grauInstrucao}</Field>
-            <Field label="Local de Nascimento" last>{data?.localNascimento}</Field>
+            <Field label="Naturalidade" last>{data?.naturalidade}</Field>
           </View>
         </View>
 
