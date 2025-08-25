@@ -5,6 +5,7 @@ import PageContent from "@/components/portal/ui/PageContent";
 import { db } from "@/lib/firebase/client";
 import { collection, doc, getDoc, getDocs, query, orderBy } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
+import { maskCPF } from "@/lib/utils/cpf";
 import {
   Users,
   Search,
@@ -339,8 +340,7 @@ function FamilyCard({ fam, open, onToggle }) {
                 {fam.members.map((m) => (
                   <li
                     key={m.id}
-                    className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
-                    title={m.email || m.id}
+                    className="group relative flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
                   >
                     <span
                       className="grid h-7 w-7 select-none place-items-center rounded-full text-xs font-semibold text-white"
@@ -351,6 +351,13 @@ function FamilyCard({ fam, open, onToggle }) {
                     <span className="max-w-[18ch] truncate">
                       {m.displayName || m.name || m.id}
                     </span>
+                    <div className="pointer-events-none absolute left-1/2 top-full z-10 mt-2 hidden w-64 -translate-x-1/2 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700 shadow-lg group-hover:block">
+                      <div className="font-semibold text-slate-800">
+                        {m.displayName || m.name || m.id}
+                      </div>
+                      {m.email && <div className="truncate">{m.email}</div>}
+                      {m.cpf && <div>CPF: {maskCPF(m.cpf)}</div>}
+                    </div>
                   </li>
                 ))}
               </ul>
