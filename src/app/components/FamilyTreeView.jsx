@@ -14,13 +14,13 @@ import React, { useEffect, useMemo, useRef, useState, useCallback } from "react"
  */
 
 export default function FamilyTreeView() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const cyRef = useRef<any>(null);
+  const containerRef = useRef(null);
+  const cyRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
-  const [layoutName, setLayoutName] = useState<string>("breadthfirst");
+  const [layoutName, setLayoutName] = useState("breadthfirst");
 
   // -------- Helpers --------
   const fetchData = useCallback(async () => {
@@ -46,15 +46,15 @@ export default function FamilyTreeView() {
   }, []);
 
   const makeLayout = useCallback(
-    (name: string) => {
+    (name) => {
       if (name === "dagre") {
-        return { name: "dagre", rankDir: "TB", nodeSep: 30, rankSep: 60, edgeSep: 10, fit: true, padding: 20, animate: true } as any;
+        return { name: "dagre", rankDir: "TB", nodeSep: 30, rankSep: 60, edgeSep: 10, fit: true, padding: 20, animate: true };
       }
       if (name === "cose") {
-        return { name: "cose", fit: true, padding: 30, animate: true } as any;
+        return { name: "cose", fit: true, padding: 30, animate: true };
       }
       // default breadthfirst
-      return { name: "breadthfirst", directed: true, padding: 20, animate: true, spacingFactor: 1.2 } as any;
+      return { name: "breadthfirst", directed: true, padding: 20, animate: true, spacingFactor: 1.2 };
     },
     []
   );
@@ -120,7 +120,7 @@ export default function FamilyTreeView() {
 
   // -------- Init --------
   useEffect(() => {
-    let cy: any;
+    let cy;
     let destroyed = false;
 
     (async () => {
@@ -134,7 +134,7 @@ export default function FamilyTreeView() {
         cy = cytoscape({
           container: containerRef.current,
           elements,
-          style: baseStyles as any,
+          style: baseStyles,
           layout: makeLayout(layoutName),
           wheelSensitivity: 0.2,
           selectionType: "single",
@@ -145,11 +145,11 @@ export default function FamilyTreeView() {
         cyRef.current = cy;
 
         // Hover visual
-        cy.on("mouseover", "node", (e: any) => e.target.addClass("hover"));
-        cy.on("mouseout", "node", (e: any) => e.target.removeClass("hover"));
+        cy.on("mouseover", "node", (e) => e.target.addClass("hover"));
+        cy.on("mouseout", "node", (e) => e.target.removeClass("hover"));
 
         // Tap p/ colapsar ramo
-        cy.on("tap", "node", (evt: any) => {
+        cy.on("tap", "node", (evt) => {
           const node = evt.target;
           const collapsed = node.data("collapsed");
           const descendants = node.successors();
@@ -175,7 +175,7 @@ export default function FamilyTreeView() {
         return () => {
           window.removeEventListener("resize", onResize);
         };
-      } catch (err: any) {
+      } catch (err) {
         console.error("Erro ao inicializar FamilyTreeView:", err);
         setError(err?.message ?? "Erro desconhecido");
         setLoading(false);
@@ -197,7 +197,7 @@ export default function FamilyTreeView() {
   const doRelayout = useCallback(() => cyRef.current?.layout(makeLayout(layoutName)).run(), [layoutName, makeLayout]);
   const collapseAll = useCallback(() => {
     const cy = cyRef.current; if (!cy) return;
-    cy.nodes().forEach((n: any) => {
+    cy.nodes().forEach((n) => {
       if (n.data("root") === "true") return;
       n.successors().hide();
       n.data("collapsed", true);
@@ -207,7 +207,7 @@ export default function FamilyTreeView() {
   const expandAll = useCallback(() => {
     const cy = cyRef.current; if (!cy) return;
     cy.elements().show();
-    cy.nodes().forEach((n: any) => n.data("collapsed", false));
+    cy.nodes().forEach((n) => n.data("collapsed", false));
     cy.layout(makeLayout(layoutName)).run();
   }, [makeLayout, layoutName]);
 
@@ -217,7 +217,7 @@ export default function FamilyTreeView() {
     cy.nodes().removeClass("search-hit");
     const q = query.trim().toLowerCase();
     if (!q) return;
-    cy.nodes().forEach((n: any) => {
+    cy.nodes().forEach((n) => {
       const label = String(n.data("label") ?? "").toLowerCase();
       if (label.includes(q)) n.addClass("search-hit");
     });
