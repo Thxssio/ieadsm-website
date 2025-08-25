@@ -38,7 +38,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/lib/ThemeContext";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/firebase/AuthContext";
 
 /* Helpers */
 function cx(...xs) { return xs.filter(Boolean).join(" "); }
@@ -132,7 +131,6 @@ export default function ConfigurationPage() {
   const auth = getAuth();
   const currentUser = auth.currentUser;
   const router = useRouter();
-  const { refreshProfile } = useAuth();
 
   /* Estado */
   const [displayName, setDisplayName] = useState(currentUser?.displayName || "");
@@ -559,12 +557,16 @@ export default function ConfigurationPage() {
                     doc(db, "users", uid),
                     {
                       profileComplete: false,
-                      onboarding: { status: "pending", step: 0, updatedAt: serverTimestamp() }
+                      onboarding: {
+                        status: "pending",
+                        step: 0,
+                        updatedAt: serverTimestamp(),
+                      },
                     },
                     { merge: true }
                   );
-                  await refreshProfile();
-                  router.replace("/complete-registration");
+                  await auth.signOut();
+                  router.replace("/login");
                 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-[#2a3d57] hover:bg-[#264254] active:scale-[.99]"
               >

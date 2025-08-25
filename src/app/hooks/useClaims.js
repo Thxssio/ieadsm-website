@@ -49,12 +49,18 @@ export function useClaims() {
             const tr = await user.getIdTokenResult();
             setClaims(tr.claims || {});
           } catch (e) {
-            console.error(
-              "Erro ao atualizar claims após mudança no Firestore:",
-              e
-            );
-            if (e?.code === "auth/user-token-expired") {
-              await auth.signOut();
+            if (e?.code === "auth/network-request-failed") {
+              console.warn(
+                "Falha de rede ao atualizar claims; mantendo claims atuais."
+              );
+            } else {
+              console.error(
+                "Erro ao atualizar claims após mudança no Firestore:",
+                e
+              );
+              if (e?.code === "auth/user-token-expired") {
+                await auth.signOut();
+              }
             }
           }
         },
