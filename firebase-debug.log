@@ -1,0 +1,96 @@
+[debug] [2025-08-25T03:53:11.444Z] ----------------------------------------------------------------------
+[debug] [2025-08-25T03:53:11.446Z] Command:       /home/thxssio/.nvm/versions/node/v20.19.4/bin/node /home/thxssio/.nvm/versions/node/v20.19.4/bin/firebase deploy
+[debug] [2025-08-25T03:53:11.446Z] CLI Version:   14.12.0
+[debug] [2025-08-25T03:53:11.446Z] Platform:      linux
+[debug] [2025-08-25T03:53:11.446Z] Node Version:  v20.19.4
+[debug] [2025-08-25T03:53:11.446Z] Time:          Mon Aug 25 2025 00:53:11 GMT-0300 (Brasilia Standard Time)
+[debug] [2025-08-25T03:53:11.446Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-08-25T03:53:11.572Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-25T03:53:11.573Z] > authorizing via signed-in user (adsantamariars@gmail.com)
+[debug] [2025-08-25T03:53:11.573Z] [iam] checking project ieadsmrs for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2025-08-25T03:53:11.574Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:11.574Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:11.574Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/ieadsmrs:testIamPermissions [none]
+[debug] [2025-08-25T03:53:11.574Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/ieadsmrs:testIamPermissions x-goog-quota-user=projects/ieadsmrs
+[debug] [2025-08-25T03:53:11.574Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ieadsmrs:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[debug] [2025-08-25T03:53:12.601Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/ieadsmrs:testIamPermissions 200
+[debug] [2025-08-25T03:53:12.602Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/ieadsmrs:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[debug] [2025-08-25T03:53:12.602Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:12.602Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:12.603Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/ieadsmrs/serviceAccounts/ieadsmrs@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-08-25T03:53:12.603Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/ieadsmrs/serviceAccounts/ieadsmrs@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-08-25T03:53:13.640Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/ieadsmrs/serviceAccounts/ieadsmrs@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-08-25T03:53:13.640Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/ieadsmrs/serviceAccounts/ieadsmrs@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-08-25T03:53:13.641Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:13.641Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:13.641Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/ieadsmrs [none]
+[debug] [2025-08-25T03:53:14.131Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/ieadsmrs 200
+[debug] [2025-08-25T03:53:14.131Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/ieadsmrs {"projectId":"ieadsmrs","projectNumber":"188888901526","displayName":"adsantamariars","name":"projects/ieadsmrs","resources":{"hostingSite":"ieadsmrs"},"state":"ACTIVE","etag":"1_b57b0e8b-feed-4587-b928-0c5f6b0676f5"}
+[debug] [2025-08-25T03:53:14.944Z] defaultcredentials: writing to file /home/thxssio/.config/firebase/adsantamariars_gmail_com_application_default_credentials.json
+[debug] [2025-08-25T03:53:14.945Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:14.945Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:14.945Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/ieadsmrs/sites pageToken=&pageSize=10
+[debug] [2025-08-25T03:53:16.078Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/ieadsmrs/sites 200
+[debug] [2025-08-25T03:53:16.078Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/ieadsmrs/sites {"sites":[{"name":"projects/ieadsmrs/sites/ieadsmrs","defaultUrl":"https://ieadsmrs.web.app","appId":"1:188888901526:web:4a9cac9449dade73d39fb7","type":"DEFAULT_SITE"}]}
+[debug] [2025-08-25T03:53:16.079Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:16.080Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:16.080Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:188888901526:web:4a9cac9449dade73d39fb7/config [none]
+[debug] [2025-08-25T03:53:16.812Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:188888901526:web:4a9cac9449dade73d39fb7/config 200
+[debug] [2025-08-25T03:53:16.812Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:188888901526:web:4a9cac9449dade73d39fb7/config {"projectId":"ieadsmrs","appId":"1:188888901526:web:4a9cac9449dade73d39fb7","storageBucket":"ieadsmrs.firebasestorage.app","apiKey":"AIzaSyDOP3iTdmR7Q9hqj797wxsIletOwL_D8Q4","authDomain":"ieadsmrs.firebaseapp.com","messagingSenderId":"188888901526","measurementId":"G-F0GD3XM7WZ"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-08-25T03:53:18.594Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:18.594Z] Checked if tokens are valid: true, expires at: 1756096553214
+[debug] [2025-08-25T03:53:18.594Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/ieadsmrs/sites/ieadsmrs [none]
+[debug] [2025-08-25T03:53:18.848Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/ieadsmrs/sites/ieadsmrs 200
+[debug] [2025-08-25T03:53:18.848Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/ieadsmrs/sites/ieadsmrs {"name":"projects/ieadsmrs/sites/ieadsmrs","defaultUrl":"https://ieadsmrs.web.app","appId":"1:188888901526:web:4a9cac9449dade73d39fb7","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.4.4
+
+[info]    - Environments: .env.production
+
+
+[info]    Creating an optimized production build ...
+
+[info] Failed to compile.
+
+
+[info] ./src/app/components/FamilyTreeView.jsx
+Error:   x Expected ',', got ':'
+    ,-[/home/thxssio/ieadsm-website/src/app/components/FamilyTreeView.jsx:49:1]
+ 46 |   }, []);
+ 47 | 
+ 48 |   const makeLayout = useCallback(
+ 49 |     (name: string) => {
+    :          ^
+ 50 |       if (name === "dagre") {
+ 51 |         return { name: "dagre", rankDir: "TB", nodeSep: 30, rankSep: 60, edgeSep: 10, fit: true, padding: 20, animate: true } as any;
+ 52 |       }
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/components/FamilyTreeView.jsx
+./src/app/components/portal/features/FamiliesPage.jsx
+./src/app/components/portal/AdminPortalLayout.jsx
+./src/app/portal/PortalClient.jsx
+
+
+[info] 
+
+[info] > Build failed because of webpack errors
+
+[debug] [2025-08-25T03:53:24.869Z] Error: ENOENT: no such file or directory, open '/home/thxssio/ieadsm-website/.next/server/middleware-manifest.json'
+[error] 
+[error] Error: An unexpected error has occurred.

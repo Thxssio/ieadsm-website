@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import PageContent from "@/components/portal/ui/PageContent";
+import FamilyTreeView from "@/components/FamilyTreeView";
 import { db } from "@/lib/firebase/client";
 import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -94,6 +95,9 @@ export default function FamiliesPage() {
   const [openIds, setOpenIds] = useState(() => new Set());
   const [view, setView] = useState("grid"); // "grid" | "list"
 
+  // NEW: controla modal fullscreen para isolar a árvore
+  const [treeOpen, setTreeOpen] = useState(false);
+
   const toggleOpen = useCallback((id) => {
     setOpenIds((prev) => {
       const n = new Set(prev);
@@ -181,6 +185,37 @@ export default function FamiliesPage() {
       }
       description="Visualize e navegue pelas famílias cadastradas. Pesquise, ordene e expanda para ver os membros."
     >
+      {/* Family Tree Section (card preview + ação de tela cheia) */}
+      <section className="mb-8">
+        <div className="rounded-2xl border border-slate-200 bg-white/70 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-800">Árvore de famílias</h2>
+              <p className="text-sm text-slate-600">Visualização hierárquica das relações familiares.</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setTreeOpen(true)}
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Tela cheia
+              </button>
+            </div>
+          </div>
+
+          {/* preview isolado (altura menor); a versão completa abre no modal */}
+          <div className="border-t border-slate-200">
+            <div className="p-3">
+              <div className="rounded-xl border border-slate-200 bg-white">
+                <div className="h-[380px] rounded-[10px] overflow-hidden">
+                  <FamilyTreeView />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Top Stats */}
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Famílias" value={totals.totalFamilies} icon={Users} />
@@ -339,6 +374,71 @@ export default function FamiliesPage() {
           ))}
         </div>
       )}
+
+      {/* Modal de tela cheia para isolar a árvore */}
+      <AnimatePresence>
+        {treeOpen && (
+          <motion.div
+            className="fixed inset-0 z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* Overlay */}
+            <div
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              onClick={() => setTreeOpen(false)}
+            />
+
+            {/* Conteúdo */}
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              className="absolute inset-4 sm:inset-8 rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col"
+              initial={{ scale: 0.98, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.98, opacity: 0 }}
+              transition={{ type: "tween", duration: 0.18 }}
+            >
+              {/* Header do modal */}
+              <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                <div>
+                  <h3 className="text-base font-semibold text-slate-800">Árvore de famílias</h3>
+                  <p className="text-xs text-slate-600">Visualização em tela cheia</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {/* Eventos globais opcionais para controlar o grafo */}
+                  <button
+                    onClick={() => window.dispatchEvent(new CustomEvent("familytree:relayout"))}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50"
+                  >
+                    Re‑layout
+                  </button>
+                  <button
+                    onClick={() => window.dispatchEvent(new CustomEvent("familytree:fit"))}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50"
+                  >
+                    Fit
+                  </button>
+                  <button
+                    onClick={() => setTreeOpen(false)}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+
+              {/* Corpo do modal */}
+              <div className="flex-1 p-3">
+                <div className="h-full rounded-xl border border-slate-200 bg-white">
+                  <FamilyTreeView />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </PageContent>
   );
 }
