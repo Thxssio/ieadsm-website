@@ -100,4 +100,15 @@ exports.mergeFamiliesOnUserRegister = functions
       },
       { merge: true }
     );
+
+    // Remove placeholder baseado no CPF se existir
+    const placeholderRef = db.doc(`families/${familyIdToUse}/members/${cpfUsuario}`);
+    try {
+      const placeholderSnap = await placeholderRef.get();
+      if (placeholderSnap.exists && placeholderRef.id !== uid) {
+        await placeholderRef.delete();
+      }
+    } catch (err) {
+      console.error("Erro ao remover placeholder de membro", err);
+    }
   });
