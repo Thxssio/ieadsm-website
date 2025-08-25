@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import PageContent from "@/components/portal/ui/PageContent";
+import FamilyTreeView from "@/components/FamilyTreeView";
 import { db } from "@/lib/firebase/client";
 import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -181,6 +182,16 @@ export default function FamiliesPage() {
       }
       description="Visualize e navegue pelas famílias cadastradas. Pesquise, ordene e expanda para ver os membros."
     >
+      {/* Family Tree Section */}
+      <section className="mb-8">
+        <h2 className="mb-2 text-lg font-semibold text-slate-800">
+          Árvore de famílias
+        </h2>
+        <div className="rounded-2xl border border-slate-200 bg-white/70 p-4">
+          <FamilyTreeView />
+        </div>
+      </section>
+
       {/* Top Stats */}
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Famílias" value={totals.totalFamilies} icon={Users} />
