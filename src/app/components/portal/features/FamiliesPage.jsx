@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import PageContent from "@/components/portal/ui/PageContent";
 import { db } from "@/lib/firebase/client";
-import { collection, doc, getDoc, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
 import { maskCPF } from "@/lib/utils/cpf";
 import {
@@ -12,11 +12,14 @@ import {
   UserCircle2,
   ChevronDown,
   ChevronUp,
-  Loader2,
   AlertTriangle,
   Fingerprint,
   SortAsc,
   SortDesc,
+  X,
+  Filter,
+  Grid3X3,
+  Rows,
 } from "lucide-react";
 
 /* ===================== Helpers ===================== */
@@ -29,16 +32,18 @@ const getInitials = (name = "") => {
 
 const stringToHsl = (str) => {
   let hash = 0;
-  for (let i = 0; i < String(str).length; i++) hash = String(str).charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < String(str).length; i++)
+    hash = String(str).charCodeAt(i) + ((hash << 5) - hash);
   const h = Math.abs(hash) % 360;
   return `hsl(${h} 70% 40%)`;
 };
 
-const shimmer = "relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.4s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/40 before:to-transparent";
+const shimmer =
+  "relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.4s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/40 before:to-transparent";
 
 /* ===================== UI Bits ===================== */
 const Stat = ({ label, value, icon: Icon }) => (
-  <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/60 p-3 shadow-sm">
+  <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/70 p-3 shadow-sm">
     <div className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900/5">
       <Icon className="h-5 w-5 text-slate-700" />
     </div>
@@ -47,6 +52,21 @@ const Stat = ({ label, value, icon: Icon }) => (
       <div className="text-lg font-semibold text-slate-800">{value}</div>
     </div>
   </div>
+);
+
+const Chip = ({ children, onClear }) => (
+  <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-700 shadow-sm">
+    {children}
+    {onClear && (
+      <button
+        onClick={onClear}
+        className="rounded p-0.5 text-slate-500 hover:bg-slate-100"
+        aria-label="Limpar"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+    )}
+  </span>
 );
 
 const SkeletonCard = () => (
@@ -70,10 +90,11 @@ export default function FamiliesPage() {
 
   const [qText, setQText] = useState("");
   const [minMembers, setMinMembers] = useState(0);
-  const [sort, setSort] = useState("name-asc"); // name-asc | name-desc | size-asc | size-desc
-  const [openIds, setOpenIds] = useState(() => new Set());
+  const [sort, setSort] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc">("name-asc");
+  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set());
+  const [view, setView] = useState<"grid" | "list">("grid");
 
-  const toggleOpen = useCallback((id) => {
+  const toggleOpen = useCallback((id: string) => {
     setOpenIds((prev) => {
       const n = new Set(prev);
       n.has(id) ? n.delete(id) : n.add(id);
@@ -86,9 +107,7 @@ export default function FamiliesPage() {
       setLoading(true);
       setError("");
       try {
-        // Order families by a friendly field if it exists; fallback to ID
         const famSnap = await getDocs(query(collection(db, "families")));
-
         const familiesData = await Promise.all(
           famSnap.docs.map(async (fDoc) => {
             const membersSnap = await getDocs(collection(db, "families", fDoc.id, "members"));
@@ -96,13 +115,16 @@ export default function FamiliesPage() {
               membersSnap.docs.map(async (m) => {
                 const uRef = doc(db, "users", m.id);
                 const uSnap = await getDoc(uRef);
-                return { id: m.id, ...(uSnap.exists() ? uSnap.data() : {}), _rawMember: m.data?.() };
+                return {
+                  id: m.id,
+                  ...(uSnap.exists() ? uSnap.data() : {}),
+                  _rawMember: m.data?.(),
+                };
               })
             );
             return { id: fDoc.id, ...fDoc.data(), members };
           })
         );
-
         setFamilies(familiesData);
       } catch (e) {
         console.error("Erro ao carregar famílias:", e);
@@ -116,10 +138,10 @@ export default function FamiliesPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    const norm = (s) => String(s || "").toLowerCase();
-    let list = families.filter((f) => {
+    const norm = (s: any) => String(s || "").toLowerCase();
+    let list = families.filter((f: any) => {
       const alvo = [f.name, f.familyName, f.id, f.responsibleCpf, f.responsibleName]
-        .concat(f.members?.map((m) => m.displayName || m.name || m.id) || [])
+        .concat(f.members?.map((m: any) => m.displayName || m.name || m.id) || [])
         .map(norm)
         .join(" ");
       const okText = norm(alvo).includes(norm(qText));
@@ -127,22 +149,26 @@ export default function FamiliesPage() {
       return okText && okMin;
     });
 
-    const cmp = {
-      "name-asc": (a, b) => norm(a.familyName || a.name || a.id).localeCompare(norm(b.familyName || b.name || b.id)),
-      "name-desc": (a, b) => -cmp["name-asc"](a, b),
-      "size-asc": (a, b) => (a.members?.length || 0) - (b.members?.length || 0),
-      "size-desc": (a, b) => -cmp["size-asc"](a, b),
-    }[sort];
+    const cmp =
+      {
+        "name-asc": (a: any, b: any) =>
+          norm(a.familyName || a.name || a.id).localeCompare(norm(b.familyName || b.name || b.id)),
+        "name-desc": (a: any, b: any) => -norm(a.familyName || a.name || a.id).localeCompare(norm(b.familyName || b.name || b.id)),
+        "size-asc": (a: any, b: any) => (a.members?.length || 0) - (b.members?.length || 0),
+        "size-desc": (a: any, b: any) => (b.members?.length || 0) - (a.members?.length || 0),
+      }[sort] || ((a: any, b: any) => 0);
 
     return [...list].sort(cmp);
   }, [families, qText, minMembers, sort]);
 
   const totals = useMemo(() => {
     const totalFamilies = families.length;
-    const totalPeople = families.reduce((acc, f) => acc + (f.members?.length || 0), 0);
+    const totalPeople = families.reduce((acc: number, f: any) => acc + (f.members?.length || 0), 0);
     const avg = totalFamilies ? Math.round((totalPeople / totalFamilies) * 10) / 10 : 0;
     return { totalFamilies, totalPeople, avg };
   }, [families]);
+
+  const hasActiveFilters = !!qText || Number(minMembers) > 0 || sort !== "name-asc";
 
   return (
     <PageContent
@@ -154,47 +180,107 @@ export default function FamiliesPage() {
       }
       description="Visualize e navegue pelas famílias cadastradas. Pesquise, ordene e expanda para ver os membros."
     >
-      {/* Controls */}
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Top Stats */}
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Famílias" value={totals.totalFamilies} icon={Users} />
         <Stat label="Pessoas" value={totals.totalPeople} icon={UserCircle2} />
         <Stat label="Média por família" value={totals.avg} icon={Fingerprint} />
-        <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/60 p-3 shadow-sm">
-          <div className="relative w-full">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-            <input
-              value={qText}
-              onChange={(e) => setQText(e.target.value)}
-              placeholder="Buscar por nome, CPF, membro..."
-              className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
-            />
+        {/* View Toggle */}
+        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/70 p-3 shadow-sm">
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <Filter className="h-4 w-4" />
+            Exibição
+          </div>
+          <div className="inline-flex overflow-hidden rounded-xl border border-slate-200">
+            <button
+              onClick={() => setView("grid")}
+              className={`flex items-center gap-2 px-3 py-1.5 text-sm ${view === "grid" ? "bg-slate-900/5 text-slate-900" : "text-slate-600 hover:bg-slate-50"}`}
+              aria-pressed={view === "grid"}
+            >
+              <Grid3X3 className="h-4 w-4" /> Grade
+            </button>
+            <button
+              onClick={() => setView("list")}
+              className={`flex items-center gap-2 px-3 py-1.5 text-sm ${view === "list" ? "bg-slate-900/5 text-slate-900" : "text-slate-600 hover:bg-slate-50"}`}
+              aria-pressed={view === "list"}
+            >
+              <Rows className="h-4 w-4" /> Lista
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="mb-5 flex flex-wrap items-center gap-3">
-        <label className="text-sm text-slate-600">Mín. membros</label>
-        <input
-          type="number"
-          min={0}
-          value={minMembers}
-          onChange={(e) => setMinMembers(e.target.value)}
-          className="h-9 w-24 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
-        />
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-sm text-slate-600">Ordenar:</span>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
-          >
-            <option value="name-asc">Nome (A → Z)</option>
-            <option value="name-desc">Nome (Z → A)</option>
-            <option value="size-asc">Tamanho (menor)</option>
-            <option value="size-desc">Tamanho (maior)</option>
-          </select>
-          {sort.includes("asc") ? <SortAsc className="h-4 w-4 text-slate-500" /> : <SortDesc className="h-4 w-4 text-slate-500" />}
+      {/* Sticky Toolbar */}
+      <div className="sticky top-0 z-10 -mx-4 mb-4 bg-gradient-to-b from-white/90 to-white/60 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-xl sm:border sm:border-slate-200">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:max-w-md">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+            <input
+              value={qText}
+              onChange={(e) => setQText(e.target.value)}
+              placeholder="Buscar por nome, CPF ou membro…"
+              className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="text-xs text-slate-600">Mín. membros</label>
+            <input
+              type="number"
+              min={0}
+              value={minMembers}
+              onChange={(e) => setMinMembers(e.target.value as any)}
+              className="h-9 w-24 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            />
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-600">Ordenar</span>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as any)}
+                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+              >
+                <option value="name-asc">Nome (A → Z)</option>
+                <option value="name-desc">Nome (Z → A)</option>
+                <option value="size-asc">Tamanho (menor)</option>
+                <option value="size-desc">Tamanho (maior)</option>
+              </select>
+              {`${sort}`.includes("asc") ? (
+                <SortAsc className="h-4 w-4 text-slate-500" />
+              ) : (
+                <SortDesc className="h-4 w-4 text-slate-500" />
+              )}
+            </div>
+
+            {hasActiveFilters && (
+              <button
+                onClick={() => {
+                  setQText("");
+                  setMinMembers(0 as any);
+                  setSort("name-asc");
+                }}
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Limpar filtros
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Chips de filtros ativos */}
+        {hasActiveFilters && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {!!qText && <Chip onClear={() => setQText("")}>Busca: “{qText}”</Chip>}
+            {Number(minMembers) > 0 && (
+              <Chip onClear={() => setMinMembers(0)}>Mín. membros: {minMembers}</Chip>
+            )}
+            {sort !== "name-asc" && (
+              <Chip onClear={() => setSort("name-asc")}>
+                Ordenação: {sort.replace("-", " ").toUpperCase()}
+              </Chip>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Error */}
@@ -204,7 +290,7 @@ export default function FamiliesPage() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="mb-6 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-800"
+            className="mb-4 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-800"
           >
             <AlertTriangle className="h-5 w-5" />
             <div className="text-sm">{error}</div>
@@ -212,16 +298,16 @@ export default function FamiliesPage() {
         )}
       </AnimatePresence>
 
-      {/* Loading */}
+      {/* Content */}
       {loading ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className={`grid gap-4 ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}>
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState />
-      ) : (
+      ) : view === "grid" ? (
         <motion.div
           layout
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
@@ -229,15 +315,16 @@ export default function FamiliesPage() {
           animate="visible"
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
         >
-          {filtered.map((fam) => (
-            <FamilyCard
-              key={fam.id}
-              fam={fam}
-              open={openIds.has(fam.id)}
-              onToggle={() => toggleOpen(fam.id)}
-            />
+          {filtered.map((fam: any) => (
+            <FamilyCard key={fam.id} fam={fam} open={openIds.has(fam.id)} onToggle={() => toggleOpen(fam.id)} qText={qText} />
           ))}
         </motion.div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((fam: any) => (
+            <FamilyRow key={fam.id} fam={fam} open={openIds.has(fam.id)} onToggle={() => toggleOpen(fam.id)} qText={qText} />
+          ))}
+        </div>
       )}
     </PageContent>
   );
@@ -258,7 +345,7 @@ function EmptyState() {
   );
 }
 
-function FamilyCard({ fam, open, onToggle }) {
+function FamilyCard({ fam, open, onToggle, qText }: any) {
   const title = fam.familyName || fam.name || `Família ${fam.id}`;
   const memberCount = fam.members?.length || 0;
   const responsible = fam.responsibleName || fam.responsibleCpf;
@@ -272,7 +359,7 @@ function FamilyCard({ fam, open, onToggle }) {
       className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
     >
       {/* Accent */}
-      <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-slate-900/[0.03] to-transparent opacity-0 transition group-hover:opacity-100" />
+      <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-slate-900/[0.04] to-transparent opacity-0 transition group-hover:opacity-100" />
 
       <div className="mb-4 flex items-start gap-3">
         <div
@@ -283,14 +370,32 @@ function FamilyCard({ fam, open, onToggle }) {
           {getInitials(title)}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="truncate text-base font-semibold text-slate-800">{title}</div>
-          {responsible && (
-            <div className="mt-0.5 inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-600">
-              <span className="font-medium">Responsável:</span>
-              <span className="text-slate-700">{responsible}</span>
+          <div className="truncate text-base font-semibold text-slate-800">
+            {highlight(title, qText)}
+          </div>
+
+          {/* Collage de membros */}
+          {memberCount > 0 && (
+            <div className="mt-1 flex -space-x-2">
+              {fam.members.slice(0, 5).map((m: any) => (
+                <span
+                  key={m.id}
+                  className="grid h-6 w-6 select-none place-items-center rounded-full text-[10px] font-semibold text-white ring-2 ring-white"
+                  style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
+                  title={m.displayName || m.name || m.id}
+                >
+                  {getInitials(m.displayName || m.name || m.id)}
+                </span>
+              ))}
+              {memberCount > 5 && (
+                <span className="grid h-6 w-6 place-items-center rounded-full bg-slate-200 text-[10px] font-semibold text-slate-700 ring-2 ring-white">
+                  +{memberCount - 5}
+                </span>
+              )}
             </div>
           )}
         </div>
+
         <button
           onClick={onToggle}
           className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
@@ -307,20 +412,11 @@ function FamilyCard({ fam, open, onToggle }) {
         </button>
       </div>
 
-      <div className="mb-4 flex items-center gap-2 text-sm text-slate-600">
-        <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
-          {memberCount} membro{memberCount === 1 ? "" : "s"}
-        </span>
-        {fam.responsibleCpf && (
-          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
-            CPF: {fam.responsibleCpf}
-          </span>
-        )}
-        {fam.createdAt && (
-          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
-            Criada em {formatMaybeDate(fam.createdAt)}
-          </span>
-        )}
+      <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-slate-600">
+        <Badge>{memberCount} membro{memberCount === 1 ? "" : "s"}</Badge>
+        {fam.responsibleCpf && <Badge>CPF: {maskCPF(String(fam.responsibleCpf))}</Badge>}
+        {fam.responsibleName && <Badge>Responsável: {highlight(fam.responsibleName, qText)}</Badge>}
+        {fam.createdAt && <Badge>Criada em {formatMaybeDate(fam.createdAt)}</Badge>}
       </div>
 
       <AnimatePresence initial={false}>
@@ -337,7 +433,7 @@ function FamilyCard({ fam, open, onToggle }) {
               <div className="text-sm text-slate-600">Nenhum membro vinculado.</div>
             ) : (
               <ul className="flex flex-wrap gap-2">
-                {fam.members.map((m) => (
+                {fam.members.map((m: any) => (
                   <li
                     key={m.id}
                     className="group relative flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
@@ -348,15 +444,23 @@ function FamilyCard({ fam, open, onToggle }) {
                     >
                       {getInitials(m.displayName || m.name || m.id)}
                     </span>
-                    <span className="max-w-[18ch] truncate">
-                      {m.displayName || m.name || m.id}
+                    <span className="max-w-[22ch] truncate">
+                      {highlight(m.displayName || m.name || m.id, qText)}
                     </span>
+                    {/* hover card */}
                     <div className="pointer-events-none absolute left-1/2 top-full z-10 mt-2 hidden w-64 -translate-x-1/2 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700 shadow-lg group-hover:block">
-                      <div className="font-semibold text-slate-800">
+                      {(m.photoURL || m.photoUrl) && (
+                        <img
+                          src={m.photoURL || m.photoUrl}
+                          alt={m.displayName || m.name || m.id}
+                          className="mx-auto mb-2 h-16 w-16 rounded-full object-cover"
+                        />
+                      )}
+                      <div className="text-center font-semibold text-slate-800">
                         {m.displayName || m.name || m.id}
                       </div>
-                      {m.email && <div className="truncate">{m.email}</div>}
-                      {m.cpf && <div>CPF: {maskCPF(m.cpf)}</div>}
+                      {m.email && <div className="truncate text-center">{m.email}</div>}
+                      {m.cpf && <div className="text-center">CPF: {maskCPF(m.cpf)}</div>}
                     </div>
                   </li>
                 ))}
@@ -369,13 +473,133 @@ function FamilyCard({ fam, open, onToggle }) {
   );
 }
 
+function FamilyRow({ fam, open, onToggle, qText }: any) {
+  const title = fam.familyName || fam.name || `Família ${fam.id}`;
+  const memberCount = fam.members?.length || 0;
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className="grid h-10 w-10 select-none place-items-center rounded-lg text-white"
+          style={{ background: stringToHsl(title) }}
+        >
+          {getInitials(title)}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h4 className="truncate text-base font-semibold text-slate-800">
+              {highlight(title, qText)}
+            </h4>
+            <Badge>{memberCount} membro{memberCount === 1 ? "" : "s"}</Badge>
+            {fam.responsibleName && <Badge>Resp.: {highlight(fam.responsibleName, qText)}</Badge>}
+            {fam.responsibleCpf && <Badge>CPF: {maskCPF(String(fam.responsibleCpf))}</Badge>}
+            {fam.createdAt && <Badge>{formatMaybeDate(fam.createdAt)}</Badge>}
+          </div>
+
+          <AnimatePresence initial={false}>
+            {open && (
+              <motion.div
+                key="members-row"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="mt-3"
+              >
+                {memberCount === 0 ? (
+                  <div className="text-sm text-slate-600">Nenhum membro vinculado.</div>
+                ) : (
+                  <ul className="flex flex-wrap gap-2">
+                    {fam.members.map((m: any) => (
+                      <li
+                        key={m.id}
+                        className="group flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
+                      >
+                        <span
+                          className="grid h-7 w-7 select-none place-items-center rounded-full text-xs font-semibold text-white"
+                          style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
+                        >
+                          {getInitials(m.displayName || m.name || m.id)}
+                        </span>
+                        <span className="max-w-[28ch] truncate">
+                          {highlight(m.displayName || m.name || m.id, qText)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <button
+          onClick={onToggle}
+          className="ml-2 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+        >
+          {open ? (
+            <>
+              <ChevronUp className="h-4 w-4" /> Recolher
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-4 w-4" /> Ver membros
+            </>
+          )}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ===================== Small UI ===================== */
+function Badge({ children }: any) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
+      {children}
+    </span>
+  );
+}
+
 /* ===================== Utils ===================== */
-function formatMaybeDate(val) {
+function formatMaybeDate(val: any) {
   try {
-    // Supports Firestore Timestamp (has toDate) or ISO string/number
     if (val?.toDate) return new Intl.DateTimeFormat("pt-BR").format(val.toDate());
     const d = new Date(val);
-    if (!isNaN(d)) return new Intl.DateTimeFormat("pt-BR").format(d);
+    if (!isNaN(d as any)) return new Intl.DateTimeFormat("pt-BR").format(d);
   } catch {}
   return "—";
+}
+
+/** Destaque ingênuo do termo buscado usando <mark> (sem HTML de entrada). */
+function highlight(text: string, query: string) {
+  if (!query) return text;
+  try {
+    const parts = String(text).split(new RegExp(`(${escapeRegExp(query)})`, "ig"));
+    return (
+      <>
+        {parts.map((p, i) =>
+          p.toLowerCase() === query.toLowerCase() ? (
+            <mark key={i} className="rounded bg-yellow-200/60 px-0.5">
+              {p}
+            </mark>
+          ) : (
+            <React.Fragment key={i}>{p}</React.Fragment>
+          )
+        )}
+      </>
+    );
+  } catch {
+    return text;
+  }
+}
+function escapeRegExp(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
