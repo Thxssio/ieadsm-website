@@ -90,11 +90,11 @@ export default function FamiliesPage() {
 
   const [qText, setQText] = useState("");
   const [minMembers, setMinMembers] = useState(0);
-  const [sort, setSort] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc">("name-asc");
-  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set());
-  const [view, setView] = useState<"grid" | "list">("grid");
+  const [sort, setSort] = useState("name-asc"); // "name-asc" | "name-desc" | "size-asc" | "size-desc"
+  const [openIds, setOpenIds] = useState(() => new Set());
+  const [view, setView] = useState("grid"); // "grid" | "list"
 
-  const toggleOpen = useCallback((id: string) => {
+  const toggleOpen = useCallback((id) => {
     setOpenIds((prev) => {
       const n = new Set(prev);
       n.has(id) ? n.delete(id) : n.add(id);
@@ -138,10 +138,10 @@ export default function FamiliesPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    const norm = (s: any) => String(s || "").toLowerCase();
-    let list = families.filter((f: any) => {
+    const norm = (s) => String(s || "").toLowerCase();
+    let list = families.filter((f) => {
       const alvo = [f.name, f.familyName, f.id, f.responsibleCpf, f.responsibleName]
-        .concat(f.members?.map((m: any) => m.displayName || m.name || m.id) || [])
+        .concat(f.members?.map((m) => m.displayName || m.name || m.id) || [])
         .map(norm)
         .join(" ");
       const okText = norm(alvo).includes(norm(qText));
@@ -151,19 +151,20 @@ export default function FamiliesPage() {
 
     const cmp =
       {
-        "name-asc": (a: any, b: any) =>
+        "name-asc": (a, b) =>
           norm(a.familyName || a.name || a.id).localeCompare(norm(b.familyName || b.name || b.id)),
-        "name-desc": (a: any, b: any) => -norm(a.familyName || a.name || a.id).localeCompare(norm(b.familyName || b.name || b.id)),
-        "size-asc": (a: any, b: any) => (a.members?.length || 0) - (b.members?.length || 0),
-        "size-desc": (a: any, b: any) => (b.members?.length || 0) - (a.members?.length || 0),
-      }[sort] || ((a: any, b: any) => 0);
+        "name-desc": (a, b) =>
+          -norm(a.familyName || a.name || a.id).localeCompare(norm(b.familyName || b.name || b.id)),
+        "size-asc": (a, b) => (a.members?.length || 0) - (b.members?.length || 0),
+        "size-desc": (a, b) => (b.members?.length || 0) - (a.members?.length || 0),
+      }[sort] || ((a, b) => 0);
 
     return [...list].sort(cmp);
   }, [families, qText, minMembers, sort]);
 
   const totals = useMemo(() => {
     const totalFamilies = families.length;
-    const totalPeople = families.reduce((acc: number, f: any) => acc + (f.members?.length || 0), 0);
+    const totalPeople = families.reduce((acc, f) => acc + (f.members?.length || 0), 0);
     const avg = totalFamilies ? Math.round((totalPeople / totalFamilies) * 10) / 10 : 0;
     return { totalFamilies, totalPeople, avg };
   }, [families]);
@@ -229,7 +230,7 @@ export default function FamiliesPage() {
               type="number"
               min={0}
               value={minMembers}
-              onChange={(e) => setMinMembers(e.target.value as any)}
+              onChange={(e) => setMinMembers(e.target.value)}
               className="h-9 w-24 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
             />
 
@@ -237,7 +238,7 @@ export default function FamiliesPage() {
               <span className="text-xs text-slate-600">Ordenar</span>
               <select
                 value={sort}
-                onChange={(e) => setSort(e.target.value as any)}
+                onChange={(e) => setSort(e.target.value)}
                 className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
               >
                 <option value="name-asc">Nome (A → Z)</option>
@@ -256,7 +257,7 @@ export default function FamiliesPage() {
               <button
                 onClick={() => {
                   setQText("");
-                  setMinMembers(0 as any);
+                  setMinMembers(0);
                   setSort("name-asc");
                 }}
                 className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
@@ -315,14 +316,26 @@ export default function FamiliesPage() {
           animate="visible"
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
         >
-          {filtered.map((fam: any) => (
-            <FamilyCard key={fam.id} fam={fam} open={openIds.has(fam.id)} onToggle={() => toggleOpen(fam.id)} qText={qText} />
+          {filtered.map((fam) => (
+            <FamilyCard
+              key={fam.id}
+              fam={fam}
+              open={openIds.has(fam.id)}
+              onToggle={() => toggleOpen(fam.id)}
+              qText={qText}
+            />
           ))}
         </motion.div>
       ) : (
         <div className="space-y-3">
-          {filtered.map((fam: any) => (
-            <FamilyRow key={fam.id} fam={fam} open={openIds.has(fam.id)} onToggle={() => toggleOpen(fam.id)} qText={qText} />
+          {filtered.map((fam) => (
+            <FamilyRow
+              key={fam.id}
+              fam={fam}
+              open={openIds.has(fam.id)}
+              onToggle={() => toggleOpen(fam.id)}
+              qText={qText}
+            />
           ))}
         </div>
       )}
@@ -345,10 +358,9 @@ function EmptyState() {
   );
 }
 
-function FamilyCard({ fam, open, onToggle, qText }: any) {
+function FamilyCard({ fam, open, onToggle, qText }) {
   const title = fam.familyName || fam.name || `Família ${fam.id}`;
   const memberCount = fam.members?.length || 0;
-  const responsible = fam.responsibleName || fam.responsibleCpf;
 
   return (
     <motion.div
@@ -356,10 +368,11 @@ function FamilyCard({ fam, open, onToggle, qText }: any) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
-      className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+      // card é um grupo isolado
+      className="group/card relative overflow-visible rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
     >
-      {/* Accent */}
-      <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-slate-900/[0.04] to-transparent opacity-0 transition group-hover:opacity-100" />
+      {/* Accent arredondado */}
+      <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 rounded-t-2xl bg-gradient-to-b from-slate-900/[0.04] to-transparent opacity-0 transition group-hover/card:opacity-100" />
 
       <div className="mb-4 flex items-start gap-3">
         <div
@@ -374,19 +387,29 @@ function FamilyCard({ fam, open, onToggle, qText }: any) {
             {highlight(title, qText)}
           </div>
 
-          {/* Collage de membros */}
           {memberCount > 0 && (
             <div className="mt-1 flex -space-x-2">
-              {fam.members.slice(0, 5).map((m: any) => (
-                <span
-                  key={m.id}
-                  className="grid h-6 w-6 select-none place-items-center rounded-full text-[10px] font-semibold text-white ring-2 ring-white"
-                  style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
-                  title={m.displayName || m.name || m.id}
-                >
-                  {getInitials(m.displayName || m.name || m.id)}
-                </span>
-              ))}
+              {fam.members.slice(0, 5).map((m) => {
+                const avatar = m.photoURL || m.photoUrl;
+                return avatar ? (
+                  <img
+                    key={m.id}
+                    src={avatar}
+                    alt={m.displayName || m.name || m.id}
+                    className="h-6 w-6 rounded-full object-cover ring-2 ring-white"
+                    title={m.displayName || m.name || m.id}
+                  />
+                ) : (
+                  <span
+                    key={m.id}
+                    className="grid h-6 w-6 select-none place-items-center rounded-full text-[10px] font-semibold text-white ring-2 ring-white"
+                    style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
+                    title={m.displayName || m.name || m.id}
+                  >
+                    {getInitials(m.displayName || m.name || m.id)}
+                  </span>
+                );
+              })}
               {memberCount > 5 && (
                 <span className="grid h-6 w-6 place-items-center rounded-full bg-slate-200 text-[10px] font-semibold text-slate-700 ring-2 ring-white">
                   +{memberCount - 5}
@@ -433,37 +456,65 @@ function FamilyCard({ fam, open, onToggle, qText }: any) {
               <div className="text-sm text-slate-600">Nenhum membro vinculado.</div>
             ) : (
               <ul className="flex flex-wrap gap-2">
-                {fam.members.map((m: any) => (
-                  <li
-                    key={m.id}
-                    className="group relative flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
-                  >
-                    <span
-                      className="grid h-7 w-7 select-none place-items-center rounded-full text-xs font-semibold text-white"
-                      style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
+                {fam.members.map((m) => {
+                  const avatar = m.photoURL || m.photoUrl;
+                  return (
+                    <li
+                      key={m.id}
+                      // grupo do item
+                      className="group/member relative flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
                     >
-                      {getInitials(m.displayName || m.name || m.id)}
-                    </span>
-                    <span className="max-w-[22ch] truncate">
-                      {highlight(m.displayName || m.name || m.id, qText)}
-                    </span>
-                    {/* hover card */}
-                    <div className="pointer-events-none absolute left-1/2 top-full z-10 mt-2 hidden w-64 -translate-x-1/2 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700 shadow-lg group-hover:block">
-                      {(m.photoURL || m.photoUrl) && (
+                      {/* Avatar com foto se existir */}
+                      {avatar ? (
                         <img
-                          src={m.photoURL || m.photoUrl}
+                          src={avatar}
                           alt={m.displayName || m.name || m.id}
-                          className="mx-auto mb-2 h-16 w-16 rounded-full object-cover"
+                          className="h-7 w-7 rounded-full object-cover ring-1 ring-slate-300"
                         />
+                      ) : (
+                        <span
+                          className="grid h-7 w-7 select-none place-items-center rounded-full text-xs font-semibold text-white"
+                          style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
+                        >
+                          {getInitials(m.displayName || m.name || m.id)}
+                        </span>
                       )}
-                      <div className="text-center font-semibold text-slate-800">
-                        {m.displayName || m.name || m.id}
+
+                      <span className="max-w-[22ch] truncate">
+                        {highlight(m.displayName || m.name || m.id, qText)}
+                      </span>
+
+                      {/* Tooltip controlado pelo hover do item */}
+                      <div
+                        className="
+                          absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2
+                          rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-700 shadow-xl
+                          opacity-0 translate-y-1 scale-95 pointer-events-none
+                          group-hover/member:opacity-100 group-hover/member:translate-y-0 group-hover/member:scale-100 group-hover/member:pointer-events-auto
+                          transition-all duration-150
+                          after:content-[''] after:absolute after:-top-2 after:left-1/2 after:-translate-x-1/2
+                          after:border-8 after:border-transparent after:border-b-white
+                        "
+                      >
+                        {avatar && (
+                          <img
+                            src={avatar}
+                            alt={m.displayName || m.name || m.id}
+                            className="mx-auto mb-2 h-16 w-16 rounded-full object-cover"
+                          />
+                        )}
+                        <div className="text-center font-semibold text-slate-800 break-words">
+                          {m.displayName || m.name || m.id}
+                        </div>
+                        {m.email && <div className="truncate text-center">{m.email}</div>}
+                        {m.cpf && <div className="text-center">CPF: {maskCPF(m.cpf)}</div>}
+                        {m.birthDate && (
+                          <div className="text-center">Idade: {calcAge(m.birthDate)} anos</div>
+                        )}
                       </div>
-                      {m.email && <div className="truncate text-center">{m.email}</div>}
-                      {m.cpf && <div className="text-center">CPF: {maskCPF(m.cpf)}</div>}
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </motion.div>
@@ -473,7 +524,7 @@ function FamilyCard({ fam, open, onToggle, qText }: any) {
   );
 }
 
-function FamilyRow({ fam, open, onToggle, qText }: any) {
+function FamilyRow({ fam, open, onToggle, qText }) {
   const title = fam.familyName || fam.name || `Família ${fam.id}`;
   const memberCount = fam.members?.length || 0;
 
@@ -483,7 +534,7 @@ function FamilyRow({ fam, open, onToggle, qText }: any) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
-      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm overflow-visible"
     >
       <div className="flex items-start gap-3">
         <div
@@ -517,22 +568,62 @@ function FamilyRow({ fam, open, onToggle, qText }: any) {
                   <div className="text-sm text-slate-600">Nenhum membro vinculado.</div>
                 ) : (
                   <ul className="flex flex-wrap gap-2">
-                    {fam.members.map((m: any) => (
-                      <li
-                        key={m.id}
-                        className="group flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
-                      >
-                        <span
-                          className="grid h-7 w-7 select-none place-items-center rounded-full text-xs font-semibold text-white"
-                          style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
+                    {fam.members.map((m) => {
+                      const avatar = m.photoURL || m.photoUrl;
+                      return (
+                        <li
+                          key={m.id}
+                          className="group/member relative flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800"
                         >
-                          {getInitials(m.displayName || m.name || m.id)}
-                        </span>
-                        <span className="max-w-[28ch] truncate">
-                          {highlight(m.displayName || m.name || m.id, qText)}
-                        </span>
-                      </li>
-                    ))}
+                          {avatar ? (
+                            <img
+                              src={avatar}
+                              alt={m.displayName || m.name || m.id}
+                              className="h-7 w-7 rounded-full object-cover ring-1 ring-slate-300"
+                            />
+                          ) : (
+                            <span
+                              className="grid h-7 w-7 select-none place-items-center rounded-full text-xs font-semibold text-white"
+                              style={{ background: stringToHsl(m.displayName || m.name || m.id) }}
+                            >
+                              {getInitials(m.displayName || m.name || m.id)}
+                            </span>
+                          )}
+
+                          <span className="max-w-[28ch] truncate">
+                            {highlight(m.displayName || m.name || m.id, qText)}
+                          </span>
+
+                          <div
+                            className="
+                              absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2
+                              rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-700 shadow-xl
+                              opacity-0 translate-y-1 scale-95 pointer-events-none
+                              group-hover/member:opacity-100 group-hover/member:translate-y-0 group-hover/member:scale-100 group-hover/member:pointer-events-auto
+                              transition-all duration-150
+                              after:content-[''] after:absolute after:-top-2 after:left-1/2 after:-translate-x-1/2
+                              after:border-8 after:border-transparent after:border-b-white
+                            "
+                          >
+                            {avatar && (
+                              <img
+                                src={avatar}
+                                alt={m.displayName || m.name || m.id}
+                                className="mx-auto mb-2 h-16 w-16 rounded-full object-cover"
+                              />
+                            )}
+                            <div className="text-center font-semibold text-slate-800 break-words">
+                              {m.displayName || m.name || m.id}
+                            </div>
+                            {m.email && <div className="truncate text-center">{m.email}</div>}
+                            {m.cpf && <div className="text-center">CPF: {maskCPF(m.cpf)}</div>}
+                            {m.birthDate && (
+                              <div className="text-center">Idade: {calcAge(m.birthDate)} anos</div>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </motion.div>
@@ -560,7 +651,7 @@ function FamilyRow({ fam, open, onToggle, qText }: any) {
 }
 
 /* ===================== Small UI ===================== */
-function Badge({ children }: any) {
+function Badge({ children }) {
   return (
     <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
       {children}
@@ -569,17 +660,17 @@ function Badge({ children }: any) {
 }
 
 /* ===================== Utils ===================== */
-function formatMaybeDate(val: any) {
+function formatMaybeDate(val) {
   try {
     if (val?.toDate) return new Intl.DateTimeFormat("pt-BR").format(val.toDate());
     const d = new Date(val);
-    if (!isNaN(d as any)) return new Intl.DateTimeFormat("pt-BR").format(d);
+    if (!isNaN(d)) return new Intl.DateTimeFormat("pt-BR").format(d);
   } catch {}
   return "—";
 }
 
-/** Destaque ingênuo do termo buscado usando <mark> (sem HTML de entrada). */
-function highlight(text: string, query: string) {
+/** Destaque simples do termo buscado usando <mark>. */
+function highlight(text, query) {
   if (!query) return text;
   try {
     const parts = String(text).split(new RegExp(`(${escapeRegExp(query)})`, "ig"));
@@ -600,6 +691,21 @@ function highlight(text: string, query: string) {
     return text;
   }
 }
-function escapeRegExp(s: string) {
+function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Calcula idade a partir de Date, ISO string ou Timestamp do Firestore */
+function calcAge(birth) {
+  try {
+    const d = birth?.toDate ? birth.toDate() : new Date(birth);
+    if (isNaN(d)) return "—";
+    const now = new Date();
+    let age = now.getFullYear() - d.getFullYear();
+    const m = now.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
+    return age;
+  } catch {
+    return "—";
+  }
 }
