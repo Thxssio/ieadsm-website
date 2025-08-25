@@ -1,6 +1,14 @@
 {
   "indexes": [
     {
+      "collectionGroup": "relationships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "relationshipType", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "schedule",
       "queryScope": "COLLECTION",
       "fields": [
