@@ -123,6 +123,10 @@ service cloud.firestore {
         allow create: if isAdmin() || isFamilyMember(familyId) || (request.auth != null && request.auth.uid == memberId);
         allow read, update, delete: if isAdmin() || isFamilyMember(familyId);
       }
+      match /relationships/{relationshipId} {
+        allow read, create, update, delete: if isAdmin() || isFamilyMember(familyId);
+      }
+
 
 
       // Demais subcoleções ou documentos dentro de uma família são bloqueados
