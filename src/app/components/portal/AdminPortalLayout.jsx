@@ -15,6 +15,7 @@ import {
     Moon,
     Sun,
     Link as LinkIcon,
+    GitBranch,
   } from "lucide-react";
 
 import PageContent from "@/components/portal/ui/PageContent";
@@ -26,6 +27,7 @@ import ConfigurationPage from "@/components/portal/features/ConfigurationPage";
 import CongregationsPage from "@/components/portal/features/CongregationsPage";
 import SiteContentPage from "@/components/portal/features/SiteContentPage";
 import LinktreePage from "@/components/portal/features/LinktreePage";
+import FamiliesPage from "@/components/portal/features/FamiliesPage";
 
 
 import { useHasRole } from "@/hooks/useClaims";
@@ -163,6 +165,14 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
             <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
           </PageContent>
         );
+      case "families":
+        return canSeeUsers ? (
+          <FamiliesPage />
+        ) : (
+          <PageContent title="Acesso restrito">
+            <p className="text-slate-700">Você não tem permissão para acessar esta seção.</p>
+          </PageContent>
+        );
       case "ministries":
         return canSeeMin ? (
           <MinistriesPage />
@@ -217,6 +227,7 @@ export default function AdminPortalLayout({ user: userProp, onLogout, logoUrl })
         <>
           <div className="text-[11px] uppercase tracking-wide text-slate-400 px-3 mt-4 mb-1">Pessoas</div>
           <NavItem icon={<Users size={20} strokeWidth={2} />} label="Usuários" active={activePage === "users"} onClick={() => handleNavItemClick("users")} disabled={isLoggingOut} />
+          <NavItem icon={<GitBranch size={20} strokeWidth={2} />} label="Famílias" active={activePage === "families"} onClick={() => handleNavItemClick("families")} disabled={isLoggingOut} />
         </>
       )}
 
