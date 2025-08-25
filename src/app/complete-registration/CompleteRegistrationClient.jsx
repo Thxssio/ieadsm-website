@@ -179,7 +179,7 @@ async function tryJoinFamilyByCpf(cpfToJoin, uid, userName, userCpfDigits) {
     const snap = await getDocs(q);
     let familyRef;
     if (snap.empty) {
-      familyRef = doc(familiesCol);
+      familyRef = doc(familiesCol, crypto.randomUUID());
       await setDoc(familyRef, { responsibleCpf: cpfDigits });
     } else {
       familyRef = snap.docs[0].ref;
