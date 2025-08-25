@@ -95,3 +95,4 @@ exports.setUserRole = functions
   });
   
 exports.mergeFamiliesOnUserRegister = require("./mergeFamiliesOnUserRegister").mergeFamiliesOnUserRegister;
+exports.getFamilyGraph = require("./getFamilyGraph").getFamilyGraph;
